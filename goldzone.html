@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GoldZone Lite is ready · Goldmine</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0a0d13">
+<style>
+:root{--bg:#0a0d13;--panel:#10141c;--panel2:#151a24;--line:#1e2531;--line2:#2b3445;--text:#e8ecf3;--mut:#8a94a8;--gold:#f5b73b;--up:#16c784;--font:Inter,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+*{box-sizing:border-box;margin:0}
+html,body{background:var(--bg);color:var(--text);font:15px/1.6 var(--font)}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(760px 440px at 85% -10%,rgba(245,183,59,.14),transparent 70%),radial-gradient(560px 400px at -5% 0%,rgba(22,199,132,.06),transparent 70%)}
+a{color:inherit}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px;position:relative}
+header{display:flex;align-items:center;gap:10px;height:64px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:850;letter-spacing:-.02em;text-decoration:none}
+.brand svg{width:26px;height:26px}.brand span{font-size:9.5px;font-weight:900;color:#1a1203;background:linear-gradient(135deg,#f9c95a,#e0960c);padding:2px 6px;border-radius:5px;letter-spacing:.08em}
+header .grow{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 20px;border-radius:12px;font-weight:800;font-size:14.5px;text-decoration:none;border:1px solid transparent;cursor:pointer;font-family:inherit}
+.gold{background:linear-gradient(135deg,#f9c95a,#e0960c);color:#1a1203;box-shadow:0 14px 40px -14px rgba(245,183,59,.65)}.gold:hover{filter:brightness(1.07)}
+.ghost{background:rgba(255,255,255,.04);border-color:var(--line2);color:var(--text)}.ghost:hover{background:rgba(255,255,255,.08)}
+.hero{padding:36px 0 20px}
+.eye{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+h1{font-size:clamp(30px,5vw,48px);line-height:1.05;font-weight:900;letter-spacing:-.04em;margin:10px 0 12px}
+h1 span{background:linear-gradient(90deg,#ffd982,#f5b73b 45%,#e0960c);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--mut);font-size:16.5px;max-width:700px}
+h2{font-size:clamp(22px,3vw,30px);font-weight:850;letter-spacing:-.03em;margin-bottom:14px}
+section{padding:26px 0}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.step{padding:16px;border-radius:16px;border:1px solid var(--line);background:linear-gradient(180deg,#0f131b,#0c1017)}
+.step b{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#f9c95a,#e0960c);color:#1a1203;font-weight:900;font-size:13px;margin-bottom:10px}
+.step h3{font-size:15px;font-weight:850;margin-bottom:4px}.step p{font-size:13px;color:var(--mut)}.step code{color:var(--gold);font-size:12.5px}
+.code{border-radius:18px;overflow:hidden;border:1px solid var(--line2);background:#0d1118}
+.code .bar{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#121722;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.code .bar i{width:10px;height:10px;border-radius:50%;background:var(--line2)}.code .bar span{font-size:12.5px;color:var(--mut);font-weight:700;margin-left:6px}.code .bar .grow{flex:1}
+.code pre{margin:0;padding:16px 18px;max-height:420px;overflow:auto;font:500 12.5px/1.65 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#c9d1dd;white-space:pre}
+.code .btn{min-height:36px;padding:7px 14px;font-size:13px}
+.ok{color:var(--up)!important}
+.shows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 24px;list-style:none;padding:0}
+.shows li{display:flex;gap:10px;color:#d5dbe5}.shows li::before{content:'✓';color:var(--up);font-weight:900}
+.next{padding:26px;border-radius:24px;border:1px solid rgba(245,183,59,.45);background:radial-gradient(700px 260px at 0% 0%,rgba(245,183,59,.15),transparent 60%),linear-gradient(180deg,#10141c,#0c1017)}
+.next .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0 20px}
+.next .cards div{padding:14px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid var(--line)}
+.next .cards b{display:block;font-size:14.5px;margin-bottom:4px}.next .cards p{font-size:13px;color:var(--mut)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.note{font-size:12.5px;color:var(--mut)}
+footer{padding:30px 0 40px;color:var(--mut);font-size:12px;line-height:1.6}
+@media (max-width:820px){.steps,.next .cards{grid-template-columns:1fr 1fr}.shows{grid-template-columns:1fr}}
+@media (max-width:520px){.steps,.next .cards{grid-template-columns:1fr}}
+.ty{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start;padding:24px 0 30px}
+.tyl h1{margin:8px 0 6px}.lead{color:var(--mut);font-size:16.5px;margin-bottom:18px}
+.btn.big{min-height:54px;padding:12px 26px;font-size:16px;border-radius:14px}.btn.full{width:100%}
+.mini{margin:20px 0 0;padding:0;list-style:none;counter-reset:s;display:grid;gap:10px}
+.mini li{counter-increment:s;display:flex;gap:10px;color:#c9d0dc;font-size:14px;align-items:flex-start;line-height:1.5}
+.mini li::before{content:counter(s);flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#f9c95a,#e0960c);color:#1a1203;font-weight:900;font-size:12px}
+.mini code,.qa code{color:var(--gold);font-size:12.5px}
+.book{display:flex;gap:14px;align-items:center;margin-top:18px;padding:12px 14px;border-radius:14px;border:1px solid rgba(245,183,59,.45);background:linear-gradient(135deg,rgba(245,183,59,.1),rgba(245,183,59,.02));text-decoration:none}.book:hover{border-color:#f5b73b}.book img{width:52px;border-radius:3px;transform:rotate(-4deg);box-shadow:0 8px 20px -8px rgba(0,0,0,.7)}.book b{display:block;color:#f5c25b;font-size:15px}.book small{color:#aab3c3;font-size:12.5px;line-height:1.45}
+.peek{margin-top:14px;border:1px solid var(--line);border-radius:14px;background:#0d1118}
+.peek summary{cursor:pointer;padding:10px 14px;font-size:13px;font-weight:700;color:var(--mut)}
+.peek pre{margin:0;padding:12px 14px;max-height:240px;overflow:auto;border-top:1px solid var(--line);font:500 11.5px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#c9d1dd}
+.next h2{font-size:clamp(21px,2.6vw,27px);margin:6px 0 10px}
+.qa{list-style:none;padding:0;margin:0 0 18px;display:grid;gap:10px}.qa li{font-size:13.5px;color:#aab3c3;line-height:1.5}.qa b{display:block;color:#f3f5f9;font-size:14.5px}
+.demo{display:block;text-align:center;margin-top:8px;font-size:13px;color:var(--mut);text-decoration:none}.demo:hover{color:var(--text)}
+@media (max-width:860px){.ty{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><a class="brand" id="home" href="index.html"><svg viewBox="0 0 32 32"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffdc91"/><stop offset="1" stop-color="#e0960c"/></linearGradient></defs><path d="M16 2.5 28.5 9.5v13L16 29.5 3.5 22.5v-13z" fill="url(#g)"/><path d="M9.5 19.5l4.2-5 3.3 3.2 5.5-6.7" fill="none" stroke="#1a1203" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Goldmine<span>PRO</span></a><span class="grow"></span><a class="btn ghost" id="demoTop" href="index.html#demo">Live demo</a></header>
+
+  <div class="ty">
+    <div class="tyl">
+      <div class="eye">✓ It's yours · free forever</div><h1>GoldZone Lite <span>is ready.</span></h1>
+      <p class="lead">Copy it, paste it into TradingView, done in 2 minutes.</p>
+      <div class="row"><button class="btn gold big" id="copy">⧉ Copy GoldZone Lite</button><a class="btn ghost" id="dl" download="GoldZone-Lite.pine">Download .pine</a></div>
+      <ol class="mini">
+        <li><span><b>Copy</b> the code with the button above.</span></li>
+        <li><span>On tradingview.com open a gold chart → <code>Pine Editor</code> (bottom).</span></li>
+        <li><span>Select all, paste, <code>Save</code> as “GoldZone Lite”.</span></li>
+        <li><span><code>Add to chart</code>. Alert: Create alert → “GoldZone Lite” → <code>Any alert() function call</code>.</span></li></ol>
+      <a class="book" href="ebook/GoldZone-Playbook.pdf" download><img src="lp-playbook-cover.jpg" alt="The GoldZone Playbook"><span><b>⇩ Download your GoldZone Playbook</b><small>16-page PDF: how to read and trade every setup GoldZone marks, from range to runner.</small></span></a>
+      <details class="peek"><summary>Show the code</summary><pre id="src">Loading GoldZone…</pre></details>
+    </div>
+    <div class="next" id="offer"><div class="eye">Your next step · free for 7 days</div><h2>Lite shows you where. <span style="color:#f5b73b">Pro tells you which, and takes them.</span></h2>
+      <p class="note" style="font-size:14.5px;color:#aab3c3;margin-bottom:12px">Not every setup is worth taking: TR2 can pay on M15 and bleed on M5. The next step answers the three questions Lite can't:</p>
+      <ul class="qa"><li><b>🅰 Which ones are worth it?</b>GoldZone Pro grades every setup A / B / C and puts a backtest card on your chart: how each grade did, in R.</li>
+        <li><b>🛡 How big?</b>Goldmine sizes every lot from your risk and locks the day at your loss limit.</li>
+        <li><b>🔗 Who takes them?</b>TradingView → MT5 autotrade: the setups you allow, placed and managed on your MT5 account. Paper first.</li></ul>
+      <a class="btn gold big full" id="trial" href="index.html#signup">Try it all free for 7 days →</a>
+      <p class="note" style="margin-top:10px;text-align:center">No card · cancel in 2 clicks · we set it up with you</p>
+      <a class="demo" id="gzpro" href="index.html#pricing">Only want the TradingView part? <b style="color:#f5c25b">GoldZone Pro · €14/month →</b></a>
+      <a class="demo" id="demo" href="index.html#demo">or try the live demo first, no sign-up →</a></div>
+  </div>
+  <footer><b>Risk warning:</b> CFDs and forex are complex instruments with a high risk of losing money rapidly due to leverage. GoldZone and Goldmine Pro are software only: no investment advice or signals service. Past results, in a backtest or on a chart, are no promise. TradingView is a trademark of TradingView, Inc.; Goldmine Pro is not affiliated with TradingView or MetaQuotes.<br>© <span id="yr"></span> Goldmine Pro</footer>
+</div>
+<script>
+'use strict';
+// back to the site this page was opened from (the landing page passes ?site=)
+const site = (new URLSearchParams(location.search).get('site') || 'index.html').replace(/[^\w.\-]/g, '') || 'index.html';
+for (const [id, h] of [['home', ''], ['trial', '#signup'], ['gzpro', '#pricing']]) document.getElementById(id).href = site + h;
+for (const id of ['demo', 'demoTop']) { const a = document.getElementById(id); a.href = 'terminal.html?demo=1'; a.target = '_blank' } // the live demo, no sign-up
+document.getElementById('yr').textContent = new Date().getFullYear();
+const pre = document.getElementById('src'), cp = document.getElementById('copy'), dl = document.getElementById('dl'); let code = '';
+fetch('tradingview/GoldZone-Lite.pine', { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error(r.status); return r.text() }).then(t => {
+  code = t; pre.textContent = t; dl.href = URL.createObjectURL(new Blob([t], { type: 'text/plain' }));
+}).catch(() => { pre.textContent = 'GoldZone could not be loaded right now. Refresh this page, or reply to the email we just sent you and we send the file.'; cp.disabled = true });
+cp.addEventListener('click', async () => {
+  if (!code) return;
+  try { await navigator.clipboard.writeText(code) } catch { const r = document.createRange(); r.selectNodeContents(pre); const s = getSelection(); s.removeAllRanges(); s.addRange(r); document.execCommand('copy') }
+  cp.textContent = '✓ Copied: now paste it in the Pine Editor'; cp.classList.add('ok'); setTimeout(() => { cp.textContent = '⧉ Copy GoldZone Lite'; cp.classList.remove('ok') }, 4000);
+});
+</script>
+</body>
+</html>

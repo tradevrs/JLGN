@@ -1,0 +1,387 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Gold M15 TR1 Playbook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: one 780px reading column. The rules are a real sequence (numbered), numbers sit in tables,
+   and the settings read like the terminal's own TR settings form. */
+:root {
+  --bg: #f2f3f5;
+  --surface: #ffffff;
+  --ink: #15181d;
+  --muted: #5b6370;
+  --line: #dde0e6;
+  --accent: #8a6212;
+  --accent-soft: #f6eedc;
+  --good: #1d7a4c;
+  --bad: #b4372b;
+  --f-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Inter", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1114; --surface: #171a1f; --ink: #e7e9ed; --muted: #9aa2ad; --line: #2a2f37;
+    --accent: #d8a849; --accent-soft: #2a2416; --good: #4fc28b; --bad: #f07b6d;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1114; --surface: #171a1f; --ink: #e7e9ed; --muted: #9aa2ad; --line: #2a2f37;
+  --accent: #d8a849; --accent-soft: #2a2416; --good: #4fc28b; --bad: #f07b6d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.55; }
+.wrap {
+  max-width: 780px; margin: 0 auto;
+  padding-block: 40px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 48px;
+}
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(30px, 6vw, 42px); line-height: 1.08; font-weight: 700; }
+h2 { font-size: 21px; font-weight: 600; }
+h3 { font-size: 15px; font-weight: 600; }
+p { margin: 0; }
+b { font-weight: 600; }
+.mono, code { font-family: var(--f-mono); font-size: 0.92em; }
+.num { font-variant-numeric: tabular-nums; }
+.pos { color: var(--good); }
+.neg { color: var(--bad); }
+.mut { color: var(--muted); }
+
+.eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: 0.09em; color: var(--accent); font-weight: 600; }
+section { display: flex; flex-direction: column; gap: 16px; }
+.sec-head { display: flex; flex-direction: column; gap: 4px; }
+.sec-head p { color: var(--muted); max-width: 62ch; }
+
+/* header */
+.top { display: flex; flex-direction: column; gap: 14px; }
+.lede { font-size: 17px; max-width: 58ch; color: var(--ink); }
+.source { font-size: 13px; color: var(--muted); }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-top: 8px; }
+.tf { background: var(--surface); padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start; min-width: 0; }
+.tf-tag { font-family: var(--f-mono); font-weight: 500; font-size: 13px; padding: 3px 8px; border-radius: 5px; background: var(--accent-soft); color: var(--accent); flex: none; }
+.tf p { color: var(--muted); font-size: 14px; margin-top: 2px; }
+
+/* rules */
+.rules { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.rules li { display: grid; grid-template-columns: 30px 92px minmax(0, 1fr); gap: 4px 14px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.rn { font-family: var(--f-mono); color: var(--accent); font-size: 14px; padding-top: 1px; }
+.rk { font-family: var(--f-display); font-weight: 600; font-size: 15px; }
+.rk small { display: block; font-family: var(--f-mono); font-weight: 400; font-size: 12px; color: var(--muted); }
+.rt { font-weight: 600; }
+.rd { color: var(--muted); font-size: 14px; margin-top: 3px; }
+
+/* cards */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; min-width: 0; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid2 > * { min-width: 0; }
+
+/* checklist */
+.checks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.checks label { display: flex; gap: 12px; align-items: flex-start; padding: 8px 6px; border-radius: 6px; cursor: pointer; }
+.checks label:hover { background: var(--bg); }
+.checks input { accent-color: var(--accent); width: 17px; height: 17px; margin: 2px 0 0; flex: none; cursor: pointer; }
+.checks input:checked + span { color: var(--muted); }
+.check-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; border-top: 1px solid var(--line); margin-top: 10px; padding-top: 12px; flex-wrap: wrap; }
+#checkOut { font-weight: 600; font-size: 14px; }
+#checkOut[data-ready="true"] { color: var(--good); }
+button { font: inherit; font-size: 13px; font-weight: 500; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 6px; padding: 5px 12px; cursor: pointer; }
+button:hover { border-color: var(--muted); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* tables */
+.tbl-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; font-variant-numeric: tabular-nums; }
+th, td { padding: 10px 12px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--line); }
+th:first-child, td:first-child { text-align: left; white-space: normal; min-width: 170px; }
+thead th { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+tbody tr:last-child td { border-bottom: 0; }
+tr.this td { background: var(--accent-soft); }
+td small { display: block; color: var(--muted); font-size: 12px; }
+.card table th, .card table td { padding: 8px 0; }
+.card table th:first-child, .card table td:first-child { min-width: 0; }
+
+.plan { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.plan li { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; min-width: 0; }
+.plan b { display: block; font-family: var(--f-display); font-size: 17px; }
+.plan span { color: var(--muted); font-size: 14px; }
+
+.stops { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.stops li { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1px; }
+.stops b { font-size: 14px; }
+.stops span { color: var(--muted); font-size: 14px; }
+.card h3 { margin-bottom: 4px; }
+.card > p { color: var(--muted); font-size: 14px; margin-bottom: 10px; }
+
+/* go-live steps */
+.steps { list-style: none; margin: 0; padding: 0; counter-reset: s; display: flex; flex-direction: column; gap: 12px; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 14px; }
+.steps li::before { content: counter(s); font-family: var(--f-mono); color: var(--accent); font-size: 14px; padding-top: 1px; }
+.steps p { color: var(--muted); font-size: 14px; margin-top: 2px; }
+
+/* settings sheet */
+.sheet { display: grid; grid-template-columns: minmax(0, 1fr) auto; margin: 0; }
+.sheet dt, .sheet dd { padding: 8px 0; border-bottom: 1px solid var(--line); margin: 0; }
+.sheet dt { color: var(--muted); font-size: 14px; padding-right: 16px; }
+.sheet dd { font-family: var(--f-mono); font-size: 13px; text-align: right; font-weight: 500; }
+.sheet dt:nth-last-of-type(1), .sheet dd:nth-last-of-type(1) { border-bottom: 0; }
+.save { margin-top: 12px; font-size: 14px; color: var(--muted); }
+.save b { color: var(--ink); }
+
+/* left out */
+.out { margin: 0; display: grid; grid-template-columns: 150px minmax(0, 1fr); border-top: 1px solid var(--line); }
+.out dt, .out dd { margin: 0; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.out dt { font-weight: 600; padding-right: 14px; }
+.out dd { color: var(--muted); font-size: 14px; }
+
+footer { font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; max-width: 70ch; }
+
+@media (max-width: 640px) {
+  .split, .grid2, .plan { grid-template-columns: 1fr; }
+  .rules li { grid-template-columns: 30px minmax(0, 1fr); }
+  .rk { grid-column: 2; }
+  .rb { grid-column: 2; }
+  .out { grid-template-columns: 1fr; }
+  .out dt { border-bottom: 0; padding-bottom: 0; }
+  .out dd { padding-top: 2px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+
+  <header class="top">
+    <p class="eyebrow">XAUUSD-ECNc · TR system</p>
+    <h1>Gold M15 TR1 Playbook</h1>
+    <p class="lede">One signal, one filter, one exit. H1 tells you which way to trade and when to get out. M15 gives you the entry and moves your stop.</p>
+    <p class="source">Built from the Backtest Lab run of 11 Nov 2026 · real spread and commission</p>
+    <div class="split">
+      <div class="tf"><span class="tf-tag">H1</span><div><b>Side and exit</b><p>Trade only the way H1 last broke. Get out when it breaks the other way.</p></div></div>
+      <div class="tf"><span class="tf-tag">M15</span><div><b>Entry and stop</b><p>Enter on a TR1 retest. Move the stop up after each new BOS.</p></div></div>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-head">
+      <h2>The rules</h2>
+      <p>Five rules, in the order you use them. Nothing else is part of the system.</p>
+    </div>
+    <ol class="rules">
+      <li>
+        <span class="rn">1</span>
+        <div class="rk">Side<small>H1</small></div>
+        <div class="rb">
+          <p class="rt">Trade only in the direction of the last H1 break.</p>
+          <p class="rd">Last H1 body close through a range was up: buys only. Down: sells only.</p>
+        </div>
+      </li>
+      <li>
+        <span class="rn">2</span>
+        <div class="rk">Signal<small>M15</small></div>
+        <div class="rb">
+          <p class="rt">Take TR1 only: the first M15 break in a new direction, pointing the H1 way.</p>
+          <p class="rd">This is the moment an M15 pullback ends and M15 turns back with H1. The range needs at least 12 candles and can be no wider than 2.5× ATR(14). A break is a body close outside it.</p>
+        </div>
+      </li>
+      <li>
+        <span class="rn">3</span>
+        <div class="rk">Entry<small>M15</small></div>
+        <div class="rb">
+          <p class="rt">Limit order at the breaking candle's body close. Stop beyond the range plus 0.1× ATR.</p>
+          <p class="rd">Price must first leave the zone, then come back within 50 candles (12.5 hours). No fill by then: cancel. No take profit.</p>
+        </div>
+      </li>
+      <li>
+        <span class="rn">4</span>
+        <div class="rk">Manage<small>M15</small></div>
+        <div class="rb">
+          <p class="rt">After each new M15 BOS in your direction, move the stop to that range's stop.</p>
+          <p class="rd">Only ever tighten it. No breakeven, no partial closes.</p>
+        </div>
+      </li>
+      <li>
+        <span class="rn">5</span>
+        <div class="rk">Exit<small>H1</small></div>
+        <div class="rb">
+          <p class="rt">Close when H1 breaks the other way.</p>
+          <p class="rd">An H1 body close through a range against you. That is the only target; the trailed stop is the only other way out.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Before every order</h2>
+      <p>For trading by hand, or for checking what the bot did. All six or no trade.</p>
+    </div>
+    <div class="card">
+      <ul class="checks" id="checks">
+        <li><label for="c1"><input type="checkbox" id="c1"><span>H1's last break points my way.</span></label></li>
+        <li><label for="c2"><input type="checkbox" id="c2"><span>It is a TR1 on M15: the first break in a new direction, the same way as H1.</span></label></li>
+        <li><label for="c3"><input type="checkbox" id="c3"><span>The range has 12+ candles and is no wider than 2.5× ATR(14).</span></label></li>
+        <li><label for="c4"><input type="checkbox" id="c4"><span>Price left the zone and is back within 50 candles.</span></label></li>
+        <li><label for="c5"><input type="checkbox" id="c5"><span>Limit at the body close, stop beyond the range + 0.1× ATR, no TP.</span></label></li>
+        <li><label for="c6"><input type="checkbox" id="c6"><span>Lot size is my fixed % risk on that stop distance.</span></label></li>
+      </ul>
+      <div class="check-foot">
+        <span id="checkOut" aria-live="polite">0 of 6 checked</span>
+        <button type="button" id="checkClear">Clear</button>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>What to expect</h2>
+      <p>M15 data from 7 Jan to 11 Nov 2026. "Unseen" is the last 30% of the data, which the Lab kept out while choosing.</p>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Version</th><th>Trades</th><th>Win</th><th>R / trade</th><th>Total</th><th>Max DD</th><th>Unseen</th></tr>
+        </thead>
+        <tbody>
+          <tr class="this">
+            <td><b>This system</b><small>TR1 with H1 · H1 exit · trail</small></td>
+            <td>80</td><td>n/a</td><td class="pos">+0.64R</td><td class="pos">≈ +51R</td><td class="mut">not run</td><td class="mut">not run</td>
+          </tr>
+          <tr>
+            <td>Lab pick<small>every TR1 · H1 exit · trail</small></td>
+            <td>157</td><td>29%</td><td class="pos">+0.42R</td><td class="pos">+65.6R</td><td class="neg">−20.0R</td><td class="pos">+0.13R <span class="mut">/ 51</span></td>
+          </tr>
+          <tr>
+            <td>Close cousin, setup #15<small>TR1 with H1 · runner · trail</small></td>
+            <td>80</td><td>29%</td><td class="pos">+0.64R</td><td class="pos">+51.5R</td><td class="neg">−13.5R</td><td class="pos">+0.15R <span class="mut">/ 26</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <ul class="plan">
+      <li><b>~8 trades a month</b><span>About two a week. The H1 filter drops half the signals, mostly the weak ones (+0.19R against H1 vs +0.64R with it).</span></li>
+      <li><b>3 wins in 10</b><span>Most trades lose or scratch. A few long H1 runs pay for everything.</span></li>
+      <li><b>+0.1 to +0.2R per trade</b><span>Plan on what the unseen data showed, not the full-sample +0.64R. Roughly +1R in a normal month.</span></li>
+      <li><b>8–10 losses in a row</b><span>Expect a run like this about once a year. At a 29% win rate that is normal, not a broken system.</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Risk and stopping</h2>
+      <p>Decide both before the first trade, so a losing streak never decides them for you.</p>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Size for −30R</h3>
+        <p>Same % of the account on every trade. −30R is 1.5× the Lab's worst drawdown.</p>
+        <table>
+          <thead><tr><th>Risk per trade</th><th>Account after −30R</th></tr></thead>
+          <tbody>
+            <tr><td>0.25%</td><td class="neg">−7%</td></tr>
+            <tr><td>0.5%</td><td class="neg">−14%</td></tr>
+            <tr><td>1%</td><td class="neg">−26%</td></tr>
+            <tr><td>2%</td><td class="neg">−45%</td></tr>
+          </tbody>
+        </table>
+        <p style="margin: 10px 0 0;">Pick the row you could sit through without touching the rules.</p>
+      </div>
+      <div class="card">
+        <h3>When to stop</h3>
+        <p>Rules for you, not for the market.</p>
+        <ul class="stops">
+          <li><b>−20R from your equity peak</b><span>No new trades. Re-run the Lab on fresh data before restarting.</span></li>
+          <li><b>Every 25 trades</b><span>Compare your live R per trade with the Lab's.</span></li>
+          <li><b>40 live trades below 0R per trade</b><span>Stop and re-test. The edge may be gone.</span></li>
+          <li><b>Changing a rule</b><span>Only after a Lab test, never in the middle of a drawdown.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Going live</h2>
+    </div>
+    <ol class="steps">
+      <li><div><h3>Confirm it in the Lab</h3><p>The Lab gave +0.64R over 80 trades for this exact system, but no drawdown, unseen or quarter results. Run it once with the settings below. Keep it if the unseen 30% is above 0R and at least 3 of 4 quarters are positive. If not, use the Lab pick: the same system with the H1 filter off.</p></div></li>
+      <li><div><h3>Demo for 30 trades</h3><p>About four months. Let auto-trade (🤖) run it so fills and stop moves match the Lab exactly. Log each trade: R, session, H1 direction.</p></div></li>
+      <li><div><h3>Go live small</h3><p>Only if the demo shows more than 0R per trade and the bot did what the Lab would have done. Start on the lowest risk row you are comfortable with.</p></div></li>
+    </ol>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Terminal settings</h2>
+      <p>In the terminal, open TR settings (⚙ Edit settings) and set:</p>
+    </div>
+    <div class="card">
+      <dl class="sheet">
+        <dt>Show</dt><dd>Only TR1</dd>
+        <dt>Min. candles in a range</dt><dd>12</dd>
+        <dt>Range size (× ATR 14)</dt><dd>2.5</dd>
+        <dt>Stop buffer (× ATR)</dt><dd>0.1</dd>
+        <dt>Take profit (R, 0 = open)</dt><dd>0</dd>
+        <dt>Max candles to wait for the retest</dt><dd>50</dd>
+        <dt>Take profit</dt><dd>Close on an opposite signal</dd>
+        <dt>…zone / signal on</dt><dd>H1</dd>
+        <dt>Breakeven</dt><dd>Off</dd>
+        <dt>Partial close</dt><dd>Off</dd>
+        <dt>Only trade with the structure of</dt><dd>H1</dd>
+        <dt>Trail the stop behind each new BOS</dt><dd>On</dd>
+        <dt>Price must first leave the zone</dt><dd>On</dd>
+      </dl>
+      <p class="save">Then <b>☆ Save current as…</b> with the name <b>Gold M15 TR1 · H1</b> and timeframe <b>M15</b>. For auto-trade, pick M15 only and enter your risk % from the table above.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Left out on purpose</h2>
+      <p>Each of these looked good somewhere in the report. None is in version 1.</p>
+    </div>
+    <dl class="out">
+      <dt>M1 setups</dt>
+      <dd>The best numbers in the report (up to +1.76R per trade), but from three weeks of M1 data (21 Oct to 11 Nov). One market phase is not enough to trust. Re-test once the Lab can load more M1 history.</dd>
+      <dt>Breakeven</dt>
+      <dd>On this setup it cut R per trade from +0.42R to +0.19R (BE at 1R). The BOS trail already protects the trade.</dd>
+      <dt>Scaling in</dt>
+      <dd>Adding M1 / M5 entries made +15.6R more but doubled the worst drawdown (−20R to −41.9R). Revisit after 50 live trades, starting with "only the first add" (+9.6R, drawdown −27.7R).</dd>
+      <dt>Session filter</dt>
+      <dd>After hours was the only losing session (−0.25R over 21 trades). Too few trades for a rule, and the bot can't apply it. Track it in your log instead.</dd>
+      <dt>Fixed target</dt>
+      <dd>Closing on the opposite H1 signal (+0.42R) beat the best fixed target (5R, +0.26R) and the opposite zone (+0.16R).</dd>
+    </dl>
+  </section>
+
+  <footer>
+    Numbers from the Goldmine Backtest Lab, XAUUSD-ECNc, 11 Nov 2026: 19,999 M15 candles (7 Jan to 11 Nov 2026), real MT5 spread and commission, stop first on doubtful candles, candles that fill and stop out counted as −1R. Account drawdowns in the risk table are compounded. Backtests describe the past; they are not a forecast or financial advice.
+  </footer>
+</div>
+
+<script>
+(function () {
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('#checks input'));
+  var out = document.getElementById('checkOut');
+  function update() {
+    var n = boxes.filter(function (b) { return b.checked; }).length;
+    var all = n === boxes.length;
+    out.textContent = all ? 'All 6 checked: place the limit order' : n + ' of ' + boxes.length + ' checked';
+    out.setAttribute('data-ready', all ? 'true' : 'false');
+  }
+  boxes.forEach(function (b) { b.addEventListener('change', update); });
+  document.getElementById('checkClear').addEventListener('click', function () {
+    boxes.forEach(function (b) { b.checked = false; });
+    update();
+  });
+  update();
+})();
+</script>
+
+</body></html>
