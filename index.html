@@ -1130,6 +1130,15 @@ body.lpb #links,body.lpb .burger,body.lpb #right .btn.acc{display:none!important
 .chnums .up{color:var(--ok,#16a34a)}.chnums .dn{color:var(--bad,#dc2626)}
 .lpb-ch{display:flex;align-items:center;gap:18px;flex-wrap:wrap;border:1px solid var(--line);border-radius:16px;padding:22px 24px;background:color-mix(in srgb,var(--acc) 7%,transparent)}
 .lpb-ch>div{flex:1;min-width:220px}.lpb-ch h3{margin:0 0 4px;font-size:20px}.lpb-ch p{margin:0;color:var(--mut);font-size:14px}
+
+.lpc-promo{display:flex;align-items:center;gap:10px;width:max-content;max-width:100%;margin-bottom:12px;padding:7px 8px 7px 7px;border-radius:999px;border:1px solid rgba(245,183,59,.6);background:linear-gradient(90deg,rgba(245,183,59,.2),rgba(245,183,59,.06));color:#f3f5f9;text-decoration:none;font-size:13px;font-weight:700;box-shadow:0 0 0 0 rgba(245,183,59,.4);animation:vtpulse 2.6s ease-out infinite}
+.lpc-promo em{font-style:normal;padding:4px 9px;border-radius:999px;background:linear-gradient(135deg,#f9c95a,#e0960c);color:#1a1203;font-size:10.5px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap}
+.lpc-promo b{color:#f5c25b}.lpc-promo i{font-style:normal;color:#f5c25b;font-weight:900;padding-right:4px}.lpc-promo:hover{border-color:#f5c25b}
+@keyframes vtpulse{0%{box-shadow:0 0 0 0 rgba(245,183,59,.35)}70%{box-shadow:0 0 0 10px rgba(245,183,59,0)}100%{box-shadow:0 0 0 0 rgba(245,183,59,0)}}
+.vtpromo{display:flex;flex-direction:column;gap:3px;padding:14px 16px;border-radius:14px;border:1px dashed rgba(245,183,59,.7);background:rgba(245,183,59,.09)}.vtpromo b{font-size:19px;color:#f5c25b}.vtpromo span{font-size:13px;color:#c9d0dc}
+.vipbs.one{grid-template-columns:1fr}.vipbs.one .vipb{flex-direction:row;justify-content:space-between;align-items:center;padding:14px 18px}
+.vipc.vt{position:relative}.vipc.vt h3{padding-right:120px}.vipl{align-content:start}
+@media (max-width:560px){.lpc-promo{font-size:12px;border-radius:16px;width:auto}.vipc.vt h3{padding-right:0;margin-top:26px}.vipsoon{top:16px;right:16px}}
 </style>
 </head>
 <body>
@@ -1545,12 +1554,15 @@ if (!window.lpMicro) {
 
 /* ================================================================ LANDING: two levels, one page (2026-11-13)
    Free  = VRS Indicator Lite + the VRS Playbook + the public Discord (for an email).
-   VIP   = VRS Indicator Pro + VRS Executor + the VIP Discord. Two ways in: open an account with a partner broker (VIP free)
+   VIP   = VRS Indicator Pro + VRS Executor + the VIP Discord. Two ways in: open an account with VT Markets (VIP free + 100% deposit credit, limited time)
            or pay €29/month (any broker or prop account, 7 days free).
    Five sections: hero (free lead) · how it works · two ways into VIP · proof · FAQ.
    Analytics: every CTA has data-cta="<where>"; hook your pixel into track(). */
 const LPV = 'c'; // analytics label of the landing page (lead sources: tv-c, tv-exit-c)
-const BROKERS = () => A.plans?.brokers || OFFLINE_PLANS.brokers;
+// VT Markets is our one partner broker. Paste your VT Markets partner link here (or set GP_BROKER_LINKS=vtmarkets=<link> on the server).
+const VT_LINK = '';
+const BROKERS = () => { const s = (A.plans?.brokers || []).find(b => b.key === 'vtmarkets'); return [{ key: 'vtmarkets', name: 'VT Markets', url: s?.url || VT_LINK }] };
+const VT_PROMO = { h: '100% credit on your deposit', terms: 'Limited-time VT Markets promotion for new accounts opened through our link. The credit is trading credit added by VT Markets, not cash you can withdraw; VT Markets\' own promotion terms and eligibility apply and it is not available in every country.' };
 const DISCORD = () => A.plans?.discord_public || '';
 const LP_ALIAS = { pricing: 'vip', offer: 'vip', ladder: 'vip', autotrade: 'how', system: 'how', features: 'proof' }; // old #links (emails, videos)
 // what each level contains (the "how it works" + the VIP card read from this)
@@ -1563,8 +1575,9 @@ const C_VIP = [
 const C_FAQ = [
   ['Is VRS Indicator Lite really free?', 'Yes, free forever. Leave your email and you get the TradingView indicator with four install steps, the 16-page Playbook and the link to the free Discord. It marks every VA1 / VA2 range, break and zone, and alerts you when a new zone appears. When to enter, where the stop goes and how to manage the trade is in VIP.'],
   ['What is the difference between Free and VIP?', 'Free shows you the zones. VIP shows you the trade: the entry, the stop, the 1R / 2R / 3R levels, an A / B / C grade and a backtest card on your chart (VRS Indicator Pro), and takes it for you on MT5 (VRS Executor: risk-sized, inside your daily limits, managed to the exit). Plus the VIP Discord.'],
-  ['How does VIP through a partner broker work?', 'Coming soon: we are finalising our broker partnerships. Once they are live: open a new account with one of our partner brokers through the link on this page, sign up here and type your MT5 account number in your dashboard. We check it in the broker\'s partner portal and switch VIP on, usually within 24 hours. VIP stays on while the account is active with that broker. The broker pays us a commission for referring you; check the broker\'s own conditions, fees and regulation before you open an account. We never hold or manage your money.'],
-  ['I already have a broker or trade a prop account.', 'Then pay for VIP: €29 a month, 7 days free first. It works with any broker that has MetaTrader 5, and with prop-firm accounts. An account you opened before, without our link, usually can\'t be moved under our partnership.'],
+  ['How does VIP through VT Markets work?', 'Open a new MT5 account with VT Markets through the link on this page and make your deposit. Then sign up here and type your MT5 account number in your dashboard. We check it in the VT Markets partner portal and switch VIP on, usually within 24 hours. VIP stays on while the account is active with VT Markets. VT Markets pays us a commission for referring you; check their conditions, fees and regulation before you open an account. We never hold or manage your money.'],
+  ['What is the 100% deposit credit?', 'A limited-time VT Markets promotion for new accounts opened through our link: VT Markets adds 100% of your deposit as trading credit (deposit $500, trade with $1,000). The credit is not cash: you cannot withdraw it, and VT Markets\' own promotion terms decide how it works and who can get it. It is not available in every country. The risk on your own deposit stays the same: trade it with the same stop and risk % as always.'],
+  ['I already have a broker or trade a prop account.', 'Then pay for VIP: €29 a month, 7 days free first. It works with any broker that has MetaTrader 5, and with prop-firm accounts. A VT Markets account you opened before, without our link, usually can\'t be moved under our partnership.'],
   ['How does TradingView → MT5 autotrade work?', 'You add one alert in TradingView on VRS Indicator Pro and paste the webhook link from your VRS Terminal. When a setup comes, TradingView sends it to VRS Executor on your PC or VPS. It checks your minimum grade, trades per day and daily loss, sizes the lot from your risk %, places the order on MT5, then takes the partial and moves the stop to break-even. It is off until you switch it on, and you start on a paper account. TradingView webhooks need a paid TradingView plan.'],
   ['Does it have to run all day?', 'VRS Executor and MT5 must be running when an alert comes. On your PC that means while it is on; for 24/7 use a small Windows VPS (about €10/month). There is a step-by-step guide.'],
   ['Does the bot make money by itself?', 'No bot does that, and anyone who says so is selling something. Ours takes the setups you chose, with your exit plan, inside your limits (max trades a day, a daily loss lock). It is off by default, starts on demo or paper, and real money needs its own switch.'],
@@ -1576,7 +1589,7 @@ const C_FAQ = [
 function brokerBtns(where) {
   return BROKERS().map(b => b.url
     ? `<a class="vipb" href="${esc(b.url)}" target="_blank" rel="sponsored noopener" data-cta="${where}-broker-${b.key}"><b>${esc(b.name)}</b><span>Open an account →</span></a>`
-    : `<span class="vipb off"><b>${esc(b.name)}</b><span>coming soon</span></span>`).join('');
+    : `<span class="vipb off"><b>${esc(b.name)}</b><span>link coming soon</span></span>`).join('');
 }
 const BROKERS_LIVE = () => BROKERS().some(b => b.url); // false until GP_BROKER_LINKS is set: the partner-broker way shows "coming soon"
 function renderLandingC() {
@@ -1596,6 +1609,7 @@ function renderLandingC() {
   <!-- 1 · HERO: the free level, for an email -->
   <section class="lpc-hero" id="tv"><canvas class="lp-hcv" id="lpHcv" aria-hidden="true"></canvas><div class="wrap lpc-hg">
     <div>
+      <a class="lpc-promo" href="#vip" data-cta="c-hero-vt"><em>Limited time</em><span><b>VRS × VT Markets</b> · ${VT_PROMO.h} + VIP free</span><i>→</i></a>
       <span class="lpc-pill"><i></i>Free · VRS Indicator Lite for TradingView</span>
       <h1>Every zone, marked on your chart. <span>Free.</span></h1>
       <p class="lpc-sub">VRS Indicator Lite boxes the range, marks the break and draws the zone we trade, and alerts you the moment a new zone appears. You also get the <b style="color:#f3f5f9">VRS Playbook</b> (16-page PDF)${dc ? ' and the free Discord' : ''}. Paste it into TradingView: done in 2 minutes.</p>
@@ -1622,24 +1636,20 @@ function renderLandingC() {
 
   <!-- 3 · TWO WAYS INTO VIP -->
   <section class="lp-sec lp-offer" id="vip"><div class="wrap">
-    <div class="lp-head"><div class="lp-eye">VRS VIP</div><h2>Everything, <span>two ways in.</span></h2><p>Same VIP either way.</p></div>
+    <div class="lp-head"><div class="lp-eye">VRS VIP</div><h2>Everything, <span>two ways in.</span></h2><p>Same VIP either way. Trade with VT Markets and it costs nothing.</p></div>
     <div class="vipin">${C_VIP.map(([i, t, d]) => `<div><i>${i}</i><b>${t}</b><p>${d}</p></div>`).join('')}</div>
     <div class="vipw">
-      ${live ? `<div class="vipc go"><small>Way 1 · free</small><h3>Open an account with a partner broker</h3>
-        <ol class="vipst"><li>Open a <b>new</b> MT5 account through one of these links.</li><li>Sign up here and type your MT5 account number in your dashboard.</li><li>We check it and switch VIP on, usually within 24 hours.</li></ol>
-        <div class="vipbs">${brokerBtns('c-vip')}</div>
-        <a class="lp-btn gold lg full" href="#signup" data-intent-broker="1" data-cta="c-vip-broker-done">I opened my account →</a>
-        <p class="vipn">VIP stays on while your account is active with that broker. We may earn a commission from partner brokers when you open an account. Check the broker's conditions and regulation first.</p></div>`
-      : `<div class="vipc soon"><small>Way 1 · free</small><span class="vipsoon">Coming soon</span><h3>Open an account with a partner broker</h3>
-        <p class="vipst" style="padding:0">We're finalising our broker partnerships. Soon you can get VIP for free by opening a new account with one of them.</p>
-        <div class="vipbs">${brokerBtns('c-vip')}</div>
-        <a class="lp-btn ghost lg full" href="#signup" data-cta="c-vip-soon">Start with Way 2 now, switch when it opens →</a>
-        <p class="vipn">When it opens, we may earn a commission from partner brokers. You will always be able to check the broker's conditions and regulation first.</p></div>`}
-      <div class="vipc ${live ? '' : 'go'}"><small>Way 2 · any broker${live ? '' : ' · available now'}</small><h3>Pay for VIP</h3>
+      <div class="vipc go vt"><small>Way 1 · free · VT Markets</small><span class="vipsoon">Limited time</span><h3>Trade with VT Markets: VIP free + 100% deposit credit</h3>
+        <div class="vtpromo"><b>🎁 ${VT_PROMO.h}</b><span>Deposit $500, trade with $1,000. Through our link only, for a limited time.</span></div>
+        <ol class="vipst"><li>Open a <b>new</b> VT Markets MT5 account through the button below and make your deposit.</li><li>VT Markets adds 100% of your deposit as trading credit.</li><li>Sign up here and type your MT5 account number in your dashboard: we switch VIP on, usually within 24 hours.</li></ol>
+        <div class="vipbs one">${brokerBtns('c-vip')}</div>
+        <a class="lp-btn gold lg full" href="#signup" data-intent-broker="1" data-cta="c-vip-broker-done">I opened my VT Markets account →</a>
+        <p class="vipn">${VT_PROMO.terms} VIP stays on while your account is active with VT Markets. We earn a commission from VT Markets when you open an account through our link. Check VT Markets' conditions and regulation first.</p></div>
+      <div class="vipc"><small>Way 2 · any broker</small><h3>Pay for VIP</h3>
         <div class="vipp"><b>${money2(price)}</b><span>/month</span>${F.open ? '<em>FOUNDING PRICE</em>' : ''}</div>
         ${F.open ? `<p class="vipf">🏷 Locked at ${money2(F.month)} for as long as you stay. <b>${money2(pro.month)}/month</b> after founding closes${endsLine}${seatsLine}.</p>` : ''}
         <ul class="vipl"><li>Any broker with MetaTrader 5, or a prop-firm account</li><li>${td} days free · ${A.plans?.trial_card ? 'nothing charged during the trial' : 'no card'}</li><li>Cancel in 2 clicks · ${G}-day money-back guarantee</li></ul>
-        <a class="lp-btn ${live ? 'ghost' : 'gold'} lg full" href="#signup" data-cta="c-vip-pay">Start ${td} days free</a></div>
+        <a class="lp-btn ghost lg full" href="#signup" data-cta="c-vip-pay">Start ${td} days free</a></div>
     </div>
   </div></section>
 
@@ -1667,7 +1677,7 @@ function renderLandingC() {
     <div class="lp-faq">${C_FAQ.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div>
     <div class="lp-final" style="margin-top:34px"><h2>Start where you are.</h2>
       <div class="lpc-two"><div><small>Free forever</small><h3>VRS Indicator Lite + the Playbook</h3><p>Every zone on your TradingView chart, the guide to the method${dc ? ' and the free Discord' : ''}.</p><a class="lp-btn ghost lg full" href="#tv" data-cta="c-final-lead">Get it free</a></div>
-        <div class="go"><small>VIP</small><h3>The entry, the stop, the trade taken for you</h3><p>${money2(price)}/month${F.open ? ' (founding price, locked for as long as you stay)' : ''} with ${td} days free${live ? ', or free through a partner broker' : '. Free through a partner broker: coming soon'}.</p><a class="lp-btn gold lg full" href="#vip" data-cta="c-final-vip">See the two ways in</a></div></div>
+        <div class="go"><small>VIP</small><h3>The entry, the stop, the trade taken for you</h3><p>${money2(price)}/month${F.open ? ' (founding price, locked for as long as you stay)' : ''} with ${td} days free, or free when you trade with VT Markets.</p><a class="lp-btn gold lg full" href="#vip" data-cta="c-final-vip">See the two ways in</a></div></div>
       ${dc ? `<p style="margin-top:18px;color:#8a94a8;font-size:13.5px">Just want to look around? <a href="${esc(dc)}" target="_blank" rel="noopener" style="color:#f5c25b;font-weight:800" data-cta="c-final-discord">Join the free Discord →</a></p>` : ''}
     </div>
   </div></section>
@@ -1676,10 +1686,10 @@ function renderLandingC() {
     <div class="row"><a class="brand" href="#home" style="font-size:14px">${LOGO}VRS<span>VALUE RESEARCH SYSTEMS</span></a><span class="grow"></span>
       <a href="#vip">VIP</a><a href="#faq">FAQ</a>${dc ? `<a href="${esc(dc)}" target="_blank" rel="noopener">Discord</a>` : ''}<a href="#" data-act="legal" data-k="terms">Terms</a><a href="#" data-act="legal" data-k="privacy">Privacy</a><a href="#" data-act="legal" data-k="risk">Risk disclosure</a><a href="mailto:support@yourdomain.com">Support</a></div>
     <p><b>Risk warning:</b> CFDs and forex are complex instruments and come with a high risk of losing money rapidly due to leverage. VRS Executor and VRS Indicator are software only and do not provide investment advice, signals or brokerage services. Backtests describe the past and are no promise.</p>
-    <p><b>Partner brokers:</b> we may receive a commission from partner brokers when you open an account through our links. That does not change our software or what you pay for it. We are not a broker, do not hold client money and do not recommend any broker for your situation: check each broker's regulation, conditions and fees yourself.</p>
+    <p><b>Partner broker:</b> VT Markets is our partner broker. We receive a commission from VT Markets when you open an account through our link. That does not change our software or what you pay for it. We are not a broker, do not hold client money and do not recommend any broker for your situation: check VT Markets' regulation, conditions and fees yourself. The deposit credit is a VT Markets promotion: their terms apply, the credit is not withdrawable and it is not available in every country.</p>
     <p>MetaTrader is a trademark of MetaQuotes Ltd and TradingView of TradingView, Inc.; VRS is not affiliated with either, or with any prop firm. © ${new Date().getFullYear()} VRS · Value Research Systems</p>
   </div></footer>
-  <div class="stickycta" id="stickyCta"><div><b>${lead ? 'VRS VIP' : 'VRS Indicator Lite · free'}</b><small>${lead ? (live ? `free via a partner broker, or ${money2(price)}/mo` : `${money2(price)}/mo · ${td} days free`) : 'TradingView zones · 2 min'}</small></div><a class="btn acc md" href="${lead ? '#vip' : '#tv'}" data-cta="c-sticky">${lead ? 'See VIP' : 'Get it free'}</a></div>
+  <div class="stickycta" id="stickyCta"><div><b>${lead ? 'VRS VIP' : 'VRS Indicator Lite · free'}</b><small>${lead ? `free with VT Markets, or ${money2(price)}/mo` : 'TradingView zones · 2 min'}</small></div><a class="btn acc md" href="${lead ? '#vip' : '#tv'}" data-cta="c-sticky">${lead ? 'See VIP' : 'Get it free'}</a></div>
   </div>`;
   lpReveal(); lpFx();
 }
@@ -1827,15 +1837,15 @@ function brokerBox() {
   if (s.valid && s.status === 'active' && s.interval !== 'broker' && b.status !== 'pending') return ''; // already paying: nothing to ask
   const nm = k => list.find(x => x.key === k)?.name || k;
   if (!BROKERS_LIVE() && !b.status) // no partner links yet: a short "coming soon" note, no form
-    return `<div class="box" id="brokerBox"><h3>🤝 VIP free through a partner broker <span class="grow"></span><span class="st mute">coming soon</span></h3>
+    return `<div class="box" id="brokerBox"><h3>🤝 VIP free with VT Markets <span class="grow"></span><span class="st mute">link coming soon</span></h3>
       <p class="mut" style="font-size:12.5px;margin:-4px 0 0">We're finalising our broker partnerships. Soon you can get VIP for free by opening a new account with one of them. We'll let you know here and by email.</p></div>`;
   const state = b.status === 'approved' ? `<span class="st ok">VIP active · ${esc(nm(b.broker))} #${esc(b.login)}</span>`
     : b.status === 'pending' ? `<span class="st mute">being checked · ${esc(nm(b.broker))} #${esc(b.login)}</span>`
     : b.status === 'rejected' ? `<span class="st warn">not found · check the number</span>` : '';
-  return `<div class="box" id="brokerBox"><h3>🤝 VIP free through a partner broker <span class="grow"></span>${state}</h3>
+  return `<div class="box" id="brokerBox"><h3>🤝 VIP free with VT Markets <span class="grow"></span>${state}</h3>
     <p class="mut" style="font-size:12.5px;margin:-4px 0 12px">${b.status === 'approved' ? 'Your VIP comes with your partner-broker account. It stays on while that account is active.'
       : b.status === 'rejected' ? 'We could not find this account under our partnership. It has to be a new account opened through our link. Check the number (MT5: File → Login to Trade Account) and send it again, or write to support.'
-      : 'Open a new MT5 account through one of our links, then type the broker and the account number here. We check it in the broker\'s partner portal and switch VIP on, usually within 24 hours.'}</p>
+      : 'Open a new VT Markets MT5 account through our link (limited time: 100% credit on your deposit), then type the account number here. We check it in the broker\'s partner portal and switch VIP on, usually within 24 hours.'}</p>
     ${b.status === 'approved' ? '' : `<div class="vipbs" style="margin-bottom:12px">${brokerBtns('dash')}</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap"><select class="in" id="brkSel" style="flex:0 0 170px">${list.map(x => `<option value="${x.key}" ${x.key === b.broker ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</select>
       <input class="in" id="brkLogin" inputmode="numeric" maxlength="20" placeholder="MT5 account number" value="${esc(b.login || '')}" style="flex:1;min-width:160px"><button class="btn acc md" data-act="brkSend">${b.status === 'pending' ? 'Update' : 'Send'}</button></div>
@@ -1862,7 +1872,7 @@ function accountsBox() {
       <div class="frm" style="margin-top:12px">
         <label>Login (account number)<input class="in" id="naLogin" inputmode="numeric" autocomplete="off" placeholder="e.g. 36499545"></label>
         <label>Password<input class="in" id="naPass" type="password" autocomplete="new-password" placeholder="MT5 trading password"></label>
-        <label>Server<input class="in" id="naServer" autocomplete="off" placeholder="exact name, e.g. VantageMarkets-Live 10"></label>
+        <label>Server<input class="in" id="naServer" autocomplete="off" placeholder="exact name, e.g. VTMarkets-Live"></label>
         <label>Name in the terminal (optional)<input class="in" id="naLabel" autocomplete="off" placeholder="e.g. Prop account 100K"></label>
       </div>
       <p class="mut" style="font-size:12px;margin-top:8px">🔒 Your password goes straight from this browser to VRS Executor on your own PC and is stored only there. It is never sent to our servers. Use the <b>trading</b> password, not the investor (read-only) password. The server name must match MT5 exactly (MT5: File → Login to Trade Account).</p>
@@ -1950,7 +1960,7 @@ INFO:     Application startup complete.   <b>← ready</b></pre></div>
     ${step(3, mt5Up && algo !== false, 'Log in to MetaTrader 5 and allow trading', `
       ${sub(['Open <b>MetaTrader 5</b>.',
         'Click <b>File</b> → <b>Login to Trade Account</b>.',
-        'Fill in your <b>Login</b> (account number) and <b>Password</b>, and pick the exact <b>Server</b> from your broker email (for example <i>VantageMarkets-Live 10</i> or <i>ICMarketsSC-Demo</i>). Tick <b>Save password</b> → <b>OK</b>.',
+        'Fill in your <b>Login</b> (account number) and <b>Password</b>, and pick the exact <b>Server</b> from your broker email (for example <i>VTMarkets-Live</i> or <i>VTMarkets-Demo</i>). Tick <b>Save password</b> → <b>OK</b>.',
         'Check the bottom-right corner of MT5: it shows a speed like <b>42.3 ms</b>. If it says <i>Invalid account</i> or <i>No connection</i>, the login, password or server is wrong.',
         'Click <b>Algo Trading</b> in the MT5 toolbar so the icon turns <b style="color:var(--up)">green ▶</b>. Without it, MT5 refuses every order from VRS Executor.'])}
       <div class="livechip ${mt5Up ? 'ok' : ''}">${mt5Up ? `✓ MetaTrader 5 is logged in: account ${esc(BR.h?.mt5?.login || BR.acc?.login || '')}${(BR.h?.mt5?.server || BR.acc?.server) ? ' on ' + esc(BR.h?.mt5?.server || BR.acc?.server) : ''}` : bridgeUp ? '<span class="spin"></span> Waiting for you to log in to MetaTrader 5…' : 'Start VRS Executor first (step 2)'}</div>
@@ -2717,7 +2727,7 @@ document.addEventListener('click', async e => {
 // The website only offers "pro" (= VRS VIP); the other plans stay hidden for existing customers.
 const OFFLINE_PLANS = { offline: true, trial_days: 7, trial_plan: 'pro', test_mode: false, currency: 'EUR', guarantee_days: 30, trial_card: false,
   founding: { plan: 'pro', month: 19, year: 147, seats: 100, left: 100, open: true, ends: '', lifetime_left: 0, lifetime_seats: 0 },
-  brokers: [{ key: 'vantage', name: 'Vantage', url: '' }, { key: 'vtmarkets', name: 'VT Markets', url: '' }, { key: 'raisefx', name: 'RaiseFX', url: '' }], discord_public: '', plans: {
+  brokers: [{ key: 'vtmarkets', name: 'VT Markets', url: '' }], discord_public: '', plans: {
   goldzone: { name: 'VRS Indicator Pro', month: 14, year: 119, hidden: true, accounts: 0, machines: 0, features: ['goldzone_pro', 'lab'], blurb: 'The full VRS Indicator on TradingView: A/B/C grades, the backtest card, filters, exit plans, bot alerts.' },
   starter: { name: 'Starter', month: 9, year: 90, hidden: true, accounts: 1, machines: 1, features: ['terminal', 'journal', 'alerts', 'drawings'], blurb: 'One MT5 account, the full terminal and the journal.' },
   pro: { name: 'VRS VIP', month: 29, year: 197, accounts: 5, machines: 2, features: ['terminal', 'journal', 'alerts', 'drawings', 'layers', 'basket', 'manage', 'paper', 'copy', 'goldzone_pro', 'lab', 'autotrade'], blurb: 'VRS Indicator Pro on TradingView + VRS Executor on MT5 (risk manager, bot, TradingView → MT5 autotrade) + the VIP Discord.' },
