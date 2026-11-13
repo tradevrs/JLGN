@@ -1139,6 +1139,24 @@ body.lpb #links,body.lpb .burger,body.lpb #right .btn.acc{display:none!important
 .vipbs.one{grid-template-columns:1fr}.vipbs.one .vipb{flex-direction:row;justify-content:space-between;align-items:center;padding:14px 18px}
 .vipc.vt{position:relative}.vipc.vt h3{padding-right:120px}.vipl{align-content:start}
 @media (max-width:560px){.lpc-promo{font-size:12px;border-radius:16px;width:auto}.vipc.vt h3{padding-right:0;margin-top:26px}.vipsoon{top:16px;right:16px}}
+
+.lpc-two.three{grid-template-columns:repeat(3,minmax(0,1fr));max-width:1100px}
+.elg{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:16px;align-items:stretch}
+.elin{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.lp .elin div,.elcard .elin div{padding:18px;border-radius:16px;border:1px solid #1e2531;background:#0e121a}.elin i{font-style:normal;font-size:20px}.elin b{display:block;font-size:15px;margin:6px 0 4px}.lp .elin b{color:#f3f5f9}.elin p{color:#8a94a8;font-size:13px;line-height:1.5}
+.elcard{border-color:color-mix(in srgb,var(--acc) 45%,transparent);background:radial-gradient(600px 240px at 20% 0%,color-mix(in srgb,var(--acc) 10%,transparent),transparent 70%),var(--panel)}
+.elcard .elhd h3{margin:8px 0 4px;font-size:20px}.elcard .elhd p{font-size:13px;margin:0 0 14px}
+.elcard .elin div{background:var(--panel2);border-color:var(--line)}.elcard .elin b{color:var(--text)}
+.elbuy{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}.elbuy>div{flex:1;min-width:200px}.elbuy b{font-size:26px;font-weight:900;letter-spacing:-.02em}.elbuy b span{font-size:13px;color:var(--mut);font-weight:700}.elbuy small{display:block;color:var(--mut);font-size:12px}
+@media (max-width:980px){.lpc-two.three,.elg{grid-template-columns:1fr}}
+@media (max-width:560px){.elin{grid-template-columns:1fr}}
+
+.lpch .lpchb{position:relative;overflow:hidden;padding:40px;border-radius:26px;border:1px solid rgba(245,183,59,.45);background:radial-gradient(700px 300px at 85% 0%,rgba(245,183,59,.18),transparent 70%),#0e121a}
+.lpch h2{font-size:clamp(26px,3.4vw,40px);line-height:1.12;margin:10px 0 10px}.lpch h2 span{color:#f5c25b}.lpch p{color:#aab3c3;max-width:640px;line-height:1.6}
+.lpchp{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:22px 0;max-width:640px}.lpchp div{padding:16px;border-radius:16px;border:1px solid #2b3445;background:rgba(255,255,255,.03);text-align:center}
+.lpchp div:first-child{border-color:rgba(245,183,59,.6);background:rgba(245,183,59,.1)}.lpchp i{font-style:normal;font-size:28px;display:block}.lpchp b{display:block;font-size:20px;color:#f3f5f9;margin-top:4px}.lpchp small{color:#8a94a8;font-size:12px}
+.lpcha{display:flex;gap:10px;flex-wrap:wrap}
+@media (max-width:560px){.lpch .lpchb{padding:24px}.lpchp{gap:8px}.lpchp b{font-size:16px}}
 </style>
 </head>
 <body>
@@ -1236,9 +1254,34 @@ const STATUS = { trialing: ['Free trial', 'ok'], active: ['Active', 'ok'], past_
 const stPill = s => { const [t, c] = STATUS[s.status] || STATUS.none; return `<span class="st ${c}">${t}</span>` };
 const FEAT = { goldzone_pro: 'VRS Indicator Pro (TradingView)', lab: 'Backtest Lab + Autopilot', autotrade: 'TradingView → MT5 autotrade', terminal: 'Web terminal', journal: 'Trading journal', alerts: 'Price alerts', drawings: 'Drawing tools', layers: 'Layered entries', basket: 'Basket break-even', manage: 'Trade manager', paper: 'Paper accounts', copy: 'Copy trading', priority: 'Priority support' };
 const ALLF = Object.keys(FEAT);
+// The funnel: Free (Lite) -> VIP (VRS Indicator Pro + VIP Discord; free with VT Markets or €29) -> Elite (the software, the upsell).
+const HAS_EXE = () => SUB().valid && (SUB().features || []).includes('terminal'); // VRS Executor, the bot and the Lab = Elite
+const EL = () => P('elite') || OFFLINE_PLANS.plans.elite;
+const C_ELITE = [
+  ['🛡', 'VRS Executor', 'The terminal next to MT5: lots from your risk %, layers, close & keep, a daily loss lock, paper accounts and the journal.'],
+  ['🤖', 'The Autopilot', 'Pick your system and timeframes: it puts the limit in the zone with your stop and risk, and removes it when the setup dies.'],
+  ['🧪', 'The Backtest Lab', 'Every setting × exit tested on your own candles after costs, then checked on unseen data. Find what to trade.'],
+  ['🔗', 'TradingView → MT5 autotrade', 'The VRS Indicator Pro setups you allow go straight to MT5: risk-sized, inside your daily limits, managed to the exit.'],
+];
+// the upsell card (dashboard, welcome, billing, locked pages): VIP -> Elite
+function eliteCard(where, title) {
+  const e = EL(), yrSave = Math.round((1 - e.year / (e.month * 12)) * 100), s = SUB(), trial = s.status === 'trialing' && s.plan === 'elite';
+  return `<div class="box elcard"><div class="elhd"><span class="obadge">UPGRADE · VRS ELITE</span><h3>${title || 'VIP shows you the trade. Elite takes it for you.'}</h3>
+    <p class="mut">Everything in VIP, plus the software that trades your plan on MT5.${s.interval === 'broker' ? ' Your free VIP through VT Markets stays, also if you stop Elite later.' : ''}</p></div>
+    <div class="elin">${C_ELITE.map(([i, t, d]) => `<div><i>${i}</i><b>${t}</b><p>${d}</p></div>`).join('')}</div>
+    <div class="elbuy"><div><b>${money2(e.month)}<span>/month</span></b><small>or ${money2(e.year)}/year (save ${yrSave}%) · ${GUAR()}-day money-back guarantee</small></div>
+      ${trial ? `<button class="btn acc md" data-buy="elite" data-bivl="month" data-cta="${where}-elite">Keep Elite after my trial</button>` : `<button class="btn acc md" data-buy="elite" data-bivl="month" data-cta="${where}-elite">Upgrade to Elite</button><button class="btn md" data-buy="elite" data-bivl="year" data-cta="${where}-elite-year">Yearly · ${money2(e.year)}</button>`}</div></div>`;
+}
+// a page that needs Elite (setup, terminal) for someone on VIP
+function eliteLock(what) {
+  $('#view').dataset.v = 'lock';
+  $('#view').innerHTML = `<div class="page"><div class="wrap" style="max-width:920px"><div class="box paywall"><div class="ic">⭐</div><h1 style="font-size:24px;margin:8px 0">${what} is part of VRS Elite</h1>
+    <p style="color:var(--mut);margin-bottom:6px">Your ${esc(P(SUB().plan)?.name || 'plan')} gives you VRS Indicator Pro on TradingView${A.me?.discord_vip ? ' and the VIP Discord' : ''}. VRS Executor, the Autopilot and the Backtest Lab come with Elite.</p>
+    <button class="btn lg" data-act="demo" style="margin-top:8px">Try the live demo first</button></div>${eliteCard('lock')}</div></div>`;
+}
 
 /* ---------------------------------------------------------------- routing */
-const SECTIONS = ['home', 'tv', 'how', 'vip', 'proof', 'faq', 'pricing', 'features', 'offer', 'system', 'ladder', 'autotrade']; // landing sections a #link can scroll to (the last six are old names, see LP_ALIAS)
+const SECTIONS = ['home', 'tv', 'how', 'vip', 'elite', 'proof', 'faq', 'pricing', 'features', 'offer', 'system', 'ladder', 'autotrade']; // landing sections a #link can scroll to (the last six are old names, see LP_ALIAS)
 const PUBLIC = [...SECTIONS, 'login', 'signup'];
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; // a refresh starts at the top, not where the phone last was
 function route() {
@@ -1258,10 +1301,11 @@ function route() {
   scrollTo(0, 0);
   if (r === 'dashboard') { if (new URLSearchParams(qs).get('paid')) afterPayment(); return renderDashboard() }
   if (r === 'welcome') { if (new URLSearchParams(qs).get('paid')) afterPayment(); return renderWelcome() }
-  if (r === 'setup') return renderSetup();
+  if (r === 'upgrade') { if (!A.me) { location.hash = 'elite'; return } renderNav('upgrade'); return eliteLock('VRS Executor') }
+  if (r === 'setup') { if (!HAS_EXE() && SUB().valid) return eliteLock('VRS Executor'); return renderSetup() }
   if (r === 'billing') return renderBilling();
   if (r === 'challenge') return renderChallenge();
-  if (r === 'terminal') return renderTerminal();
+  if (r === 'terminal') { if (!HAS_EXE() && SUB().valid) return eliteLock('The VRS terminal'); return renderTerminal() }
   if (r === 'admin') { if (!A.me) { location.hash = 'login'; return } if (!isAdmin() && !store.get('saasAdmin', '') && !/^(127\.0\.0\.1|localhost)$/.test(location.hostname)) { location.hash = 'dashboard'; return } return renderAdmin() }
   location.hash = 'home';
 }
@@ -1274,8 +1318,9 @@ document.addEventListener('click', e => { const a = e.target.closest('a[href^="#
 
 function renderNav(r) {
   const L = A.me
-    ? [['dashboard', 'Dashboard'], ['setup', 'Setup'], ['billing', 'Billing'], ['challenge', '🏆 Challenge'], ['terminal', 'Open terminal']]
-    : [['tv', 'Free indicator'], ['how', 'How it works'], ['vip', 'VIP'], ['faq', 'FAQ'], ['login', 'Log in']];
+    ? (HAS_EXE() ? [['dashboard', 'Dashboard'], ['setup', 'Setup'], ['billing', 'Billing'], ['challenge', '🏆 Challenge'], ['terminal', 'Open terminal']]
+      : [['dashboard', 'Dashboard'], ['billing', 'Billing'], ['challenge', '🏆 Challenge'], ['upgrade', '⭐ Get Elite']])
+    : [['tv', 'Free indicator'], ['how', 'How it works'], ['vip', 'VIP'], ['elite', 'Elite'], ['faq', 'FAQ'], ['login', 'Log in']];
   // the owner sees Admin when a token is saved, or always when the site runs on this PC (your own bridge); visitors never see it
   // Admin shows for admin accounts (any device), when a token is saved, or on your own PC; customers never see it
   if (isAdmin() || (A.me && store.get('saasAdmin', ''))) L.push(['admin', 'Admin']); // only the owner sees it
@@ -1311,11 +1356,12 @@ function priceCard(k) {
   const items = (p.accounts ? [`${p.accounts === 1 ? '1 MT5 account' : p.accounts + ' MT5 accounts'}`, `${p.machines} PC${p.machines > 1 ? 's' : ''} / VPS`] : ['On TradingView: no MT5 or bridge needed'])
     .map(t => `<li>${t}</li>`).join('') + ALLF.map(f => `<li class="${p.features.includes(f) ? '' : 'no'}">${FEAT[f]}</li>`).join('');
   let btn;
-  if (!A.me) btn = `<a class="btn ${k === 'pro' ? 'acc' : ''} lg" href="#signup" data-cta="price-${k}">Start free · ${A.plans.trial_days} days</a>`;
+  if (!A.me) btn = `<a class="btn ${k === 'elite' ? 'acc' : ''} lg" href="#signup" data-cta="price-${k}">Start free · ${A.plans.trial_days} days</a>`;
+  else if (SUB().interval === 'broker' && k === 'pro') btn = `<button class="btn lg" disabled>✓ Free with VT Markets</button>`;
   else if (SUB().interval === 'lifetime' && SUB().plan === k) btn = `<button class="btn lg" disabled>✓ You own ${p.name} Lifetime</button>`;
   else if (cur) btn = `<button class="btn lg" disabled>Your current plan</button>`;
-  else btn = `<button class="btn ${k === 'pro' ? 'acc' : ''} lg" data-buy="${k}" data-cta="buy-${k}">${SUB().status === 'active' ? 'Switch to ' + p.name : 'Get ' + p.name}</button>`;
-  return `<div class="plan ${k === 'pro' ? 'best' : ''} ${cur ? 'cur' : ''}">${k === 'pro' ? '<div class="tag">VIP</div>' : ''}
+  else btn = `<button class="btn ${k === 'elite' ? 'acc' : ''} lg" data-buy="${k}" data-cta="buy-${k}">${k === 'elite' && SUB().plan !== 'elite' ? 'Upgrade to ' + p.name : SUB().status === 'active' ? 'Switch to ' + p.name : 'Get ' + p.name}</button>`;
+  return `<div class="plan ${k === 'elite' ? 'best' : ''} ${cur ? 'cur' : ''}">${k === 'pro' ? '<div class="tag">VIP · the indicator</div>' : k === 'elite' ? '<div class="tag">ELITE · everything</div>' : ''}
     <h4>${p.name}</h4><div class="bl">${p.blurb}</div>
     ${reg ? `<div class="was"><span>Founding price, locked for life · normally ${money2(reg)}/mo</span></div>` : ['starter', 'pro', 'elite'].some(x => P(x) && isFound(x)) ? '<div class="was" aria-hidden="true" style="visibility:hidden"><span>&nbsp;</span></div>' : ''}
     <div class="pr"><b>${money2(price)}</b><span>/ month</span></div>
@@ -1323,7 +1369,7 @@ function priceCard(k) {
     ${btn}<ul>${items}</ul></div>`;
 }
 // billing shows only VIP (pro); an existing customer on an older hidden plan still sees their own plan next to it
-const billPlans = () => ['pro', ...['goldzone', 'starter', 'elite'].filter(k => SUB().plan === k && P(k))].map(priceCard).join('');
+const billPlans = () => ['pro', 'elite', ...['goldzone', 'starter'].filter(k => SUB().plan === k && P(k))].filter(k => P(k)).map(priceCard).join('');
 const ivlSeg = () => `<div class="ivl"><div class="seg"><button data-ivl="month" class="${A.interval === 'month' ? 'on' : ''}">Monthly</button><button data-ivl="year" class="${A.interval === 'year' ? 'on' : ''}">Yearly<em>save ${Math.round((1 - planPrice('pro', 'year') / (planPrice('pro', 'month') * 12)) * 100)}%</em></button></div></div>`;
 const minPrice = () => money2(planPrice('pro', 'month') || 29);
 
@@ -1554,8 +1600,9 @@ if (!window.lpMicro) {
 
 /* ================================================================ LANDING: two levels, one page (2026-11-13)
    Free  = VRS Indicator Lite + the VRS Playbook + the public Discord (for an email).
-   VIP   = VRS Indicator Pro + VRS Executor + the VIP Discord. Two ways in: open an account with VT Markets (VIP free + 100% deposit credit, limited time)
-           or pay €29/month (any broker or prop account, 7 days free).
+   VIP   = VRS Indicator Pro + the VIP Discord. Two ways in: open an account with VT Markets (VIP free + 100% deposit credit, limited time)
+           or pay €29/month (any broker or prop account).
+   Elite = the upsell: VIP + VRS Executor (terminal), the Autopilot bot, the Backtest Lab, TradingView -> MT5 autotrade. €59/month, 7 days free.
    Five sections: hero (free lead) · how it works · two ways into VIP · proof · FAQ.
    Analytics: every CTA has data-cta="<where>"; hook your pixel into track(). */
 const LPV = 'c'; // analytics label of the landing page (lead sources: tv-c, tv-exit-c)
@@ -1567,20 +1614,22 @@ const DISCORD = () => A.plans?.discord_public || '';
 const LP_ALIAS = { pricing: 'vip', offer: 'vip', ladder: 'vip', autotrade: 'how', system: 'how', features: 'proof' }; // old #links (emails, videos)
 // what each level contains (the "how it works" + the VIP card read from this)
 const C_VIP = [
-  ['📈', 'VRS Indicator Pro', 'The trade on your chart: entry, stop and 1R / 2R / 3R, an A / B / C grade and a backtest card, with an alert when the trade is on.'],
-  ['🔗', 'TradingView → MT5 autotrade', 'The setups you allow go to your MT5 account: lot sized from your risk, your daily limit checked, partial and break-even done for you.'],
-  ['🛡', 'The VRS Executor terminal', 'Risk manager next to MT5: lots from your risk, layers, close & keep, a daily loss lock, paper accounts, the journal, the bot and the Backtest Lab.'],
-  ['💬', 'The VIP Discord', 'The members-only channels: setup reviews, help with the install, the monthly paper challenge.'],
+  ['📈', 'VRS Indicator Pro', 'The trade on your TradingView chart: the entry, the stop and the 1R / 2R / 3R levels on top of every zone.'],
+  ['🅰', 'Grades + backtest card', 'Every setup graded A / B / C, and how each grade did on that market, in R. Skip the weak ones.'],
+  ['🔔', 'An alert when the trade is on', 'A TradingView alert the moment a setup is ready, on your phone, wherever you are.'],
+  ['💬', 'The VIP Discord', 'The members-only channels: setup reviews and questions answered.'],
 ];
 const C_FAQ = [
   ['Is VRS Indicator Lite really free?', 'Yes, free forever. Leave your email and you get the TradingView indicator with four install steps, the 16-page Playbook and the link to the free Discord. It marks every VA1 / VA2 range, break and zone, and alerts you when a new zone appears. When to enter, where the stop goes and how to manage the trade is in VIP.'],
-  ['What is the difference between Free and VIP?', 'Free shows you the zones. VIP shows you the trade: the entry, the stop, the 1R / 2R / 3R levels, an A / B / C grade and a backtest card on your chart (VRS Indicator Pro), and takes it for you on MT5 (VRS Executor: risk-sized, inside your daily limits, managed to the exit). Plus the VIP Discord.'],
+  ['Free, VIP or Elite: what is the difference?', 'Free (VRS Indicator Lite) shows you the zones on TradingView. VIP shows you the trade: VRS Indicator Pro adds the entry, the stop, the 1R / 2R / 3R levels, an A / B / C grade and a backtest card, plus the VIP Discord. Elite takes the trade for you: everything in VIP plus VRS Executor on MT5 (risk-sized orders inside your daily limits, managed to the exit), the Autopilot bot, the Backtest Lab and TradingView → MT5 autotrade.'],
+  ['What is VRS Elite?', 'The software level. VIP shows you the trade on TradingView; Elite trades it for you on your own MT5: VRS Executor (the risk manager and terminal), the Autopilot bot, the Backtest Lab and TradingView → MT5 autotrade, with everything in VIP included. €59 a month or €497 a year, 7 days free first, with a 30-day money-back guarantee.'],
   ['How does VIP through VT Markets work?', 'Open a new MT5 account with VT Markets through the link on this page and make your deposit. Then sign up here and type your MT5 account number in your dashboard. We check it in the VT Markets partner portal and switch VIP on, usually within 24 hours. VIP stays on while the account is active with VT Markets. VT Markets pays us a commission for referring you; check their conditions, fees and regulation before you open an account. We never hold or manage your money.'],
   ['What is the 100% deposit credit?', 'A limited-time VT Markets promotion for new accounts opened through our link: VT Markets adds 100% of your deposit as trading credit (deposit $500, trade with $1,000). The credit is not cash: you cannot withdraw it, and VT Markets\' own promotion terms decide how it works and who can get it. It is not available in every country. The risk on your own deposit stays the same: trade it with the same stop and risk % as always.'],
-  ['I already have a broker or trade a prop account.', 'Then pay for VIP: €29 a month, 7 days free first. It works with any broker that has MetaTrader 5, and with prop-firm accounts. A VT Markets account you opened before, without our link, usually can\'t be moved under our partnership.'],
-  ['How does TradingView → MT5 autotrade work?', 'You add one alert in TradingView on VRS Indicator Pro and paste the webhook link from your VRS Terminal. When a setup comes, TradingView sends it to VRS Executor on your PC or VPS. It checks your minimum grade, trades per day and daily loss, sizes the lot from your risk %, places the order on MT5, then takes the partial and moves the stop to break-even. It is off until you switch it on, and you start on a paper account. TradingView webhooks need a paid TradingView plan.'],
-  ['Does it have to run all day?', 'VRS Executor and MT5 must be running when an alert comes. On your PC that means while it is on; for 24/7 use a small Windows VPS (about €10/month). There is a step-by-step guide.'],
-  ['Does the bot make money by itself?', 'No bot does that, and anyone who says so is selling something. Ours takes the setups you chose, with your exit plan, inside your limits (max trades a day, a daily loss lock). It is off by default, starts on demo or paper, and real money needs its own switch.'],
+  ['I already have a broker or trade a prop account.', 'Then pay for VIP: €29 a month. It runs on TradingView, so it works with any broker or prop firm. Elite works with any broker that has MetaTrader 5, and with prop-firm accounts. A VT Markets account you opened before, without our link, usually can\'t be moved under our partnership.'],
+  ['Do I pay for Elite if I got VIP free through VT Markets?', 'Yes: VT Markets gets you VIP (the indicator) for free. Elite is the software on top: €59 a month or €497 a year, 7 days free first. If you stop Elite, your free VIP stays on.'],
+  ['How does TradingView → MT5 autotrade work?', 'It is part of Elite. You add one alert in TradingView on VRS Indicator Pro and paste the webhook link from your VRS Terminal. When a setup comes, TradingView sends it to VRS Executor on your PC or VPS. It checks your minimum grade, trades per day and daily loss, sizes the lot from your risk %, places the order on MT5, then takes the partial and moves the stop to break-even. It is off until you switch it on, and you start on a paper account. TradingView webhooks need a paid TradingView plan.'],
+  ['Does it have to run all day?', 'VIP runs on TradingView, nothing to install. With Elite, VRS Executor and MT5 must be running when an alert comes. On your PC that means while it is on; for 24/7 use a small Windows VPS (about €10/month). There is a step-by-step guide.'],
+  ['Does the bot make money by itself?', 'No bot does that, and anyone who says so is selling something. Ours (part of Elite) takes the setups you chose, with your exit plan, inside your limits (max trades a day, a daily loss lock). It is off by default, starts on demo or paper, and real money needs its own switch.'],
   ['Is it allowed on prop-firm accounts?', 'The terminal is a manual trade-management tool and most firms allow it. Autotrade and the bot are automation, which some firms ban. Check your firm\'s rules before you switch them on.'],
   ['I have a Mac.', 'VRS Indicator works on any TradingView. VRS Executor needs Windows: run it on a small Windows VPS and use the terminal from your Mac or phone.'],
   ['What is the VRS Strategy (VA1 / VA2)?', 'The Value Retest Strategy: a rule-based setup. Price builds a tight range; the first candle that closes out of it in a new direction is VA1 (a change of character); the next one in the same direction is VA2 (a break of structure). The breaking candle leaves a zone: that is what Lite draws. VIP adds the trade on top of it: the entry, the stop and how to manage it.'],
@@ -1597,7 +1646,7 @@ function renderLandingC() {
   if ($('#view').dataset.v === 'landingC') return;
   $('#view').dataset.v = 'landingC'; track('lp_view', { v: 'c' });
   const td = A.plans?.trial_days || 7, pro = P('pro') || OFFLINE_PLANS.plans.pro, F = FOUND(), G = GUAR(), lead = !!store.get('gpLead', ''), dc = DISCORD();
-  const price = F.open ? F.month : pro.month, live = BROKERS_LIVE();
+  const price = F.open ? F.month : pro.month, live = BROKERS_LIVE(), el = EL();
   // the seat counter only shows once at least 10 seats are taken: "100 of 100 left" reads as "nobody joined"
   const seatsLine = F.open && F.seats - F.left >= 10 ? ` · <b>${F.left} of ${F.seats}</b> founding seats left` : '';
   const endsLine = F.open && F.ends ? ` · closes ${new Date(F.ends).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}` : '';
@@ -1616,19 +1665,19 @@ function renderLandingC() {
       ${leadForm('hero')}
       <div class="lpc-bundle"><img src="lp-playbook-cover.jpg" alt="The VRS Playbook, free PDF"><div><b>+ The VRS Playbook${dc ? ' + the free Discord' : ''}</b><small>Spot the range, read the break, draw the zone, place the stop, ride the runner.</small></div></div>
       <ul class="lpc-ticks"><li>Range → break → zone</li><li>Alert on every new zone</li><li>Gold, forex, indices, crypto</li></ul>
-      <p class="lpc-alt">Want the entry, the stop and the trade taken for you? <a href="#vip" data-cta="c-hero-vip">See VIP →</a></p>
+      <p class="lpc-alt">Want the entry and the stop? <a href="#vip" data-cta="c-hero-vip">See VIP →</a> Want it traded for you? <a href="#elite" data-cta="c-hero-elite">See Elite →</a></p>
     </div>
     <div class="lpc-vis"><div class="bar"><i></i><i></i><i></i><span>VRS Indicator · XAUUSD M30</span><em>with VIP</em></div>
       <img src="lp-sys-spot.jpg" alt="VRS Indicator on a gold chart: the range, the break, the zone and, with VIP, the entry and its 1R and 2R levels" width="1232" height="942">
       <div class="lpc-steps4"><div><b>① Range</b>price goes quiet</div><div><b>② Break</b>body close out</div><div><b>③ Zone</b>free: drawn for you</div><div><b>④ Trade</b>VIP: entry + stop</div></div></div>
   </div></section>
 
-  <!-- 2 · HOW IT WORKS: Free shows where, VIP decides which and takes them -->
+  <!-- 2 · HOW IT WORKS: Free shows where, VIP shows the trade, Elite takes it -->
   <section class="lp-sec" id="how"><div class="wrap">
-    <div class="lp-head"><div class="lp-eye">How it works</div><h2>Free shows you the <b>zone</b>. <span>VIP shows you the trade, and takes it.</span></h2><p>Two levels, nothing else to choose.</p></div>
+    <div class="lp-head"><div class="lp-eye">How it works</div><h2>Free shows you the <b>zone</b>. VIP shows you the <b>trade</b>. <span>Elite takes it.</span></h2><p>Start free, go up when you're ready.</p></div>
     <div class="lpc-tl">${[['Free', 'See the zones', 'VRS Indicator Lite marks every range, break and zone on TradingView and alerts you when a new zone appears. The Playbook explains the method behind them.', 'lp-sys-spot.jpg'],
       ['VIP', 'Know when and where to enter', 'VRS Indicator Pro adds the entry, the stop and the 1R / 2R / 3R levels, an A / B / C grade on every setup and a backtest card: how each grade did on that market, in R.', 'lp-sys-point.jpg'],
-      ['VIP', 'Let them be taken, safely', 'VRS Executor turns the alert into an MT5 order: the lot from your risk, your daily loss limit locked, the partial and break-even done for you.', 'lp-sys-trade.jpg']]
+      ['Elite', 'Let them be taken, safely', 'VRS Executor turns the setup into an MT5 order: the lot from your risk, your daily loss limit locked, the partial and break-even done for you. The Autopilot and the Backtest Lab come with it.', 'lp-sys-trade.jpg']]
       .map(([t, h, p, img]) => `<div><div class="im"><img src="${img}" alt="${esc(h)}" loading="lazy"></div><small>${t}</small><h3>${h}</h3><p>${p}</p></div>`).join('')}</div>
     <div class="lpc-fs">${[['✋', 'Off until you switch it on', 'Nothing trades by itself. Autotrade and the bot need their own switch.'], ['🧪', 'Paper first', 'Point it at a paper account on live prices and watch it before real money.'], ['🛡', 'Your limits, not ours', 'Minimum grade, risk %, trades a day and a daily loss lock. All yours to set.'], ['🔒', 'Your password stays home', 'VRS Executor runs next to MT5 on your PC or VPS. Your broker login never reaches us.']]
       .map(([i, t, d]) => `<div><i>${i}</i><b>${t}</b><p>${d}</p></div>`).join('')}</div>
@@ -1636,7 +1685,7 @@ function renderLandingC() {
 
   <!-- 3 · TWO WAYS INTO VIP -->
   <section class="lp-sec lp-offer" id="vip"><div class="wrap">
-    <div class="lp-head"><div class="lp-eye">VRS VIP</div><h2>Everything, <span>two ways in.</span></h2><p>Same VIP either way. Trade with VT Markets and it costs nothing.</p></div>
+    <div class="lp-head"><div class="lp-eye">VRS VIP</div><h2>The trade on your chart. <span>Two ways in.</span></h2><p>Same VIP either way. Trade with VT Markets and it costs nothing.</p></div>
     <div class="vipin">${C_VIP.map(([i, t, d]) => `<div><i>${i}</i><b>${t}</b><p>${d}</p></div>`).join('')}</div>
     <div class="vipw">
       <div class="vipc go vt"><small>Way 1 · free · VT Markets</small><span class="vipsoon">Limited time</span><h3>Trade with VT Markets: VIP free + 100% deposit credit</h3>
@@ -1648,14 +1697,34 @@ function renderLandingC() {
       <div class="vipc"><small>Way 2 · any broker</small><h3>Pay for VIP</h3>
         <div class="vipp"><b>${money2(price)}</b><span>/month</span>${F.open ? '<em>FOUNDING PRICE</em>' : ''}</div>
         ${F.open ? `<p class="vipf">🏷 Locked at ${money2(F.month)} for as long as you stay. <b>${money2(pro.month)}/month</b> after founding closes${endsLine}${seatsLine}.</p>` : ''}
-        <ul class="vipl"><li>Any broker with MetaTrader 5, or a prop-firm account</li><li>${td} days free · ${A.plans?.trial_card ? 'nothing charged during the trial' : 'no card'}</li><li>Cancel in 2 clicks · ${G}-day money-back guarantee</li></ul>
+        <ul class="vipl"><li>On TradingView: any broker or prop firm</li><li>${td} days free first, with Elite included · ${A.plans?.trial_card ? 'nothing charged during the trial' : 'no card'}</li><li>Cancel in 2 clicks · ${G}-day money-back guarantee</li></ul>
         <a class="lp-btn ghost lg full" href="#signup" data-cta="c-vip-pay">Start ${td} days free</a></div>
     </div>
   </div></section>
 
+  <!-- 3b · ELITE: the upsell (the software) -->
+  <section class="lp-sec lp-elite" id="elite"><div class="wrap">
+    <div class="lp-head"><div class="lp-eye">VRS Elite</div><h2>VIP shows you the trade. <span>Elite takes it for you.</span></h2><p>Everything in VIP, plus the software that trades your plan on your own MT5.</p></div>
+    <div class="elg"><div class="elin">${C_ELITE.map(([i, t, d]) => `<div><i>${i}</i><b>${t}</b><p>${d}</p></div>`).join('')}</div>
+      <div class="vipc go"><small>VRS Elite · everything</small><h3>VIP + VRS Executor + the Autopilot + the Backtest Lab</h3>
+        <div class="vipp"><b>${money2(el.month)}</b><span>/month</span></div>
+        <p class="vipf">or <b>${money2(el.year)}/year</b> (save ${Math.round((1 - el.year / (el.month * 12)) * 100)}%)${el.lifetime ? ` · or ${money2(el.lifetime)} once, for life` : ''}</p>
+        <ul class="vipl"><li>Everything in VIP included</li><li>5 MT5 accounts · 2 PCs or VPS</li><li>${td} days free · ${A.plans?.trial_card ? 'nothing charged during the trial' : 'no card'}</li><li>Cancel in 2 clicks · ${G}-day money-back guarantee</li></ul>
+        <a class="lp-btn gold lg full" href="#signup" data-cta="c-elite">Try Elite ${td} days free</a>
+        <p class="vipn">Got VIP free through VT Markets? Add Elite on top; if you stop Elite, your free VIP stays.</p></div></div>
+  </div></section>
+
+  <!-- 3c · THE WEEKLY CHALLENGE -->
+  ${A.plans?.challenge_on === false ? '' : `<section class="lp-sec lpch" id="challenge-lp"><div class="wrap"><div class="lpchb">
+    <div><div class="lp-eye">🏆 The VRS Challenge · every week</div><h2>Same $10,000. Same rules. <span>Win a month of Elite. Every week.</span></h2>
+      <p>A free paper-trading challenge for every member: Monday to Sunday, and your ${A.plans?.trial_days || 7}-day free trial covers a whole week. Best % return wins, with a 5% daily loss limit, so gamblers drop out.</p>
+      <div class="lpchp"><div><i>🥇</i><b>1 month</b><small>of VRS Elite for #1</small></div><div><i>📅</i><b>Every Monday</b><small>a new challenge</small></div><div><i>🏛</i><b>Hall of fame</b><small>every week's winner</small></div></div>
+      <div class="lpcha"><a class="lp-btn gold lg" href="#challenge" data-cta="c-ch-board">See this week's leaderboard</a><a class="lp-btn ghost lg" href="#signup" data-cta="c-ch-join">Join free</a></div></div>
+  </div></div></section>`}
+
   <!-- 4 · PROOF: real screenshots, honestly labelled -->
   <section class="lp-sec" id="proof"><div class="wrap">
-    <div class="lp-head"><div class="lp-eye">Inside VIP</div><h2>Real screenshots, <span>not mock-ups.</span></h2><p>One terminal next to your MT5, on your PC, tablet and phone. Click any screenshot to see it full size.</p></div>
+    <div class="lp-head"><div class="lp-eye">Inside VRS Elite</div><h2>Real screenshots, <span>not mock-ups.</span></h2><p>VRS Executor, the terminal that comes with Elite: next to your MT5, on your PC, tablet and phone. Click any screenshot to see it full size.</p></div>
     <div class="lpc-in">${[
       // [image, tag, title, text, layout class, focus point of the crop]
       ['lp-bot.jpg', '🤖 Autopilot', 'It trades your system while you are away', 'Pick your system and the timeframes. When a setup only waits for the retest, it puts the limit in the zone with your stop and your risk %, and removes it again if the setup dies. Max trades, max risk and your daily loss lock are always on.', 'w2', 'center 30%'],
@@ -1676,15 +1745,16 @@ function renderLandingC() {
     <div class="lp-head"><h2>Questions traders ask first</h2></div>
     <div class="lp-faq">${C_FAQ.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div>
     <div class="lp-final" style="margin-top:34px"><h2>Start where you are.</h2>
-      <div class="lpc-two"><div><small>Free forever</small><h3>VRS Indicator Lite + the Playbook</h3><p>Every zone on your TradingView chart, the guide to the method${dc ? ' and the free Discord' : ''}.</p><a class="lp-btn ghost lg full" href="#tv" data-cta="c-final-lead">Get it free</a></div>
-        <div class="go"><small>VIP</small><h3>The entry, the stop, the trade taken for you</h3><p>${money2(price)}/month${F.open ? ' (founding price, locked for as long as you stay)' : ''} with ${td} days free, or free when you trade with VT Markets.</p><a class="lp-btn gold lg full" href="#vip" data-cta="c-final-vip">See the two ways in</a></div></div>
+      <div class="lpc-two three"><div><small>Free forever</small><h3>VRS Indicator Lite + the Playbook</h3><p>Every zone on your TradingView chart, the guide to the method${dc ? ' and the free Discord' : ''}.</p><a class="lp-btn ghost lg full" href="#tv" data-cta="c-final-lead">Get it free</a></div>
+        <div class="go"><small>VIP</small><h3>The entry, the stop, the grade</h3><p>Free when you trade with VT Markets, or ${money2(price)}/month${F.open ? ' (founding price, locked for as long as you stay)' : ''}.</p><a class="lp-btn gold lg full" href="#vip" data-cta="c-final-vip">See the two ways in</a></div>
+        <div><small>Elite</small><h3>The trade taken for you</h3><p>VIP + VRS Executor, the Autopilot and the Backtest Lab. ${money2(el.month)}/month, ${td} days free.</p><a class="lp-btn ghost lg full" href="#elite" data-cta="c-final-elite">See Elite</a></div></div>
       ${dc ? `<p style="margin-top:18px;color:#8a94a8;font-size:13.5px">Just want to look around? <a href="${esc(dc)}" target="_blank" rel="noopener" style="color:#f5c25b;font-weight:800" data-cta="c-final-discord">Join the free Discord →</a></p>` : ''}
     </div>
   </div></section>
 
   <footer class="lp-foot"><div class="wrap">
     <div class="row"><a class="brand" href="#home" style="font-size:14px">${LOGO}VRS<span>VALUE RESEARCH SYSTEMS</span></a><span class="grow"></span>
-      <a href="#vip">VIP</a><a href="#faq">FAQ</a>${dc ? `<a href="${esc(dc)}" target="_blank" rel="noopener">Discord</a>` : ''}<a href="#" data-act="legal" data-k="terms">Terms</a><a href="#" data-act="legal" data-k="privacy">Privacy</a><a href="#" data-act="legal" data-k="risk">Risk disclosure</a><a href="mailto:support@yourdomain.com">Support</a></div>
+      <a href="#vip">VIP</a><a href="#elite">Elite</a><a href="#faq">FAQ</a>${dc ? `<a href="${esc(dc)}" target="_blank" rel="noopener">Discord</a>` : ''}<a href="#" data-act="legal" data-k="terms">Terms</a><a href="#" data-act="legal" data-k="privacy">Privacy</a><a href="#" data-act="legal" data-k="risk">Risk disclosure</a><a href="mailto:support@yourdomain.com">Support</a></div>
     <p><b>Risk warning:</b> CFDs and forex are complex instruments and come with a high risk of losing money rapidly due to leverage. VRS Executor and VRS Indicator are software only and do not provide investment advice, signals or brokerage services. Backtests describe the past and are no promise.</p>
     <p><b>Partner broker:</b> VT Markets is our partner broker. We receive a commission from VT Markets when you open an account through our link. That does not change our software or what you pay for it. We are not a broker, do not hold client money and do not recommend any broker for your situation: check VT Markets' regulation, conditions and fees yourself. The deposit credit is a VT Markets promotion: their terms apply, the credit is not withdrawable and it is not available in every country.</p>
     <p>MetaTrader is a trademark of MetaQuotes Ltd and TradingView of TradingView, Inc.; VRS is not affiliated with either, or with any prop firm. © ${new Date().getFullYear()} VRS · Value Research Systems</p>
@@ -1707,9 +1777,9 @@ function afterLead(source) {
   const tv = source.startsWith('tv');
   setTimeout(() => openModal(`<div class="offer lpb-ty"><span class="obadge">✓ ${tv ? 'VRS INDICATOR LITE + THE PLAYBOOK ARE' : 'YOUR RULEBOOK IS'} OPEN IN A NEW TAB</span>
     <h3>Next: <span class="free">VRS VIP</span></h3>
-    <p>Lite shows you the zones. VIP shows you the trade: VRS Indicator Pro adds the entry, the stop, R levels, A / B / C grades and the backtest card, and VRS Executor sends the setups you allow to MT5: the lot sized from your risk, your daily limit enforced, the partial and break-even done. Plus the VIP Discord.</p>
-    <div class="ocmp"><div class="${BROKERS_LIVE() ? 'win' : ''}"><small>Way 1${BROKERS_LIVE() ? '' : ' · coming soon'}</small><b>FREE</b><span>open an account with a partner broker</span></div>
-      <div><small>Way 2 · any broker</small><b>${money2(pro.month)}<em>/mo</em></b><span>${td} days free first</span></div></div>
+    <p>Lite shows you the zones. VIP shows you the trade: VRS Indicator Pro adds the entry, the stop, R levels, A / B / C grades and the backtest card, plus the VIP Discord. Want it traded for you on MT5? That is VRS Elite.</p>
+    <div class="ocmp"><div class="win"><small>Way 1 · VT Markets</small><b>FREE</b><span>+ 100% credit on your deposit</span></div>
+      <div><small>Way 2 · any broker</small><b>${money2(planPrice('pro', 'month') || pro.month)}<em>/mo</em></b><span>${td} days free first</span></div></div>
     <div class="oact"><a class="btn acc lg" href="#vip" data-cta="b-ty-offer" onclick="resolveModal(null)">See the two ways in →</a><button class="btn ghost md" data-offer="no">${tv ? 'Just the indicator, thanks' : 'Just the Rulebook, thanks'}</button></div>
     ${dc ? `<small class="mut" style="display:block;margin-top:10px"><a href="${esc(dc)}" target="_blank" rel="noopener" style="color:var(--acc);font-weight:700">Join the free Discord</a> to ask questions first.</small>` : ''}</div>`), 500);
   track('ty_offer', { source });
@@ -1725,8 +1795,8 @@ addEventListener('scroll', () => { // sticky trial button on phones: after the h
 function authBox(mode) {
   const su = mode === 'signup';
   openModal(`<form class="auth" id="authF" autocomplete="on">
-    <h3>${su ? (store.get('gpIntent', '') === 'broker' ? 'Create your VRS account' : 'Start VRS VIP free') : 'Welcome back'}</h3>
-    <p>${su ? (store.get('gpRef', '') ? '<b style="color:var(--acc)">🎁 Invited by a friend: ' + refDays() + ' days free instead of ' + (A.plans?.trial_days || 7) + '.</b><br>' : '') + (A.plans?.trial_card ? `${trialDays()} days of VRS VIP. Add a card next; nothing is charged before day ${trialDays() + 1}, cancel in 2 clicks.` : `${trialDays()} days of VRS VIP, free. No card, nothing to cancel.${BROKERS_LIVE() ? ' Opened an account with a partner broker? Your dashboard asks for the account number next.' : ''}`) : 'Log in to your VRS account.'}</p>
+    <h3>${su ? (store.get('gpIntent', '') === 'broker' ? 'Create your VRS account' : `Start ${trialDays()} days free`) : 'Welcome back'}</h3>
+    <p>${su ? (store.get('gpRef', '') ? '<b style="color:var(--acc)">🎁 Invited by a friend: ' + refDays() + ' days free instead of ' + (A.plans?.trial_days || 7) + '.</b><br>' : '') + (A.plans?.trial_card ? `${trialDays()} days of everything (VRS Elite: VIP + the terminal, the bot and the Backtest Lab). Add a card next; nothing is charged before day ${trialDays() + 1}, cancel in 2 clicks.` : `${trialDays()} days of everything, free: VRS Elite (VIP + the terminal, the bot and the Backtest Lab). No card, nothing to cancel.${BROKERS_LIVE() ? ' Opened a VT Markets account? Your dashboard asks for the account number next, for VIP free.' : ''}`) : 'Log in to your VRS account.'}</p>
     <label>Email<input class="in" name="email" type="email" autocomplete="email" required placeholder="you@example.com"></label>
     <label>Password<input class="in" name="password" type="password" autocomplete="${su ? 'new-password' : 'current-password'}" required minlength="8" placeholder="${su ? 'At least 8 characters' : ''}"></label>
     <div class="err" id="authErr"></div>
@@ -1752,8 +1822,8 @@ function authBox(mode) {
         if (iv.startsWith('lifetime') || A.plans?.trial_card) return buy(pl, iv, !iv.startsWith('lifetime') && !!A.plans?.trial_card);
         A.interval = iv; store.set('saasIvl', iv); store.set('gpWant', want);
       }
-      if (su && A.plans?.trial_card && SUB().status === 'none') return buy('pro', A.interval, true); // card trial: straight to checkout
-      toast(su ? `🎉 Welcome! Your ${SUB().days_left || A.plans?.trial_days || 7}-day VRS VIP trial has started.` : 'Logged in', 'ok');
+      if (su && A.plans?.trial_card && SUB().status === 'none') return buy('elite', A.interval, true); // card trial: straight to checkout
+      toast(su ? `🎉 Welcome! Your ${SUB().days_left || A.plans?.trial_days || 7}-day VRS Elite trial has started: everything is unlocked.` : 'Logged in', 'ok');
       location.hash = su ? 'setup' : 'dashboard'; route();
     } catch (err) { $('#authErr').textContent = err.message; b.disabled = false; b.textContent = su ? 'Start my free trial →' : 'Log in' }
   });
@@ -1765,7 +1835,7 @@ function subSummary() {
   const s = SUB(), p = P(s.plan);
   const line = {
     trialing: `<b>${s.days_left} day${s.days_left === 1 ? '' : 's'}</b> left in your free ${esc(p?.name || '')} trial (until ${dt(s.period_end)}).`,
-    active: s.interval === 'broker' ? 'VIP through your partner-broker account: nothing to pay, it stays on while that account is active.'
+    active: s.interval === 'broker' ? 'VIP through your VT Markets account: nothing to pay, it stays on while that account is active.'
       : s.interval === 'lifetime' ? 'Lifetime: nothing to renew.'
       : s.cancel_at_end ? `Cancelled. You keep access until <b>${dt(s.period_end)}</b>.` : `Renews on <b>${dt(s.period_end)}</b> · ${s.interval === 'year' ? eur(p.year) + ' / year' : eur(p.month) + ' / month'}.`,
     past_due: 'Your last payment failed. Update your card to keep trading.',
@@ -1773,25 +1843,25 @@ function subSummary() {
     expired: 'Your access has ended. Choose a plan to continue trading.',
   }[s.status] || 'Choose a plan to start.';
   const trialPct = s.status === 'trialing' ? clamp(100 - s.days_left / (A.plans?.trial_days || 7) * 100, 4, 100) : 0;
-  const cta = s.interval === 'broker' && s.valid ? '' : s.status === 'trialing' || !s.valid ? `<a class="btn acc md" href="#billing">Keep VIP</a>` : s.status === 'past_due' ? `<button class="btn acc md" data-act="portal">Update card</button>` : `<a class="btn md" href="#billing">Manage plan</a>`;
+  const cta = s.interval === 'broker' && s.valid ? '' : s.status === 'trialing' || !s.valid ? `<a class="btn acc md" href="#billing">Choose my plan</a>` : s.status === 'past_due' ? `<button class="btn acc md" data-act="portal">Update card</button>` : `<a class="btn md" href="#billing">Manage plan</a>`;
   return `<div class="box"><div class="subhero"><div><div style="display:flex;gap:8px;align-items:center">${stPill(s)}<span class="mut" style="font-size:12px;font-weight:700">${esc(p?.name || 'No')} plan</span></div>
     <div class="big" style="margin-top:6px">${s.valid ? 'You are good to trade' : 'Trading is paused'}</div><p style="color:var(--mut);font-size:13.5px;margin-top:4px">${line}</p></div><span class="grow"></span>${cta}</div>
     ${trialPct ? `<div class="bar2"><i style="width:${trialPct}%"></i></div>` : ''}
     ${trialOffer()}</div>`;
 }
-// trial ending / expired: keep VIP, the two ways (partner broker = free, or pay; founding price while it is open)
+// trial ending / expired: the trial is Elite. Keep Elite (everything), or keep VIP (the indicator: free with VT Markets, or paid)
 function trialOffer() {
   const s = SUB(); if (!(s.status === 'trialing' || s.status === 'expired' || (s.status === 'canceled' && !s.valid))) return '';
-  const pro = P('pro'); if (!pro) return '';
+  const pro = P('pro'), e = EL(); if (!pro) return '';
   const urgent = s.status !== 'trialing' || s.days_left <= 3, pend = A.me?.broker?.status === 'pending';
-  return `<div class="toffer ${urgent ? 'urgent' : ''}"><div><b>${s.status === 'trialing' ? (urgent ? `⏳ ${s.days_left} day${s.days_left === 1 ? '' : 's'} left: keep VIP` : 'Keep VIP after your trial') : 'Get VIP back'}</b>
-      <small>${pend ? 'Your partner-broker account is being checked: once approved, VIP is free. ' : BROKERS_LIVE() ? 'Free with a new account at a partner broker, or ' : ''}${money2(planPrice('pro', 'month'))}/month${isFound('pro') ? ` (founding price instead of ${money2(pro.month)}, locked for as long as you stay)` : ''}.</small></div>
-    <div class="tbtns"><button class="btn acc md" data-buy="pro" data-bivl="month" data-cta="trial-pro">Keep VIP · ${money2(planPrice('pro', 'month'))}/mo</button>${pend || !BROKERS_LIVE() ? '' : `<button class="btn md" onclick="document.getElementById('brokerBox')?.scrollIntoView({behavior:'smooth'})" data-cta="trial-broker">Free via a partner broker</button>`}</div></div>`;
+  return `<div class="toffer ${urgent ? 'urgent' : ''}"><div><b>${s.status === 'trialing' ? (urgent ? `⏳ ${s.days_left} day${s.days_left === 1 ? '' : 's'} left: choose what you keep` : 'Choose what you keep after your trial') : 'Get back in'}</b>
+      <small><b>Elite</b> (everything: the terminal, the bot, the Lab) ${money2(e.month)}/month · or just <b>VIP</b> (VRS Indicator Pro on TradingView): ${pend ? 'your VT Markets account is being checked, once approved VIP is free' : `free with a new VT Markets account, or ${money2(planPrice('pro', 'month'))}/month${isFound('pro') ? ' (founding price, locked for as long as you stay)' : ''}`}.</small></div>
+    <div class="tbtns"><button class="btn acc md" data-buy="elite" data-bivl="month" data-cta="trial-elite">Keep Elite · ${money2(e.month)}/mo</button><button class="btn md" data-buy="pro" data-bivl="month" data-cta="trial-pro">Just VIP · ${money2(planPrice('pro', 'month'))}/mo</button>${pend || !BROKERS_LIVE() ? '' : `<button class="btn md" onclick="document.getElementById('brokerBox')?.scrollIntoView({behavior:'smooth'})" data-cta="trial-broker">VIP free via VT Markets</button>`}</div></div>`;
 }
 function renderDashboard() {
   $('#view').dataset.v = 'dash';
   const s = SUB(), me = A.me, nm = Object.keys(me.machines || {}).length, conn = store.get('bridgeOk', 0);
-  const tvu = me.tradingview || {}, gzOnly = s.plan === 'goldzone';
+  const tvu = me.tradingview || {}, gzOnly = s.valid && !HAS_EXE(); // VIP (and the old indicator-only plan): TradingView steps, no bridge
   const steps = [
     [true, 'Account created', me.user.email],
     [s.valid, 'Plan active', s.valid ? (STATUS[s.status]?.[0] + ' · ' + (P(s.plan)?.name || '')) : 'Choose a plan', s.valid ? '' : `<a class="btn sm acc" href="#billing">Choose</a>`],
@@ -1806,21 +1876,22 @@ function renderDashboard() {
   const done = steps.filter(x => x[0]).length;
   $('#view').innerHTML = `<div class="page"><div class="wrap">
     <div class="ph"><div><h1>Hi ${esc(me.user.name || me.user.email.split('@')[0])} 👋</h1><p>Everything about your subscription, license and setup.</p></div><span class="grow"></span>
-      <a class="btn acc md" href="#terminal">Open terminal →</a></div>
+      ${HAS_EXE() || !s.valid ? '<a class="btn acc md" href="#terminal">Open terminal →</a>' : '<a class="btn acc md" href="#upgrade">⭐ Get Elite</a>'}</div>
     <div class="g">${subSummary()}
     <div class="g g2">
       <div class="box"><h3>Getting started <span class="grow"></span><span class="mut" style="font-size:12px">${done}/4</span></h3>
         <div class="check">${steps.map(([ok, t, d, b]) => `<div class="ck ${ok ? 'done' : ''}"><i>${ok ? '✓' : ''}</i><div><b>${t}</b><small>${esc(d)}</small></div>${ok ? '' : (b || '')}</div>`).join('')}</div></div>
       <div class="box"><h3>Your plan</h3>
-        <div class="lim"><span>MT5 accounts</span><b>${s.limits?.accounts ?? 0}</b><span>Bridge PCs</span><b>${nm} / ${s.limits?.machines ?? 0}</b><span>Billing</span><b>${({ year: 'Yearly', broker: 'Partner broker', lifetime: 'Lifetime' })[s.interval] || 'Monthly'}</b></div>
+        <div class="lim"><span>MT5 accounts</span><b>${s.limits?.accounts ?? 0}</b><span>Bridge PCs</span><b>${nm} / ${s.limits?.machines ?? 0}</b><span>Billing</span><b>${({ year: 'Yearly', broker: 'Free · VT Markets', lifetime: 'Lifetime' })[s.interval] || 'Monthly'}</b></div>
         <div class="flist">${ALLF.map(f => `<span class="${s.features?.includes(f) ? 'on' : ''}">${s.features?.includes(f) ? '✓' : '–'} ${FEAT[f]}</span>`).join('')}</div>
         ${s.interval === 'broker' ? '' : `<a class="btn md" style="margin-top:14px;width:100%" href="#billing">Plan & billing</a>`}</div>
     </div>
     ${discordBox()}
     ${brokerBox()}
     ${tvBox()}
+    ${gzOnly ? eliteCard('dash') : ''}
     ${callBox() || refBox() ? `<div class="g g2">${callBox()}${refBox()}</div>` : ''}
-    ${s.plan === 'goldzone' && s.valid ? '' : accountsBox() + licenseBox()}
+    ${gzOnly ? '' : accountsBox() + licenseBox()}
     </div></div></div>`;
   startBridgeWatch(); loadAccts();
 }
@@ -1828,13 +1899,13 @@ function renderDashboard() {
 function discordBox() {
   const vip = A.me?.discord_vip, pub = DISCORD(); if (!vip && !pub) return '';
   return `<div class="box"><h3>💬 ${vip ? 'The VIP Discord' : 'The free Discord'}</h3>
-    <p class="mut" style="font-size:12.5px;margin:-4px 0 12px">${vip ? 'Members-only channels: setup reviews, install help and the monthly challenge. Use the same name as here so we can give you the VIP role.' : 'Ask questions and see the setups the community talks about. The VIP channels open when your VIP is active.'}</p>
+    <p class="mut" style="font-size:12.5px;margin:-4px 0 12px">${vip ? 'Members-only channels: setup reviews, install help and the weekly challenge. Use the same name as here so we can give you the VIP role.' : 'Ask questions and see the setups the community talks about. The VIP channels open when your VIP is active.'}</p>
     <a class="btn acc md" href="${esc(vip || pub)}" target="_blank" rel="noopener" data-cta="dash-discord-${vip ? 'vip' : 'free'}">Join ${vip ? 'the VIP Discord' : 'the free Discord'} →</a></div>`;
 }
 /* ---------------------------------------------------------------- VIP through a partner broker: the customer types the broker + MT5 account number, you approve in Admin */
 function brokerBox() {
   const b = A.me?.broker || {}, s = SUB(), list = BROKERS();
-  if (s.valid && s.status === 'active' && s.interval !== 'broker' && b.status !== 'pending') return ''; // already paying: nothing to ask
+  if (s.valid && s.status === 'active' && s.interval !== 'broker' && b.status !== 'pending' && !['approved', 'rejected'].includes(b.status) && s.plan === 'elite') return ''; // already paying Elite: nothing to ask
   const nm = k => list.find(x => x.key === k)?.name || k;
   if (!BROKERS_LIVE() && !b.status) // no partner links yet: a short "coming soon" note, no form
     return `<div class="box" id="brokerBox"><h3>🤝 VIP free with VT Markets <span class="grow"></span><span class="st mute">link coming soon</span></h3>
@@ -1843,7 +1914,7 @@ function brokerBox() {
     : b.status === 'pending' ? `<span class="st mute">being checked · ${esc(nm(b.broker))} #${esc(b.login)}</span>`
     : b.status === 'rejected' ? `<span class="st warn">not found · check the number</span>` : '';
   return `<div class="box" id="brokerBox"><h3>🤝 VIP free with VT Markets <span class="grow"></span>${state}</h3>
-    <p class="mut" style="font-size:12.5px;margin:-4px 0 12px">${b.status === 'approved' ? 'Your VIP comes with your partner-broker account. It stays on while that account is active.'
+    <p class="mut" style="font-size:12.5px;margin:-4px 0 12px">${b.status === 'approved' ? 'Your VIP comes with your VT Markets account. It stays on while that account is active, also if you add Elite and stop it later.'
       : b.status === 'rejected' ? 'We could not find this account under our partnership. It has to be a new account opened through our link. Check the number (MT5: File → Login to Trade Account) and send it again, or write to support.'
       : 'Open a new VT Markets MT5 account through our link (limited time: 100% credit on your deposit), then type the account number here. We check it in the broker\'s partner portal and switch VIP on, usually within 24 hours.'}</p>
     ${b.status === 'approved' ? '' : `<div class="vipbs" style="margin-bottom:12px">${brokerBtns('dash')}</div>
@@ -1859,7 +1930,7 @@ function tvBox() {
   return `<div class="box" id="tvBox"><h3>📈 VRS Indicator Pro on TradingView <span class="grow"></span>${tv.granted ? '<span class="st ok">access given</span>' : tv.user ? '<span class="st mute">waiting for access</span>' : ''}</h3>
     <p class="mut" style="font-size:12.5px;margin:-4px 0 12px">VRS Indicator Pro is an invite-only script. Type your TradingView username (top right on tradingview.com → your profile), and we add you within 24 hours. Then: Indicators → <b>Invite-only scripts</b> → VRS Indicator Pro.</p>
     <div style="display:flex;gap:8px;flex-wrap:wrap"><input class="in" id="tvUser" maxlength="40" placeholder="Your TradingView username" value="${esc(tv.user || '')}" style="flex:1;min-width:200px"><button class="btn acc md" data-act="tvUser">Save</button></div>
-    ${s.plan === 'goldzone' ? `<div class="toffer" style="margin-top:14px"><div><b>Let the trades take themselves</b><small>VRS VIP adds VRS Executor, which sends every VRS Indicator Pro alert to MT5: the lot sized from your risk, your daily limit enforced, the partial and break-even done for you. ${F.open ? `Founding price €${F.month}/month.` : `€${pro.month}/month.`}</small></div><div class="tbtns"><button class="btn acc md" data-buy="pro" data-bivl="${s.interval === 'year' ? 'year' : 'month'}" data-cta="upsell-goldzone-pro">Upgrade to VRS VIP</button></div></div>` : ''}
+
   </div>`;
 }
 /* ---------------------------------------------------------------- API key + MT5 accounts on the customer's own bridge */
@@ -2128,7 +2199,7 @@ async function quickAccount() {
   } catch (e) { toast(e.message, 'err') }
 }
 
-/* ---------------------------------------------------------------- monthly challenge: free paper challenge + leaderboard */
+/* ---------------------------------------------------------------- weekly challenge: free paper challenge + leaderboard */
 const pct = v => (v > 0 ? '+' : '') + Number(v || 0).toFixed(2) + '%';
 const CHST = { active: ['Trading', 'ok'], finished: ['Finished', 'ok'], failed: ['Rule broken', 'bad'], disqualified: ['Disqualified', 'bad'] };
 const chLeft = end => { const s = end - Date.now() / 1000; return s <= 0 ? 'ended' : s < 86400 ? Math.ceil(s / 3600) + ' h left' : Math.ceil(s / 86400) + ' days left' };
@@ -2139,6 +2210,60 @@ async function chSync(quiet) { // this PC's challenge results -> server (the bri
     await srv('/api/challenge/push', { stats: st }); return st;
   } catch (e) { if (!quiet) toast(e.message, 'err'); return false }
 }
+/* ---------------------------------------------------------------- the challenge story card: a 1080x1920 image people post on their story.
+   Their referral link rides along (friend = REF_TRIAL_DAYS of Elite free, enough for 4 weekly challenges; you = a month free when the friend pays). */
+const chRefLink = () => `${location.origin}${location.pathname}?ref=${A.me?.ref?.code || ''}#challenge`;
+async function chStoryCard() {
+  const L = A.chLast || {}, ch = L.ch || {}, me = L.me || {}, loc = L.local, W = 1080, H = 1920;
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H; const g = cv.getContext('2d');
+  await document.fonts?.ready;
+  const bg = g.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, '#0b0f17'); bg.addColorStop(1, '#05070b'); g.fillStyle = bg; g.fillRect(0, 0, W, H);
+  const glow = (x, y, r, col) => { const rg = g.createRadialGradient(x, y, 0, x, y, r); rg.addColorStop(0, col); rg.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = rg; g.fillRect(0, 0, W, H) };
+  glow(880, 220, 700, 'rgba(245,183,59,.32)'); glow(120, 1500, 700, 'rgba(43,107,255,.18)'); glow(540, 1900, 600, 'rgba(34,227,154,.14)');
+  g.strokeStyle = 'rgba(245,183,59,.10)'; g.lineWidth = 2; for (let y = 1150; y < H; y += 70) { g.beginPath(); g.moveTo(0, y); g.lineTo(W, y); g.stroke() }
+  const gold = (y0, y1) => { const q = g.createLinearGradient(0, y0, W, y1); q.addColorStop(0, '#fff1c2'); q.addColorStop(.35, '#ffd36b'); q.addColorStop(.7, '#f5b73b'); q.addColorStop(1, '#e0960c'); return q };
+  const F = (w, s) => `${w} ${s}px Inter, "Segoe UI", system-ui, sans-serif`, txt = (t, x, y, f, c, a = 'left') => { g.font = f; g.fillStyle = c; g.textAlign = a; g.fillText(t, x, y) };
+  txt('VRS', 90, 150, F(900, 54), '#f3f5f9'); txt('VALUE RESEARCH SYSTEMS', 205, 148, F(800, 22), '#f5b73b');
+  txt('🏆  ' + (ch.name || 'The VRS Challenge').toUpperCase(), 90, 300, F(900, 34), '#f5c25b');
+  txt("I'm in.", 90, 470, F(900, 170), '#f3f5f9');
+  g.font = F(900, 92); g.fillStyle = gold(0, 600); g.textAlign = 'left'; g.fillText('Can you beat me?', 90, 600);
+  // the player card
+  const card = (x, y, w, h, r) => { g.beginPath(); g.roundRect(x, y, w, h, r) };
+  card(90, 700, 900, 420, 40); g.fillStyle = 'rgba(14,18,27,.92)'; g.fill(); g.strokeStyle = 'rgba(245,183,59,.55)'; g.lineWidth = 3; g.stroke();
+  txt((me.nickname || 'Trader').slice(0, 20), 140, 800, F(900, 66), '#f3f5f9');
+  const stats = loc ? [['RETURN', pct(loc.return_pct), loc.return_pct >= 0 ? '#22e39a' : '#ff5a64'], ['RANK', me.rank ? '#' + me.rank + (L.n ? ' / ' + L.n : '') : '—', '#f5c25b'], ['TRADES', String(loc.trades), '#f3f5f9']]
+    : [['START', '$' + Number(ch.balance || 10000).toLocaleString('en-US'), '#f3f5f9'], ['DAILY LOSS', (ch.daily_loss || 5) + '%', '#ff8a92'], ['LEFT', ch.end ? chLeft(ch.end) : '', '#f5c25b']];
+  stats.forEach(([k, v, col], i) => { const x = 140 + i * 290; txt(k, x, 900, F(800, 24), '#8a94a8'); txt(v, x, 975, F(900, 58), col) });
+  txt('Same $10,000 paper account and the same rules for everyone.', 140, 1060, F(600, 28), '#aab3c3');
+  // prizes
+  [['🥇', '#1 wins ' + (ch.prizes?.[0]?.label || '1 month of VRS Elite'), true], ['📅', 'A new challenge every Monday', false], ['🛡', `${ch.daily_loss || 5}% daily loss limit · ${ch.max_dd || 10}% max drawdown`, false]].forEach(([ic, t, hi], i) => {
+    const y = 1200 + i * 120; card(90, y, 900, 100, 28); g.fillStyle = hi ? 'rgba(245,183,59,.16)' : 'rgba(255,255,255,.05)'; g.fill();
+    txt(ic, 130, y + 68, F(400, 52), '#fff'); txt(t, 220, y + 65, F(800, hi ? 40 : 34), hi ? '#f5c25b' : '#e6e9f0') });
+  // the call to action
+  card(90, 1590, 900, 210, 36); g.fillStyle = gold(0, 1800); g.fill();
+  txt('Join free: tap my link', 540, 1680, F(900, 58), '#1a1203', 'center');
+  txt(`${refDays()} days of VRS Elite free · play the next 4 weekly challenges`, 540, 1750, F(700, 28), '#3a2a06', 'center');
+  txt('Paper trading only · no real money · not financial advice', 540, 1870, F(600, 22), '#5b6475', 'center');
+  return new Promise(r => cv.toBlob(r, 'image/png'));
+}
+async function chShare() {
+  try {
+    const blob = await chStoryCard(), link = chRefLink(), file = new File([blob], 'vrs-challenge-story.png', { type: 'image/png' });
+    navigator.clipboard?.writeText(link).catch(() => {});
+    track('ch_share');
+    if (navigator.canShare?.({ files: [file] })) { await navigator.share({ files: [file], text: `I'm in the VRS Challenge. Join free (${refDays()} days of Elite): ${link}` }).catch(() => {}); }
+    else { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'vrs-challenge-story.png'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000) }
+    openModal(`<div class="offer"><span class="obadge">📸 YOUR STORY CARD IS READY</span><h3>Post it, add your link</h3>
+      <ol class="vipst" style="text-align:left;color:var(--text)"><li>Post the image on your Instagram, TikTok or WhatsApp story.</li><li>Add a <b>link sticker</b> and paste your link (it's copied):</li></ol>
+      <div class="reflink" style="margin:10px 0"><input class="in" readonly value="${esc(link)}"><button class="btn acc md" data-act="copyChLink">Copy</button></div>
+      <p class="mut" style="font-size:12.5px">Your friend gets ${refDays()} days of VRS Elite free: enough to play the next 4 weekly challenges. When they become a paying member, you get a month free.</p>
+      <div class="oact"><button class="btn md" data-offer="no">Done</button></div></div>`);
+  } catch (e) { toast(e.message, 'err') }
+}
+document.addEventListener('click', e => {
+  if (e.target.closest('[data-act="chShare"]')) { e.preventDefault(); chShare() }
+  else if (e.target.closest('[data-act="copyChLink"]')) { navigator.clipboard?.writeText(chRefLink()); toast('Link copied', 'ok') }
+});
 async function renderChallenge() {
   $('#view').dataset.v = 'challenge';
   $('#view').innerHTML = `<div class="page"><div class="wrap"><div class="empty">Loading the challenge…</div></div></div>`;
@@ -2152,35 +2277,39 @@ async function renderChallenge() {
     else if (!A.chRetry) { A.chRetry = 1; checkBridge().catch(() => {}).then(() => { A.chRetry = 0; if (bOk() && $('#view').dataset.v === 'challenge') renderChallenge() }) } // show the page now, fill in this PC's part when VRS Executor answers
   }
   const meBox = !A.me
-    ? `<div class="chme"><div><b>Join for free</b><small>Every member can play, also during the free trial.</small></div><a class="btn acc md" href="#signup" data-cta="ch-signup">Start free trial & join</a></div>`
+    ? `<div class="chme"><div><b>Join for free</b><small>Every member can play: your free trial covers a whole week.</small></div><a class="btn acc md" href="#signup" data-cta="ch-signup">Start free trial & join</a></div>`
     : !me ? `<div class="chme"><div><b>Pick your leaderboard name</b><small>Only this name is shown publicly, never your email.</small></div>
         <div class="reflink" style="flex:1;min-width:240px;max-width:420px"><input class="in" id="chNick" maxlength="20" placeholder="Nickname, e.g. GoldHunter" value="${esc((A.me.user.name || A.me.user.email.split('@')[0]).replace(/[^\w .-]/g, '').slice(0, 20))}"><button class="btn acc md" data-act="chJoin">Join the challenge</button></div></div>`
     : !local ? `<div class="chme"><div><b>You're in as ${esc(me.nickname)}.</b><small>Last step: make your challenge account on your trading PC (VRS Executor must be running there).</small></div>
-        ${['ok', 'live', 'nomt5'].includes(BR.state) ? '<button class="btn acc md" data-act="chStart">Create my challenge account</button>' : '<a class="btn md" href="#setup">Start VRS Executor first →</a>'}</div>`
+        <div class="tg2">${['ok', 'live', 'nomt5'].includes(BR.state) ? '<button class="btn acc md" data-act="chStart">Create my challenge account</button>' : '<a class="btn md" href="#setup">Start VRS Executor first →</a>'}<button class="btn md" data-act="chShare">📸 Share on my story</button></div></div>`
     : `<div class="chme"><div><b>${esc(me.nickname)} · ${(CHST[local.status] || CHST.active)[0]}</b><small>${local.status === 'failed' ? esc(local.fail) : me.rank ? `Rank #${me.rank} of ${j.board.filter(b => b.rank).length}` : `${Math.max(0, ch.min_trades - local.trades)} more closed trades to be ranked`}</small></div>
         <div class="chnums"><span>Return<b class="${local.return_pct >= 0 ? 'up' : 'dn'}">${pct(local.return_pct)}</b></span><span>Equity<b>${money(local.equity)}</b></span><span>Trades<b>${local.trades}</b></span><span>Max DD<b>${Number(local.max_dd_pct).toFixed(1)}%</b></span></div>
-        <a class="btn acc md" href="#terminal">Trade it →</a></div>`;
+        <div class="tg2"><a class="btn acc md" href="#terminal">Trade it →</a><button class="btn md" data-act="chShare">📸 Share on my story</button></div></div>`;
+  A.chLast = { ch, me, local, n: j.board.filter(b => b.rank).length };
+  // a new week: entered again automatically (server) -> make this week's challenge account on this PC by itself, once
+  if (me && !local && me.status === 'active' && bOk() && A.chAuto !== me.id) { A.chAuto = me.id; setTimeout(() => chStart(me), 50) }
   const row = b => { const [t, c] = CHST[b.status] || CHST.active; return `<tr class="${me && b.nickname === me.nickname ? 'mine' : ''}"><td class="rk">${b.rank ? (b.rank <= 3 ? ['🥇', '🥈', '🥉'][b.rank - 1] : b.rank) : '—'}</td><td><b>${esc(b.nickname)}</b>${b.prize ? ` <span class="st ok">🏆 ${esc(b.prize)}</span>` : ''}</td>
     <td style="text-align:right" class="${b.return_pct >= 0 ? 'up' : 'dn'}"><b>${pct(b.return_pct)}</b></td><td style="text-align:right">${b.trades}${b.needs ? `<small class="mut"> (${b.needs} to go)</small>` : ''}</td>
     <td style="text-align:right" class="hide-sm">${b.trades ? Number(b.win_rate).toFixed(0) + '%' : '—'}</td><td style="text-align:right" class="hide-sm">${Number(b.max_dd_pct).toFixed(1)}%</td><td><span class="st ${c}">${t}</span></td></tr>` };
   $('#view').innerHTML = `<div class="page"><div class="wrap chpage">
-    <div class="ph"><div><h1>🏆 ${esc(ch.name)}</h1><p>Same ${money(ch.balance)} paper account and the same rules for everyone. Best % return wins. Free for every member. <b>${chLeft(ch.end)}</b> · ${ch.entries} trader${ch.entries === 1 ? '' : 's'}</p></div></div>
+    <div class="ph"><div><h1>🏆 ${esc(ch.name)}</h1><p>Same ${money(ch.balance)} paper account and the same rules for everyone, Monday to Sunday. Best % return wins. Free for every member. <b>${chLeft(ch.end)}</b> · ${ch.entries} trader${ch.entries === 1 ? '' : 's'}</p></div></div>
     <div class="g">
       <div class="box">${meBox}</div>
       <div class="chgrid">
-        <div class="box"><h3>Prizes</h3>${ch.prizes.map(p => `<div class="chprize"><span>${['🥇', '🥈', '🥉'][p.place - 1] || p.place}</span><b>${esc(p.label)}</b></div>`).join('')}</div>
+        <div class="box"><h3>The prize</h3>${ch.prizes.map(p => `<div class="chprize"><span>${['🥇', '🥈', '🥉'][p.place - 1] || p.place}</span><b>${esc(p.label)}</b></div>`).join('')}<p class="mut" style="font-size:12.5px;margin-top:8px">For this week's #1. A new challenge starts every Monday 00:00 UTC.</p></div>
         <div class="box"><h3>Rules</h3><ul class="chrules">
           <li>Start: <b>${money(ch.balance)}</b> paper money, leverage <b>1:${ch.leverage}</b>, live MT5 prices</li>
           <li>Daily loss limit: <b>${ch.daily_loss}%</b> (${money(ch.balance * ch.daily_loss / 100)}) from the start of each day (UTC)</li>
           <li>Max drawdown: <b>${ch.max_dd}%</b>: equity under ${money(ch.balance * (1 - ch.max_dd / 100))} ends your challenge</li>
-          <li>At least <b>${ch.min_trades} closed trades</b> to be ranked</li>
-          <li>No deposits, resets or leverage changes. Runs ${dt(ch.start)} – ${dt(ch.end)}</li></ul></div>
+          <li>At least <b>${ch.min_trades} closed trades</b> to be ranked · equal return: the smaller drawdown wins</li>
+          <li>No deposits, resets or leverage changes. Runs ${[ch.start, ch.end].map(t => new Date(t * 1000).toLocaleDateString('en-GB', { timeZone: 'UTC', weekday: 'short', day: 'numeric', month: 'short' })).join(' 00:00 – ')} 23:59 (UTC)</li></ul></div>
       </div>
       <div class="box"><h3>Leaderboard <span class="grow"></span>${me && local ? '<button class="btn ghost sm" data-act="chSync">↻ Update my result</button>' : ''}</h3>
         ${j.board.length ? `<div class="tscroll"><table class="tbl2 chtbl"><thead><tr><th>#</th><th>Trader</th><th style="text-align:right">Return</th><th style="text-align:right">Trades</th><th style="text-align:right" class="hide-sm">Win rate</th><th style="text-align:right" class="hide-sm">Max DD</th><th>Status</th></tr></thead>
           <tbody>${j.board.map(row).join('')}</tbody></table></div>` : '<div class="empty">Nobody has joined yet. Be the first!</div>'}</div>
-      ${j.previous?.winners?.length ? `<div class="box"><h3>Last month: ${esc(j.previous.name)}</h3><div class="tscroll"><table class="tbl2 chtbl"><tbody>${j.previous.winners.map(row).join('')}</tbody></table></div></div>` : ''}
-      <p class="mut" style="font-size:12px">Paper trading only: no real money is traded. Results are checked before prizes are given. A prize is free Pro access added to your account.</p>
+      ${j.hall?.length ? `<div class="box"><h3>🏛 Hall of fame <span class="grow"></span><span class="mut" style="font-size:12px">every week's #1</span></h3><div class="tscroll"><table class="tbl2 chtbl"><tbody>${j.hall.map(h => `<tr><td class="rk">🥇</td><td><b>${esc(h.nickname)}</b></td><td class="mut">${esc(h.week)}</td><td style="text-align:right" class="${h.return_pct >= 0 ? 'up' : 'dn'}"><b>${pct(h.return_pct)}</b></td></tr>`).join('')}</tbody></table></div>
+        ${(() => { const n = {}; j.hall.forEach(h => n[h.nickname] = (n[h.nickname] || 0) + 1); const top = Object.entries(n).sort((a, b) => b[1] - a[1])[0]; return top && top[1] > 1 ? `<p class="mut" style="font-size:12.5px;margin-top:8px">👑 Most weeks won: <b>${esc(top[0])}</b> (${top[1]}×)</p>` : '' })()}</div>` : ''}
+      <p class="mut" style="font-size:12px">Paper trading only: no real money is traded. Results are checked before the prize is given. The prize is a month of VRS Elite added to your account. Played last week? You're entered again automatically every Monday. Invite a friend with your story card: they get ${refDays()} days of Elite free, enough to play the next 4 weekly challenges.</p>
     </div></div></div>`;
   if (local && Date.now() - (A.chSyncT || 0) > 60000) { A.chSyncT = Date.now(); chSync(true) } // keep the server's copy fresh (at most once a minute)
 }
@@ -2206,10 +2335,10 @@ function renderBilling() {
   $('#view').dataset.v = 'billing';
   const s = SUB(), pays = A.me.payments || [];
   $('#view').innerHTML = `<div class="page"><div class="wrap">
-    <div class="ph"><div><h1>Plan & billing</h1><p>Keep VIP, switch to yearly billing, update your card or cancel. Or get VIP free through a partner broker.</p></div><span class="grow"></span>
+    <div class="ph"><div><h1>Plan & billing</h1><p>VIP is the indicator (free with VT Markets). Elite adds the terminal, the bot and the Backtest Lab. Switch to yearly, update your card or cancel.</p></div><span class="grow"></span>
       ${A.me.test_mode ? (s.status === 'active' && s.interval !== 'broker' ? (s.cancel_at_end ? '<button class="btn md" data-act="resume">Resume subscription</button>' : '<button class="btn md" data-act="cancelSub">Cancel subscription</button>') : '') : '<button class="btn md" data-act="portal">Manage billing & invoices</button>' + (s.status === 'active' && !['lifetime', 'broker'].includes(s.interval) && !s.cancel_at_end ? '<button class="btn ghost md" data-act="cancelSub">Cancel</button>' : '')}</div>
     <div class="g">${subSummary()}
-      ${ivlSeg()}<div class="plans" id="plans">${billPlans()}</div>${brokerBox()}
+      ${ivlSeg()}<div class="plans" id="plans">${billPlans()}</div>${lifetimeCard()}${brokerBox()}
       <div class="box"><h3>Payment history</h3>${pays.length ? `<div class="tscroll"><table class="tbl2"><thead><tr><th>Date</th><th>Description</th><th style="text-align:right">Amount</th></tr></thead><tbody>
         ${pays.map(p => `<tr><td>${dt(p.ts)}</td><td>${esc(p.descr)}</td><td style="text-align:right;font-weight:800">${eur(p.amount)}</td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">No payments yet.</div>'}</div>
     </div></div></div>`;
@@ -2243,7 +2372,7 @@ function refBox() {
 }
 function callBox() {
   const u = A.me?.booking_url; if (!u) return '';
-  return `<div class="box callbox"><h3>📞 Your founding setup call</h3><p class="mut" style="font-size:13px;margin:-2px 0 12px">20 minutes, one-on-one. We install VRS Executor with you and set your risk per trade, daily limit and layer plan.</p>
+  return `<div class="box callbox"><h3>📞 Your founding setup call</h3><p class="mut" style="font-size:13px;margin:-2px 0 12px">20 minutes, one-on-one. ${HAS_EXE() ? 'We install VRS Executor with you and set your risk per trade, daily limit and layer plan.' : 'We set up VRS Indicator Pro and your alerts with you.'}</p>
     <a class="btn acc md" href="${esc(u)}" target="_blank" rel="noopener" data-cta="book-call">Book my call →</a></div>`;
 }
 // classic upsells after the purchase: one-time add-ons (from the server's ADDONS)
@@ -2279,13 +2408,13 @@ function renderWelcome() {
       <p>${esc(P(s.plan)?.name || 'Pro')}${lt ? ' Lifetime' : ''} is active${me.founding ? `, at ${money2(planPrice('pro', s.interval === 'year' ? 'year' : 'month'))}${s.interval === 'year' ? '/year' : '/month'} for as long as you stay` : ''}. Three steps and you're trading with your rules locked in.</p></div>
     <div class="wel-steps">
       ${[[me.booking_url ? 'Book your setup call' : 'Read your Risk Rulebook', me.booking_url ? '20 minutes: we set your risk, daily limit and layers with you.' : 'Your 5 rules on one page.', me.booking_url ? `<a class="btn acc md" href="${esc(me.booking_url)}" target="_blank" rel="noopener" data-cta="welcome-call">Book my call</a>` : `<a class="btn acc md" href="rulebook.html" target="_blank">Open my Rulebook</a>`],
-         s.plan === 'goldzone' ? ['Get VRS Indicator Pro on your chart', 'Type your TradingView username in your dashboard. We add you within 24 hours.', '<a class="btn md" href="#dashboard">Add my username</a>']
-           : ['Install VRS Executor next to MT5', 'One download, one double-click. It finds your account by itself.', '<a class="btn md" href="#setup">Start setup</a>'],
-         ['Get VRS Indicator Pro on TradingView', 'Type your TradingView username in your dashboard. We add you to the invite-only script within 24 hours.', '<a class="btn md" href="#dashboard">Add my username</a>']]
+         ['Get VRS Indicator Pro on TradingView', 'Type your TradingView username in your dashboard. We add you to the invite-only script within 24 hours.', '<a class="btn md" href="#dashboard">Add my username</a>'],
+         HAS_EXE() ? ['Install VRS Executor next to MT5', 'One download, one double-click. It finds your account by itself.', '<a class="btn md" href="#setup">Start setup</a>']
+           : ['Join the VIP Discord', 'Setup reviews and questions answered by the team and other members.', A.me?.discord_vip ? `<a class="btn md" href="${esc(A.me.discord_vip)}" target="_blank" rel="noopener">Join the Discord</a>` : '<a class="btn md" href="#dashboard">Open my dashboard</a>']]
         .map(([t, d, b], i) => `<div class="box wel-step"><span class="n">${i + 1}</span><h3>${t}</h3><p class="mut">${d}</p>${b}</div>`).join('')}
     </div>
     ${discordBox()}
-    ${up ? `<div class="box">${up}</div>` : ''}
+    ${HAS_EXE() ? (up ? `<div class="box">${up}</div>` : '') : eliteCard('welcome', 'Next level: let the trades take themselves')}
     <p class="mut" style="text-align:center;font-size:12.5px;margin-top:6px">🛡 ${GUAR()}-day guarantee: use it on 20 trades; if it didn't pay for itself, email us for a full refund.</p>
   </div></div>`;
 }
@@ -2315,9 +2444,9 @@ async function offerAction(k) {
   const s = SUB(); resolveModal(null);
   if (k === 'yearly') return buy(s.plan, 'year');
   if (k === 'pause') { try { setMe(await srv('/api/billing/pause', {})); track('pause'); toast(`Paused: nothing is charged until ${dt(A.me.paused_until)}. Your plan and price stay.`, 'ok', 7000); return route() } catch (err) { return toast(err.message, 'err') } }
-  if (k === 'lifetime3') return buy('pro', 'lifetime3');
+  if (k === 'lifetime3') return buy('elite', 'lifetime3');
   if (k === 'starter') return buy('starter', s.interval === 'year' ? 'year' : 'month');
-  if (k === 'lifetime') return buy('pro', 'lifetime');
+  if (k === 'lifetime') return buy('elite', 'lifetime');
   if (k === 'demo') { window.open('terminal.html?demo=1', '_blank'); return }
   if (k === 'trial') { location.hash = 'signup'; return }
   if (k === 'cancel') {
@@ -2354,7 +2483,7 @@ async function sendLead(form, source) {
   if (win) win.location = url; else location.href = url;
   btn.textContent = '✓ Sent · opened in a new tab';
   const n = $('#lpLeadN'); if (n && source === 'calculator') n.innerHTML = `✓ Your Rulebook is open in a new tab. Ready to have VRS Executor enforce it? <a href="#signup" style="color:#f5b73b;font-weight:800">Get the Risk Lock →</a>`;
-  if (tv) { const n = $('#lpTvN'); if (n) n.innerHTML = `✓ The indicator is open in a new tab. Want them graded and taken for you? <a href="#vip" style="color:#f5b73b;font-weight:800">See VIP →</a>` }
+  if (tv) { const n = $('#lpTvN'); if (n) n.innerHTML = `✓ The indicator is open in a new tab. Want the entry and the stop? <a href="#vip" style="color:#f5b73b;font-weight:800">See VIP →</a>` }
   if (source.endsWith('exit')) setTimeout(() => resolveModal(null), 900);
 }
 document.addEventListener('submit', e => {
@@ -2367,15 +2496,15 @@ document.addEventListener('click', e => {
 });
 // 4. Lifetime deal card (top upsell, shown under the plans)
 function lifetimeCard() {
-  const p = P('pro'), F = FOUND(); if (!p?.lifetime || (F.lifetime_left <= 0 && SUB().interval !== 'lifetime')) return '';
+  const p = EL(), F = FOUND(); if (!p?.lifetime || (F.lifetime_left <= 0 && SUB().interval !== 'lifetime')) return '';
   const owned = A.me && SUB().interval === 'lifetime';
-  if (owned) return `<div class="lifetime owned"><div class="lt1"><span class="obadge">✓ YOURS FOREVER</span><h4>You own Pro Lifetime</h4>
-    <p>Every Pro feature and every future Pro update, for life. Nothing to renew, nothing will be charged again.</p></div>
+  if (owned) return `<div class="lifetime owned"><div class="lt1"><span class="obadge">✓ YOURS FOREVER</span><h4>You own ${esc(P(SUB().plan)?.name || 'Elite')} Lifetime</h4>
+    <p>Every feature and every future update, for life. Nothing to renew, nothing will be charged again.</p></div>
     <div class="lt2"><small>paid once</small><b>Lifetime</b><span>no end date</span></div><span class="ltown">✓ Active for life</span></div>`;
-  return `<div class="lifetime"><div class="lt1"><span class="obadge">LIMITED: ${F.lifetime_left} LEFT</span><h4>Pro Lifetime: pay once, keep it forever</h4>
-    <p>Every Pro feature and every future Pro update, for life. No subscription, nothing to renew.</p></div>
-    <div class="lt2"><small>only ${F.lifetime_left} of ${F.lifetime_seats} left</small><b>${money2(p.lifetime)}</b><span>one-time · about ${Math.round(p.lifetime / p.month)} months of Pro</span></div>
-    ${A.me ? `<button class="btn acc lg" data-buy="pro" data-bivl="lifetime" data-cta="buy-lifetime">Get Lifetime</button>` : `<a class="btn acc lg" href="#signup" data-cta="lifetime-trial">Try free first</a>`}</div>`;
+  return `<div class="lifetime"><div class="lt1"><span class="obadge">LIMITED: ${F.lifetime_left} LEFT</span><h4>Elite Lifetime: pay once, keep everything forever</h4>
+    <p>VIP + VRS Executor, the Autopilot and the Backtest Lab, with every future update, for life. No subscription, nothing to renew.</p></div>
+    <div class="lt2"><small>only ${F.lifetime_left} of ${F.lifetime_seats} left</small><b>${money2(p.lifetime)}</b><span>one-time · about ${Math.round(p.lifetime / p.month)} months of Elite</span></div>
+    ${A.me ? `<button class="btn acc lg" data-buy="elite" data-bivl="lifetime" data-cta="buy-lifetime">Get Lifetime</button>` : `<a class="btn acc lg" href="#signup" data-cta="lifetime-trial">Try free first</a>`}</div>`;
 }
 
 /* ---------------------------------------------------------------- terminal */
@@ -2725,13 +2854,13 @@ document.addEventListener('click', async e => {
 
 // Same as PLANS in saas/license_server.py: used only when the server can't be reached, so visitors still see the full page.
 // The website only offers "pro" (= VRS VIP); the other plans stay hidden for existing customers.
-const OFFLINE_PLANS = { offline: true, trial_days: 7, trial_plan: 'pro', test_mode: false, currency: 'EUR', guarantee_days: 30, trial_card: false,
+const OFFLINE_PLANS = { offline: true, trial_days: 7, trial_plan: 'elite', test_mode: false, currency: 'EUR', guarantee_days: 30, trial_card: false,
   founding: { plan: 'pro', month: 19, year: 147, seats: 100, left: 100, open: true, ends: '', lifetime_left: 0, lifetime_seats: 0 },
   brokers: [{ key: 'vtmarkets', name: 'VT Markets', url: '' }], discord_public: '', plans: {
   goldzone: { name: 'VRS Indicator Pro', month: 14, year: 119, hidden: true, accounts: 0, machines: 0, features: ['goldzone_pro', 'lab'], blurb: 'The full VRS Indicator on TradingView: A/B/C grades, the backtest card, filters, exit plans, bot alerts.' },
   starter: { name: 'Starter', month: 9, year: 90, hidden: true, accounts: 1, machines: 1, features: ['terminal', 'journal', 'alerts', 'drawings'], blurb: 'One MT5 account, the full terminal and the journal.' },
-  pro: { name: 'VRS VIP', month: 29, year: 197, accounts: 5, machines: 2, features: ['terminal', 'journal', 'alerts', 'drawings', 'layers', 'basket', 'manage', 'paper', 'copy', 'goldzone_pro', 'lab', 'autotrade'], blurb: 'VRS Indicator Pro on TradingView + VRS Executor on MT5 (risk manager, bot, TradingView → MT5 autotrade) + the VIP Discord.' },
-  elite: { name: 'VRS Executor Elite', month: 59, year: 590, hidden: true, accounts: 25, machines: 3, features: ['terminal', 'journal', 'alerts', 'drawings', 'layers', 'basket', 'manage', 'paper', 'copy', 'goldzone_pro', 'lab', 'autotrade', 'priority'], blurb: 'For many accounts and small teams: 25 accounts, 3 PCs, priority support.' } } };
+  pro: { name: 'VRS VIP', month: 29, year: 197, accounts: 0, machines: 0, features: ['goldzone_pro'], blurb: 'VRS Indicator Pro on TradingView (entry, stop, R levels, grades, backtest card, alerts) + the VIP Discord.' },
+  elite: { name: 'VRS Elite', month: 59, year: 497, lifetime: 997, lifetime3: 349, accounts: 5, machines: 2, features: ['terminal', 'journal', 'alerts', 'drawings', 'layers', 'basket', 'manage', 'paper', 'copy', 'goldzone_pro', 'lab', 'autotrade', 'priority'], blurb: 'Everything in VIP + VRS Executor on MT5: the risk manager, the Autopilot bot, the Backtest Lab and TradingView → MT5 autotrade.' } } };
 function noServer() { // nothing answered: say exactly what to start, instead of a vague error
   const mine = /^(127\.0\.0\.1|localhost)$/.test(location.hostname) || location.protocol === 'file:';
   if (!mine) return; // public visitors just see the page; sign-up explains itself

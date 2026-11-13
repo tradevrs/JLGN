@@ -1,0 +1,58 @@
+# Render blueprint: the VRS license server + website on one address (https://YOUR-DOMAIN).
+# Render → New → Blueprint → pick this repo. It creates the service and asks for the secret values marked sync: false.
+# The disk keeps the customer database and the signing seed across deploys: never delete it, and back it up.
+services:
+  - type: web
+    name: vrs
+    runtime: python
+    plan: starter            # a persistent disk needs a paid instance (about $7/month)
+    region: frankfurt        # EU, close to Belgium (GDPR)
+    buildCommand: pip install -r saas/requirements.txt
+    startCommand: uvicorn saas.license_server:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips="*"
+    healthCheckPath: /api/plans
+    disk:
+      name: vrs-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+      - key: GP_DATA_DIR
+        value: /data
+      - key: GP_PUBLIC_URL
+        sync: false          # https://YOUR-DOMAIN (no slash at the end)
+      - key: GP_ADMIN_TOKEN
+        generateValue: true
+      - key: GP_OWNER_EMAILS
+        sync: false          # your own login email: becomes admin automatically
+      - key: GP_TRIAL_DAYS
+        value: "7"
+      - key: GP_FOUNDING_SEATS
+        value: "100"
+      - key: GP_FOUNDING_END
+        sync: false          # e.g. 2027-01-31
+      - key: GP_TRIAL_CARD
+        value: "0"
+      - key: GP_STRIPE_TOS
+        value: "0"           # set to 1 after you put the Terms URL in Stripe
+      - key: GP_BROKER_LINKS
+        sync: false          # leave empty until the broker deals are signed ("coming soon" on the site)
+      - key: GP_DISCORD_PUBLIC
+        sync: false
+      - key: GP_DISCORD_VIP
+        sync: false
+      - key: GP_BOOKING_URL
+        sync: false
+      # Stripe: leave the key empty for TEST MODE (payments simulated). Live: see saas/.env.example for every price id.
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_PRICE_PRO_MONTHLY
+        sync: false
+      - key: STRIPE_PRICE_PRO_YEARLY
+        sync: false
+      - key: STRIPE_PRICE_PRO_FOUNDING_MONTHLY
+        sync: false
+      - key: STRIPE_PRICE_PRO_FOUNDING_YEARLY
+        sync: false

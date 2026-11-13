@@ -1,0 +1,23 @@
+{
+  "mode": "mixed",
+  "allowed_origins": ["https://musicwithgomez.github.io", "http://127.0.0.1:5500", "http://localhost:5500", "null"],
+  "api_key": "U1foOQQpekLilq2JZoRohTSGtiLL-2EI0D-di_PmVCY",
+  "terminals": [
+     {
+      "label": "5K Live Account",
+      "path": "C:\\Program Files\\MetaTrader 5\\terminal64.exe",
+      "login": 27558245,
+      "password": "NGomezz1998@",
+      "server": "VTMarkets-Live3",
+      "allow_live": true
+    },
+    {
+      "label": "Live Vantage",
+      "path": "C:\\Program Files\\MetaTrader 5\\terminal64.exe",
+      "login": 36499545,
+      "password_env": "MT5_LIVE_PASSWORD",
+      "server": "VantageMarkets-Live 10",
+      "allow_live": true
+    }
+  ]
+}
