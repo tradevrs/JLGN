@@ -1,0 +1,80 @@
+VRS INDICATOR - WHICH FILE IS WHAT
+===================================
+
+  1. VRS-Indicator-Pro.annotated.pine  -> the SOURCE. The only file you edit. Never give it to anyone.
+  2. VRS-Indicator-Pro.pine            -> VIP. Same code, no comments (fits TradingView). Publish INVITE-ONLY.
+  3. VRS-Indicator-Lite.pine           -> FREE. Zones only. Publish PUBLIC + PROTECTED.
+
+Files 2 and 3 are made from file 1 by scripts (see "How to change the indicator").
+
+
+-------------------------------------------------------------------
+WHAT EACH ONE DOES
+-------------------------------------------------------------------
+                                          Lite (free)   Pro (VIP)
+  Ranges (consolidations)                 yes           yes
+  VA1 (CHOCH) / VA2 (BOS) breaks          yes           yes
+  The zone                                yes           yes
+  Alert when a new zone appears           yes           yes
+  Entry, stop, BUY / SELL signal          no            yes
+  1R / 2R / 3R levels, take profit        no            yes
+  "Valid" (retest) and "almost" alerts    no            yes
+  A / B / C grade on every setup          no            yes
+  Backtest card (win %, net R, PF, DD)    no            yes
+  Exit plans (BE, partial, trailing)      no            yes
+  Structure + session filters             no            yes
+  Multi-timeframe strip                   no            yes
+  JSON alerts -> MT5 autotrade            no            yes
+
+Lite is not "Pro switched off": build-lite.cjs CUTS the trade code out (entry / stop drawing, R levels,
+grades, backtest card, valid and JSON alerts) and fails the build if any of it is left. A few internal
+calculations stay (the zone needs them to know when it ends), but nothing of the trade is drawn or alerted.
+Still: publish Lite PROTECTED, so nobody sees the source at all.
+
+
+-------------------------------------------------------------------
+PUBLISH ON TRADINGVIEW (once, then "Update" after every change)
+-------------------------------------------------------------------
+LITE (free)
+  1. TradingView -> Pine Editor -> paste VRS-Indicator-Lite.pine -> Save.
+  2. Publish script -> Visibility: PUBLIC -> Source code: PROTECTED.
+  3. Title:   VRS Indicator Lite - VA1 / VA2 zones
+     Description (house rules: describe what it does and how; no links, no prices, no promises):
+
+     VRS Indicator Lite marks the VRS Strategy zones on your chart.
+     - A consolidation is a tight range: at least the minimum number of candles, no wider than a multiple of ATR(14).
+     - A candle whose BODY closes outside that range is a break. The first break in a new direction is VA1
+       (change of character), the next one in the same direction is VA2 (break of structure).
+     - The zone is the breaking candle from its body close to its wick, extended to the right until price comes back.
+     - An alert ("Any alert() function call") fires when a new zone appears.
+     Settings: minimum candles, range size, which zones to show, how long a zone stays, colours.
+     The indicator does not give entries, stops or targets and is not financial advice.
+
+  4. Copy the script page link (https://www.tradingview.com/script/...) into indicator.html:
+       const TV_LITE_URL = 'https://www.tradingview.com/script/.../';
+     From then on the thank-you page only links to TradingView; the code is no longer shown.
+     Then remove tradingview/VRS-Indicator-Lite.pine from the GitHub Pages upload.
+
+PRO (VIP)
+  1. Paste VRS-Indicator-Pro.pine -> Save -> Publish -> Visibility: INVITE-ONLY.
+     (Publishing invite-only scripts needs a paid TradingView plan on YOUR account.)
+  2. Title:   VRS Indicator Pro - VA1 / VA2 trades, grades and backtest
+     Description: what Lite does, plus the entry at the break's body close, the stop beyond the range,
+     1R / 2R / 3R levels, A / B / C grades, the backtest card, exit plans, filters and JSON alerts for bots.
+     Under "Author's instructions": "Access for VRS VIP members: add your TradingView username in your dashboard."
+  3. Give access: website Admin -> TradingView invites -> on TradingView "Manage access" -> add the username -> Mark added.
+
+NEVER upload the .pine files of Pro (or the annotated one) to GitHub Pages or anywhere public.
+
+
+-------------------------------------------------------------------
+HOW TO CHANGE THE INDICATOR
+-------------------------------------------------------------------
+1. Edit VRS-Indicator-Pro.annotated.pine
+2. Make the VIP paste version (PowerShell, in the backend folder):
+     powershell -File tradingview\make_compact.ps1 tradingview\VRS-Indicator-Pro.annotated.pine tradingview\VRS-Indicator-Pro.pine
+3. Make the free version:
+     node tradingview\build-lite.cjs
+   (it stops with an error if a change made it unsafe: then the cut lines in build-lite.cjs need updating)
+4. Paste the new Pro and Lite into their TradingView scripts and click "Update". Customers get it automatically.
+5. If trScan in gp-shared.js changes, change the Pine script too (they must draw the same zones).

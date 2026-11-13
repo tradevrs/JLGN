@@ -101,9 +101,9 @@ s, jp = call("/api/billing/pause", {}, token=j2["token"])
 check(s == 200 and jp["paused_until"] > time.time() and jp["sub"]["period_end"] - end0 >= 29 * 86400 and jp["sub"]["valid"],
       "downsell instead of cancelling: pause 1 month (access kept, billing moved 30 days)")
 s, j4 = call("/api/auth/signup", {"email": "lifeplan@example.com", "password": "testpass123"})
-s, j5 = call("/api/billing/checkout", {"plan": "pro", "interval": "lifetime3"}, token=j4["token"])
+s, j5 = call("/api/billing/checkout", {"plan": "elite", "interval": "lifetime3"}, token=j4["token"])
 check(s == 200 and j5["sub"]["interval"] == "lifetime" and sum(1 for p in j5["payments"] if "instalment" in p["descr"]) == 3,
-      "payment-plan downsell: Lifetime in 3 x EUR 179 -> lifetime access")
+      "payment-plan downsell: Elite Lifetime in 3 x EUR 349 -> lifetime access")
 check(call("/api/billing/pause", {}, token=j4["token"])[0] == 400, "a lifetime plan can't be paused")
 
 section("2. The customer downloads the bridge")
@@ -163,7 +163,10 @@ for state, want in (("trial_last_day", 200), ("trial_expired", 402), ("active", 
 s, j = call("/api/billing/checkout", {"plan": "starter", "interval": "month"}, token=TOK); app.LICENSE.refresh()
 check(c.post("/api/paper/create", json={"name": "x", "balance": 1000}, headers=H).status_code == 402, "Starter plan: Pro-only features are locked")
 s, j = call("/api/billing/checkout", {"plan": "pro", "interval": "year"}, token=TOK); app.LICENSE.refresh()
-check(app.LICENSE.ok() and j["payments"], f"upgrade to Pro yearly (test payment {j['payments'][0]['amount']} EUR) -> unlocked")
+r = c.get("/api/accounts", headers=H)
+check(r.status_code == 402 and "Elite" in r.json().get("detail", ""), "VIP (the indicator) does not include VRS Executor: the bridge says to upgrade to Elite")
+s, j = call("/api/billing/checkout", {"plan": "elite", "interval": "year"}, token=TOK); app.LICENSE.refresh()
+check(app.LICENSE.ok() and j["payments"], f"upgrade to Elite yearly (test payment {j['payments'][0]['amount']} EUR) -> unlocked")
 call("/api/billing/checkout", {"plan": "starter", "interval": "month"}, token=TOK); app.LICENSE.refresh()
 call("/api/billing/checkout", {"plan": "elite", "interval": "month"}, token=TOK)  # upgrade on the website; the bridge is NOT told
 app.LICENSE.checked = 0  # (its last check was "long ago")
@@ -171,7 +174,7 @@ r = c.post("/api/paper/create", json={"name": "after upgrade", "balance": 1000},
 check(r.status_code == 200 and app.LICENSE.data.get("plan") == "elite", "upgrade to Elite -> paper accounts work on the bridge right away (it re-checks before refusing)")
 check(c.post("/api/license/refresh", headers=H).status_code == 200 and c.post("/api/license/refresh", headers={"X-Gomez-Key": "x" * 48}).status_code == 401,
       "the website can tell the bridge to re-check the plan (with the private key only)")
-call("/api/billing/checkout", {"plan": "pro", "interval": "year"}, token=TOK); app.LICENSE.refresh()  # back to Pro for the next checks
+call("/api/billing/checkout", {"plan": "elite", "interval": "year"}, token=TOK); app.LICENSE.refresh()  # back to Elite yearly for the next checks
 
 section("5b. Price targets on a real MT5 account (kept by the bridge, page closed)")
 LG = 51234567
@@ -212,17 +215,19 @@ tid = r.json()["target"]["id"]
 check(c.post("/api/targets/remove", json={"login": LG, "id": tid}, headers=H).status_code == 200, "target removed again with ×")
 fake.POS.clear()
 
-section("5c. Monthly challenge (same paper account + rules for everyone, leaderboard)")
+section("5c. Weekly challenge (same paper account + rules for everyone, leaderboard)")
 fake.S["price"] = 2650.0
 s, j = call("/api/challenge")
-check(s == 200 and j["on"] and j["challenge"]["balance"] == 10000 and len(j["challenge"]["prizes"]) == 3,
-      f"public challenge page: {j['challenge']['name']}, $10,000, prizes for top 3")
+WS, WE, _ = ls._week_bounds(time.time())
+check(s == 200 and j["on"] and j["challenge"]["balance"] == 10000 and len(j["challenge"]["prizes"]) == 1 and j["challenge"]["prizes"][0]["days"] == 30
+      and j["challenge"]["start"] == WS and time.gmtime(WS).tm_wday == 0 and WE - WS == 7 * 86400 - 1 and j["challenge"]["min_trades"] == 5,
+      f"public challenge page: {j['challenge']['name']} (Monday to Sunday), $10,000, one prize: 1 month of Elite, 5 trades to be ranked")
 s, j = call("/api/challenge/join", {"nickname": "GoldKing"}, token=TOK)
 ENT = j.get("entry") or {}
 check(s == 200 and ENT.get("id") and ENT["daily_loss"] == 5 and ENT["max_dd"] == 10, "member joins with a nickname -> gets the challenge entry")
 check(call("/api/challenge/join", {"nickname": "GoldKing"}, token=TOK)[1]["entry"]["id"] == ENT["id"], "joining twice gives the same entry")
 _, rj = call("/api/auth/signup", {"email": "rival@example.com", "password": "testpass123"})
-check(call("/api/challenge/join", {"nickname": "goldking"}, token=rj["token"])[0] == 409, "a nickname can only be used once per month")
+check(call("/api/challenge/join", {"nickname": "goldking"}, token=rj["token"])[0] == 409, "a nickname can only be used once per week")
 r = c.post("/api/challenge/start", json={"entry": ENT}, headers=H)
 CL = r.json()["account"]["login"] if r.status_code == 200 else 0
 check(r.status_code == 200 and c.post("/api/challenge/start", json={"entry": ENT}, headers=H).json()["account"]["login"] == CL,
@@ -241,13 +246,17 @@ check(st["status"] == "active" and abs(st["return_pct"] - 10) < 0.5, f"price 270
 app.challenge_push()
 _, j = call("/api/challenge", token=TOK)
 row = next((b for b in j["board"] if b["nickname"] == "GoldKing"), None)
-check(row and abs(row["return_pct"] - 10) < 0.5 and row["rank"] is None and row["needs"] == 15 and j["me"]["linked"],
-      "bridge sends results -> leaderboard shows GoldKing +10% (not ranked yet: needs 15 closed trades)")
+check(row and abs(row["return_pct"] - 10) < 0.5 and row["rank"] is None and row["needs"] == 5 and j["me"]["linked"],
+      "bridge sends results -> leaderboard shows GoldKing +10% (not ranked yet: needs 5 closed trades)")
 check(call("/api/challenge/push", {"key": KEY, "machine": "someone-else", "stats": [st]})[0] == 401, "results from an unknown PC are refused")
 fake.S["price"] = 2620.0
 st = c.get(f"/api/challenge/stats?entry={ENT['id']}", headers=H).json()["stats"][0]
 check(st["status"] == "failed" and "daily loss" in st["fail"] and st["open_positions"] == 0, "equity below the 5% daily loss limit -> challenge failed, trades closed")
-check(c.post("/api/order", json={"login": CL, "symbol": "XAUUSD", "side": "buy", "volume": 0.1}, headers=H).status_code == 400, "a failed challenge account can't trade anymore")
+_ord = lambda: c.post("/api/order", json={"login": CL, "symbol": "XAUUSD", "side": "buy", "volume": 0.1}, headers=H)
+_r = _ord()
+if _r.status_code == 503:  # the fake price feed can still be "catching up" right after the account switch: ask once more
+    time.sleep(1.2); _r = _ord()
+check(_r.status_code == 400, "a failed challenge account can't trade anymore")
 app.challenge_push()
 _, j = call("/api/challenge")
 check(next(b for b in j["board"] if b["nickname"] == "GoldKing")["status"] == "failed", "leaderboard shows the failed entry (listed last)")
@@ -255,12 +264,20 @@ _, j = call("/api/admin/challenge", admin="selftest-admin")
 ae = next(e for e in j["entries"] if e["nickname"] == "GoldKing")
 check(ae["email"] == "customer@example.com" and ae["login"] == CL, "admin sees every entry with email, account and stats")
 before = ls.q("SELECT period_end FROM users WHERE email=?", "customer@example.com", one=True)["period_end"]
-s, j = call("/api/admin/challenge/action", {"entry": ae["id"], "action": "award", "days": 365, "text": "1st place: Pro for 12 months"}, admin="selftest-admin")
+s, j = call("/api/admin/challenge/action", {"entry": ae["id"], "action": "award", "text": "Week winner: 1 month of VRS Elite"}, admin="selftest-admin")
 after = ls.q("SELECT period_end FROM users WHERE email=?", "customer@example.com", one=True)["period_end"]
-check(s == 200 and abs((after - before) / 86400 - 365) < 1, "admin gives the prize: +365 days of Pro on the winner's account")
+check(s == 200 and abs((after - before) / 86400 - 30) < 1, "admin gives the prize: +30 days of Elite on the week winner's account")
 check(call("/api/admin/challenge/action", {"entry": ae["id"], "action": "disqualify", "text": "test"}, admin="selftest-admin")[0] == 200 and
       call("/api/admin/challenge/action", {"entry": ae["id"], "action": "reinstate"}, admin="selftest-admin")[0] == 200, "admin can disqualify and reinstate")
 fake.S["price"] = 2650.0
+# next week: whoever played last week is entered again automatically (same nickname)
+ls.q("INSERT INTO challenges(id,name,start,end,balance,leverage,daily_loss,max_dd,min_trades,prizes) VALUES(?,?,?,?,?,?,?,?,?,?)",
+     "2000-W01", "Week 1 (test)", 0, 1, 10000, 100, 5, 10, 5, "[]")
+ls.q("INSERT INTO challenge_entries(id,challenge_id,user_id,nickname,joined,status,equity,return_pct,trades) VALUES(?,?,?,?,?,?,?,?,?)",
+     "prevweek01", "2000-W01", ls.q("SELECT id FROM users WHERE email=?", "rival@example.com", one=True)["id"], "RivalRay", 0, "active", 10600, 6, 7)
+_, j = call("/api/challenge", token=rj["token"])
+check(j["me"] and j["me"]["nickname"] == "RivalRay" and any(h["nickname"] == "RivalRay" for h in j["hall"]),
+      "a new week: last week's player is entered again automatically, and last week's #1 is in the hall of fame")
 
 section("6. Security")
 import gp_sign  # noqa: E402
@@ -275,7 +292,7 @@ from licensing import License  # noqa: E402
 for i, want in ((2, True), (3, False)):
     L = License(Path(tempfile.mkdtemp()), {"license": {"server": "http://127.0.0.1:9", "pubkey": lic["pubkey"], "key": KEY}})
     L.server, L.machine, L.data = SRV, f"pc{i}" + "x" * 29, {}; L.refresh()
-    check(L.ok() == want, f"PC #{i} on one Pro license -> {'allowed' if want else 'refused (max 2 PCs)'}")
+    check(L.ok() == want, f"PC #{i} on one Elite license -> {'allowed' if want else 'refused (max 2 PCs)'}" + ("" if L.ok() == want else f" [{L.reason()}]"))
 L = License(Path(tempfile.mkdtemp()), {"license": {"server": "http://127.0.0.1:9", "pubkey": lic["pubkey"], "key": KEY}})
 L.data, L.machine = app.LICENSE.data, app.LICENSE.machine; L.refresh()
 check(L.ok(), "license server offline -> customers keep trading (72 h grace)")

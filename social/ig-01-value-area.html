@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>VRS · Instagram post 1 · The Value Area method</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05070b;--ink:#f4f6fb;--mut:#9aa3b6;--gold:#f5b73b;--goldg:linear-gradient(100deg,#fff1c2 0%,#ffd36b 30%,#f5b73b 55%,#e0960c 100%);--up:#22e39a;--dn:#ff5a64;--vio:#9b7bff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#1a1a1a;font-family:Inter,'Segoe UI',system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;gap:40px;padding:40px}
+.slide{width:1080px;height:1350px;position:relative;overflow:hidden;background:var(--bg);color:var(--ink);padding:80px 84px 84px;display:flex;flex-direction:column;isolation:isolate}
+/* ---- background layers: colour blobs, perspective grid floor, light rays, grain, vignette ---- */
+.blob{position:absolute;border-radius:50%;filter:blur(110px);opacity:.55;z-index:-3}
+.b1{width:720px;height:720px;right:-220px;top:-260px;background:radial-gradient(circle,#f5b73b 0%,rgba(224,150,12,.0) 70%)}
+.b2{width:620px;height:620px;left:-260px;bottom:120px;background:radial-gradient(circle,#2b6bff 0%,transparent 70%);opacity:.32}
+.b3{width:520px;height:520px;left:38%;bottom:-260px;background:radial-gradient(circle,#22e39a 0%,transparent 70%);opacity:.22}
+.floor{position:absolute;left:-40%;right:-40%;bottom:-120px;height:700px;z-index:-2;transform:perspective(700px) rotateX(68deg);transform-origin:bottom;background-image:linear-gradient(rgba(245,183,59,.22) 2px,transparent 2px),linear-gradient(90deg,rgba(245,183,59,.22) 2px,transparent 2px);background-size:90px 90px;mask-image:linear-gradient(to top,#000 0%,transparent 85%)}
+.rays{position:absolute;inset:-20%;z-index:-2;background:conic-gradient(from 200deg at 85% 0%,transparent 0deg,rgba(255,215,120,.07) 8deg,transparent 16deg,rgba(255,215,120,.05) 26deg,transparent 34deg,rgba(255,215,120,.06) 46deg,transparent 56deg)}
+.grain{position:absolute;inset:0;z-index:5;pointer-events:none;opacity:.09;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.vig{position:absolute;inset:0;z-index:4;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,transparent 55%,rgba(0,0,0,.65) 100%)}
+.big{position:absolute;right:-10px;top:90px;font-size:440px;font-weight:900;line-height:.8;letter-spacing:-.06em;color:transparent;-webkit-text-stroke:2px rgba(245,183,59,.16);z-index:-1}
+/* ---- type ---- */
+.top{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:3}
+.top img{height:46px;filter:drop-shadow(0 0 18px rgba(245,183,59,.35))}
+.top .n{font-size:22px;font-weight:800;color:var(--mut);letter-spacing:.1em;padding:9px 16px;border-radius:30px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04)}
+.eye{display:inline-flex;align-items:center;gap:14px;font-size:24px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-top:58px;position:relative;z-index:3}
+.eye::before{content:'';width:46px;height:3px;border-radius:2px;background:var(--goldg);box-shadow:0 0 14px rgba(245,183,59,.8)}
+h1,h2{font-weight:900;letter-spacing:-.04em;position:relative;z-index:3}
+h1{font-size:96px;line-height:.98;margin-top:24px}
+h2{font-size:74px;line-height:1.02;margin-top:20px}
+h1 span,h2 span{background:var(--goldg);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 26px rgba(245,183,59,.35))}
+p.sub{font-size:33px;line-height:1.42;color:#c3cad8;margin-top:26px;max-width:880px;font-weight:500;position:relative;z-index:3}
+p.sub b{color:#fff;font-weight:800}
+/* ---- glass card around a chart ---- */
+.glass{margin-top:auto;position:relative;z-index:3;border-radius:34px;padding:2px;background:linear-gradient(140deg,rgba(255,215,120,.55),rgba(255,255,255,.06) 35%,rgba(255,255,255,.04) 65%,rgba(34,227,154,.45));box-shadow:0 40px 100px -30px rgba(0,0,0,.95),0 0 80px -20px rgba(245,183,59,.25)}
+.glass>div{border-radius:32px;background:linear-gradient(180deg,rgba(14,18,27,.92),rgba(8,11,17,.94));overflow:hidden;position:relative}
+.glass>div::before{content:'';position:absolute;inset:0;background:radial-gradient(600px 300px at 70% 0%,rgba(245,183,59,.08),transparent 70%);pointer-events:none}
+.glass svg{display:block;width:100%;height:auto;position:relative}
+.chip{position:absolute;z-index:4;font-size:20px;font-weight:900;letter-spacing:.12em;padding:10px 16px;border-radius:12px;backdrop-filter:blur(8px)}
+/* ---- footer progress ---- */
+.foot{display:flex;align-items:center;justify-content:space-between;margin-top:34px;position:relative;z-index:3}
+.bar{width:420px;height:8px;border-radius:5px;background:rgba(255,255,255,.08);overflow:hidden}.bar i{display:block;height:100%;border-radius:5px;background:var(--goldg);box-shadow:0 0 16px rgba(245,183,59,.8)}
+.swipe{font-size:26px;font-weight:800;color:var(--mut);display:flex;align-items:center;gap:12px}.swipe b{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--goldg);color:#1a1203;font-size:28px;box-shadow:0 0 30px rgba(245,183,59,.55)}
+/* ---- VA1 / VA2 split ---- */
+.split{margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:26px;position:relative;z-index:3}
+.split .glass{margin-top:0}
+.split .lab{padding:26px 26px 0;display:flex;align-items:center;gap:14px}
+.split .lab b{font-size:46px;font-weight:900;letter-spacing:-.02em;padding:4px 18px;border-radius:14px}
+.split .va1 .lab b{background:linear-gradient(135deg,#b49cff,#7b56ff);color:#fff;box-shadow:0 0 30px rgba(155,123,255,.6)}
+.split .va2 .lab b{background:var(--goldg);color:#1a1203;box-shadow:0 0 30px rgba(245,183,59,.6)}
+.split .lab span{font-size:22px;font-weight:800;color:var(--mut);letter-spacing:.06em;text-transform:uppercase;line-height:1.2}
+.split p{font-size:27px;line-height:1.35;color:#c3cad8;padding:4px 26px 26px;font-weight:500}.split p b{color:#fff}
+/* ---- gauge (risk) ---- */
+.gauge{position:absolute;left:34px;top:30px;width:270px;padding:18px 20px 16px;border-radius:24px;background:rgba(8,11,17,.82);border:1px solid rgba(255,255,255,.1);box-shadow:0 20px 50px -15px rgba(0,0,0,.9);z-index:4;text-align:center}
+.gauge small{display:block;font-size:17px;font-weight:800;letter-spacing:.14em;color:var(--mut);text-transform:uppercase}
+.gauge b{display:block;font-size:54px;font-weight:900;letter-spacing:-.03em;margin-top:-6px;background:var(--goldg);-webkit-background-clip:text;background-clip:text;color:transparent}
+.gauge em{display:block;font-style:normal;font-size:17px;color:var(--mut);font-weight:600}
+/* ---- last slide ---- */
+.stage{margin-top:auto;position:relative;height:560px;z-index:3;perspective:1600px}
+.stage .labshot{position:absolute;left:-10px;top:60px;width:840px;border-radius:26px;overflow:hidden;transform:rotateY(18deg) rotateX(8deg) rotateZ(-2deg);transform-origin:left center;box-shadow:0 50px 120px -30px rgba(0,0,0,.95),0 0 0 2px rgba(245,183,59,.35),0 0 90px -10px rgba(245,183,59,.35)}
+.stage .labshot img{display:block;width:100%}
+.stage .phone{position:absolute;right:20px;top:-10px;width:270px;border:11px solid #1c2330;border-radius:52px;overflow:hidden;transform:rotateY(-14deg) rotateZ(3deg);box-shadow:0 50px 110px -25px rgba(0,0,0,.95),0 0 0 1px #2c3445,0 0 70px -10px rgba(34,227,154,.35)}
+.stage .phone img{display:block;width:100%}
+.stage .tag{position:absolute;left:30px;bottom:6px;font-size:18px;font-weight:700;color:var(--mut);letter-spacing:.06em}
+.cta{position:relative;z-index:3;margin-top:28px;padding:26px 30px;border-radius:26px;background:linear-gradient(135deg,rgba(245,183,59,.16),rgba(245,183,59,.04));border:1px solid rgba(245,183,59,.4);display:flex;align-items:center;gap:24px}
+.cta b{font-size:36px;font-weight:900;letter-spacing:-.02em;line-height:1.15}.cta b span{background:var(--goldg);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cta i{font-style:normal;font-size:60px;filter:drop-shadow(0 0 18px rgba(245,183,59,.6))}
+.legal{position:relative;z-index:3;margin-top:18px;font-size:19px;color:#6b7486;text-align:center}
+</style></head>
+<body>
+<div id="deck"></div>
+<script>
+/* ===================== the chart engine (SVG, every effect inline) ===================== */
+const C = { up1: '#5dffc0', up2: '#0fb874', dn1: '#ff8a92', dn2: '#d42f3a', gold: '#f5b73b', mut: '#8f99ad', vio: '#9b7bff' };
+let UID = 0;
+function chart(o) {
+  const id = 'c' + (++UID), K = o.K, W = o.W || 912, H = o.H || 640, PADL = o.padL ?? 30, PADR = o.padR ?? 120, PADT = 40, PADB = 34;
+  const lo = o.lo, hi = o.hi, show = o.show ?? K.length, h = o.hl || {};
+  const X = i => PADL + (i + .5) * (W - PADL - PADR) / K.length, Y = v => PADT + (hi - v) / (hi - lo) * (H - PADT - PADB), bw = (W - PADL - PADR) / K.length * .64;
+  const R = o.rng, x0 = X(R.from) - bw * .9, x1 = X(R.to) + bw * .9, xr = W - PADR + 34;
+  let s = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg"><defs>
+    <filter id="${id}g" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="${id}G" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="16"/></filter>
+    <linearGradient id="${id}u" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${C.up1}"/><stop offset="1" stop-color="${C.up2}"/></linearGradient>
+    <linearGradient id="${id}d" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${C.dn1}"/><stop offset="1" stop-color="${C.dn2}"/></linearGradient>
+    <linearGradient id="${id}va" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5b73b" stop-opacity=".30"/><stop offset="1" stop-color="#f5b73b" stop-opacity=".06"/></linearGradient>
+    <linearGradient id="${id}oz" x1="0" x2="1"><stop offset="0" stop-color="#22e39a" stop-opacity=".42"/><stop offset=".7" stop-color="#22e39a" stop-opacity=".12"/><stop offset="1" stop-color="#22e39a" stop-opacity="0"/></linearGradient>
+    <linearGradient id="${id}beam" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ffd36b" stop-opacity=".9"/><stop offset="1" stop-color="#ffd36b" stop-opacity="0"/></linearGradient>
+    <linearGradient id="${id}gold" x1="0" x2="1"><stop offset="0" stop-color="#fff1c2"/><stop offset=".5" stop-color="#f5b73b"/><stop offset="1" stop-color="#e0960c"/></linearGradient>
+    <pattern id="${id}scan" width="8" height="8" patternUnits="userSpaceOnUse"><line x1="0" y1="0" x2="8" y2="0" stroke="#f5b73b" stroke-opacity=".18" stroke-width="2"/></pattern>
+    <pattern id="${id}hatch" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="16" stroke="#ff5a64" stroke-opacity=".35" stroke-width="5"/></pattern>
+    <marker id="${id}arr" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#fff"/></marker>
+  </defs>`;
+  for (let i = 0; i < 7; i++) { const y = PADT + i * (H - PADT - PADB) / 6; s += `<line x1="${PADL - 10}" x2="${xr}" y1="${y}" y2="${y}" stroke="#1b2130" stroke-width="1.5"/>` }
+  // invalidation zone (behind everything)
+  if (h.inval) s += `<rect x="${x0}" y="${Y(R.lo)}" width="${xr - x0}" height="${Y(o.stop) - Y(R.lo) + 70}" fill="url(#${id}hatch)"/><rect x="${x0}" y="${Y(R.lo)}" width="${xr - x0}" height="${Y(o.stop) - Y(R.lo) + 70}" fill="#ff5a64" fill-opacity=".05"/>`;
+  // value area
+  if (h.va) {
+    const strong = h.va === 'hot';
+    s += `<rect x="${x0}" y="${Y(R.hi)}" width="${x1 - x0}" height="${Y(R.lo) - Y(R.hi)}" rx="10" fill="url(#${id}va)"/><rect x="${x0}" y="${Y(R.hi)}" width="${x1 - x0}" height="${Y(R.lo) - Y(R.hi)}" rx="10" fill="url(#${id}scan)"/>`
+      + `<rect x="${x0}" y="${Y(R.hi)}" width="${x1 - x0}" height="${Y(R.lo) - Y(R.hi)}" rx="10" fill="none" stroke="${C.gold}" stroke-width="${strong ? 3.5 : 2}" stroke-opacity="${strong ? 1 : .6}" ${strong ? `filter="url(#${id}g)"` : ''}/>`
+      + (strong ? `<line x1="${x0 - 60}" x2="${x0 - 8}" y1="${(Y(R.hi) + Y(R.lo)) / 2}" y2="${(Y(R.hi) + Y(R.lo)) / 2}" stroke="${C.gold}" stroke-width="3" marker-end="url(#${id}arr)"/>` : '')
+      + `<text x="${(x0 + x1) / 2}" y="${Y(R.lo) + 40}" fill="${C.gold}" font-size="${strong ? 24 : 20}" font-weight="900" letter-spacing="3" text-anchor="middle" opacity="${strong ? 1 : .8}">VALUE AREA</text>`;
+    if (strong) { // buyers and sellers pushing into each other
+      const yy = (Y(R.hi) + Y(R.lo)) / 2, mx = (x0 + x1) / 2;
+      s += `<text x="${mx}" y="${Y(R.hi) - 70}" fill="${C.up1}" font-size="22" font-weight="900" text-anchor="middle" letter-spacing="2">BUYERS ↓</text><text x="${mx}" y="${Y(R.lo) + 84}" fill="${C.dn1}" font-size="22" font-weight="900" text-anchor="middle" letter-spacing="2">SELLERS ↑</text>`;
+    }
+  }
+  // origin zone
+  if (h.oz) {
+    const ze = h.oz === 'cut' ? X(o.ret) + bw : xr, zt = Y(o.zhi), zb = Y(o.zlo);
+    s += `<rect x="${X(o.brk) - bw / 2 - 4}" y="${zt}" width="${ze - X(o.brk) + bw / 2 + 4}" height="${zb - zt}" fill="url(#${id}oz)"/>`
+      + `<line x1="${X(o.brk) - bw / 2 - 4}" x2="${ze}" y1="${zt}" y2="${zt}" stroke="#22e39a" stroke-width="2.5" ${h.oz === 'hot' ? `filter="url(#${id}g)"` : ''}/><line x1="${X(o.brk) - bw / 2 - 4}" x2="${ze}" y1="${zb}" y2="${zb}" stroke="#22e39a" stroke-width="2" stroke-opacity=".6"/>`
+      + (h.oz === 'hot' ? `<text x="${xr}" y="${(zt + zb) / 2 + 9}" fill="#5dffc0" font-size="24" font-weight="900" letter-spacing="3" text-anchor="end">ORIGIN ZONE</text>` : '');
+  }
+  // the shift: light beam + rings at the body close
+  if (h.shift) {
+    const k = K[o.brk], bx = X(o.brk), cy = Y(k[3]);
+    s += `<rect x="${bx - bw * 1.2}" y="0" width="${bw * 2.4}" height="${cy}" fill="url(#${id}beam)" opacity=".55"/>`
+      + [26, 46, 70].map((r, i) => `<circle cx="${bx}" cy="${cy}" r="${r}" fill="none" stroke="${C.gold}" stroke-width="${3 - i * .8}" stroke-opacity="${.9 - i * .28}"/>`).join('')
+      + `<line x1="${x0}" x2="${bx + bw}" y1="${Y(R.hi)}" y2="${Y(R.hi)}" stroke="${C.gold}" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round"/>`
+      + `<g transform="translate(${bx + 92},${cy - 60})"><rect x="0" y="-30" width="246" height="46" rx="12" fill="rgba(245,183,59,.15)" stroke="${C.gold}" stroke-width="2"/><text x="123" y="2" fill="#ffe3a0" font-size="22" font-weight="900" text-anchor="middle" letter-spacing="2">BODY CLOSE ↑</text></g>`
+      + `<line x1="${bx + 30}" y1="${cy - 22}" x2="${bx + 90}" y2="${cy - 60}" stroke="${C.gold}" stroke-width="2"/>`;
+  }
+  // stop + invalidation label
+  if (h.stop) s += `<line x1="${x0}" x2="${xr}" y1="${Y(o.stop)}" y2="${Y(o.stop)}" stroke="${C.dn1}" stroke-width="3" stroke-dasharray="12 8" filter="url(#${id}g)"/>`
+    + `<g transform="translate(${xr},${Y(o.stop) + 50})"><rect x="-280" y="-30" width="280" height="46" rx="12" fill="rgba(255,90,100,.16)" stroke="${C.dn1}" stroke-width="2"/><text x="-140" y="2" fill="#ffb3b8" font-size="21" font-weight="900" text-anchor="middle" letter-spacing="2">STOP · IDEA DEAD</text></g>`;
+  // R targets
+  if (h.rr) { const r = o.entry - o.stop; [1, 2].forEach(m => { const y = Y(o.entry + r * m); if (y < PADT - 5) return; s += `<line x1="${X(o.ret) - bw}" x2="${xr}" y1="${y}" y2="${y}" stroke="#22e39a" stroke-width="2" stroke-dasharray="3 7" stroke-linecap="round" opacity=".9"/><text x="${W - 12}" y="${y + 8}" fill="#5dffc0" font-size="22" font-weight="900" text-anchor="end">+${m}R</text>` }) }
+  // candles
+  for (let i = 0; i < show; i++) {
+    const [op, hh, ll, cl] = K[i], up = cl >= op, x = X(i), glow = (h.shift && i === o.brk) || (h.ret && i === o.ret);
+    const dim = h.dim && i < R.from ? .4 : 1;
+    s += `<g opacity="${dim}" ${glow ? `filter="url(#${id}g)"` : ''}><line x1="${x}" x2="${x}" y1="${Y(hh)}" y2="${Y(ll)}" stroke="${up ? C.up2 : C.dn2}" stroke-width="3.2" stroke-linecap="round"/><rect x="${x - bw / 2}" y="${Y(Math.max(op, cl))}" width="${bw}" height="${Math.max(4, Math.abs(Y(op) - Y(cl)))}" rx="4" fill="url(#${id}${up ? 'u' : 'd'})"/></g>`;
+  }
+  // the return: curved path, pulse rings, entry chip
+  if (h.ret) {
+    const peak = o.peak, px = X(peak), py = Y(K[peak][1]) - 18, ex = X(o.ret), ey = Y(o.entry);
+    s += `<path d="M ${px} ${py} C ${px + 60} ${py - 40}, ${ex + 60} ${ey - 140}, ${ex + 6} ${ey - 22}" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="3 9" stroke-linecap="round" marker-end="url(#${id}arr)" opacity=".85"/>`
+      + `<circle cx="${ex}" cy="${ey}" r="40" fill="#22e39a" opacity=".18" filter="url(#${id}G)"/>` + [16, 30, 48].map((r, i) => `<circle cx="${ex}" cy="${ey}" r="${r}" fill="none" stroke="#5dffc0" stroke-width="${3 - i * .8}" stroke-opacity="${.95 - i * .3}"/>`).join('')
+      + `<circle cx="${ex}" cy="${ey}" r="9" fill="#fff"/>`
+      + `<g transform="translate(${ex},${Y(K[o.ret][2]) + 74})"><rect x="-108" y="-32" width="216" height="50" rx="14" fill="#22e39a" filter="url(#${id}g)"/><text x="0" y="2" fill="#03140c" font-size="23" font-weight="900" text-anchor="middle" letter-spacing="2">THE RETURN</text></g>`;
+  }
+  return s + '</svg>';
+}
+
+/* ===================== data ===================== */
+// main: a trend, a Value Area, the shift, away, the return, the move
+const MAIN = { K: [[20,24,19,23],[23,27,22,26],[26,29,25,28],[28,33,27,32],[32,36,31,35],[35,38.4,33,37.6],
+  [37.6,46,37.2,44],[44,46.5,42,43],[43,45.5,41,45],[45,46.4,42.5,42.8],[42.8,45,41.2,44.6],[44.6,46.2,43,43.5],[43.5,45.8,41.8,45.2],
+  [45.2,53,44.8,52.2],[52.2,57,51.6,56],[56,60,54.8,59],[59,61,56.5,57],[57,57.5,53.5,54],[54,55,51.9,52.9],
+  [52.9,58,52.6,57.5],[57.5,63,56.8,62.4],[62.4,66.5,61,65.8],[65.8,70,64.5,69.2],[69.2,72.5,67.8,71.8]],
+  rng: { from: 6, to: 12, hi: 46.5, lo: 41 }, brk: 13, ret: 18, peak: 15, entry: 52.2, zhi: 52.2, zlo: 44.8, stop: 40.2, lo: 17, hi: 75 };
+// VA1: down trend, value, first shift UP = the market changes its mind
+const VA1 = { K: [[74,75,69.5,70.5],[70.5,71.5,66,67],[67,68.5,62,63],[63,64,58,59],[59,60,54.5,55.5],[55.5,56.5,50.5,51.5],
+  [51.5,52.5,47,49],[49,51.5,46.5,50.6],[50.6,52,47.6,48],[48,51,46.8,50.4],[50.4,52.2,48.4,49],[49,51.6,47.2,51],
+  [51,58.5,50.6,57.8],[57.8,61.5,56.8,60.8],[60.8,62,58.5,59],[59,59.6,56.2,57],[57,63,56.6,62.4],[62.4,67.5,61.8,66.8]],
+  rng: { from: 6, to: 11, hi: 52.5, lo: 46.5 }, brk: 12, ret: 15, peak: 13, entry: 57.8, zhi: 57.8, zlo: 50.6, stop: 45.8, lo: 40, hi: 78 };
+// VA2: up trend, value, next shift UP = the market confirms it
+const VA2 = { K: [[40,43,39.5,42.5],[42.5,46,42,45.5],[45.5,48,44.5,47.6],[47.6,51.5,47,51],[51,54,50,53.4],
+  [53.4,56,52.5,55],[55,56.6,53,53.6],[53.6,56.2,52.8,55.8],[55.8,56.8,53.6,54],[54,56.4,53.2,55.6],[55.6,56.9,54,54.4],
+  [54.4,62,54,61.4],[61.4,64.5,60.6,63.8],[63.8,65,61.8,62.4],[62.4,62.8,60.5,61],[61,66.5,60.6,66],[66,70.5,65.4,69.8],[69.8,73,68.8,72.4]],
+  rng: { from: 5, to: 10, hi: 57, lo: 52.6 }, brk: 11, ret: 14, peak: 12, entry: 61.4, zhi: 61.4, zlo: 54, stop: 52, lo: 36, hi: 76 };
+
+/* ===================== slides ===================== */
+const TOTAL = 8, LOGO = '../brand/vrs-lockup-transparent-light-text.png';
+const bg = num => `<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="rays"></div><div class="floor"></div>${num ? `<div class="big">${num}</div>` : ''}<div class="vig"></div><div class="grain"></div>`;
+const hdr = k => `<div class="top"><img src="${LOGO}" alt="VRS"><span class="n">${String(k + 1).padStart(2, '0')} / ${String(TOTAL).padStart(2, '0')}</span></div>`;
+const foot = (k, last) => `<div class="foot"><div class="bar"><i style="width:${(k + 1) / TOTAL * 100}%"></i></div>${last ? '' : '<span class="swipe">Swipe <b>→</b></span>'}</div>`;
+const glass = svg => `<div class="glass"><div>${svg}</div></div>`;
+const slide = (k, num, eye, title, sub, body) => `<section class="slide">${bg(num)}${hdr(k)}<div class="eye">${eye}</div><h2>${title}</h2>${sub ? `<p class="sub">${sub}</p>` : ''}${body}${foot(k)}</section>`;
+const M = (hl, extra = {}) => chart({ ...MAIN, hl, ...extra });
+
+document.getElementById('deck').innerHTML = [
+  // 1 · cover
+  `<section class="slide">${bg('VA')}${hdr(0)}<div class="eye">The VRS method</div><h1>We don't trade breakouts.<br><span>We trade where value moved.</span></h1><p class="sub">One framework. <b>Save it</b> for your next session.</p>
+    ${glass(M({ va: true, oz: 'cut', shift: false, ret: true, stop: true, rr: true }))}${foot(0)}</section>`,
+  // 2 · value area
+  slide(1, '01', '01 · The Value Area', 'Where buyers and sellers <span>agree.</span>', 'Price goes sideways because both sides accept it. There is no edge in here. <b>We mark it and wait.</b>',
+    glass(M({ va: 'hot' }, { show: 13 }))),
+  // 3 · the shift
+  slide(2, '02', '02 · The Shift', 'A body closes <span>out of value.</span>', 'Not a wick, a close. The agreement is broken: <b>one side just took over.</b>',
+    glass(M({ va: true, shift: true, dim: true }, { show: 14 }))),
+  // 4 · VA1 vs VA2
+  slide(3, '03', '03 · VA1 vs VA2', 'Two shifts. <span>Two trades.</span>', '',
+    `<div class="split">
+      <div class="va1"><div class="glass"><div><div class="lab"><b>VA1</b><span>first shift<br>against the trend</span></div>${chart({ ...VA1, W: 440, H: 560, padL: 18, padR: 30, hl: { va: true, shift: false, oz: 'cut', ret: false } })}<p>The market <b>changes its mind.</b> The first Value Area that breaks the other way.</p></div></div></div>
+      <div class="va2"><div class="glass"><div><div class="lab"><b>VA2</b><span>next shift<br>with the trend</span></div>${chart({ ...VA2, W: 440, H: 560, padL: 18, padR: 30, hl: { va: true, oz: 'cut' } })}<p>The market <b>confirms it.</b> The next Value Area breaks the same way.</p></div></div></div>
+    </div>`),
+  // 5 · origin zone
+  slide(4, '04', '04 · The Origin zone', 'Where the move <span>was born.</span>', 'The candle that left value, from its body close to its wick. <b>The only area that matters now.</b>',
+    glass(M({ va: true, oz: 'hot', dim: true }, { show: 17 }))),
+  // 6 · the return
+  slide(5, '05', '05 · The Return', 'Price leaves. <span>Then it comes back.</span>', 'We never chase the shift. We wait for price to leave the origin and return to it. <b>Most traders are gone by then.</b>',
+    glass(M({ va: true, oz: 'cut', ret: true, dim: true }, { show: 19 }))),
+  // 7 · invalidation + risk
+  slide(6, '06', '06 · Invalidation', 'Back in value? <span>The idea is dead.</span>', 'So the stop sits beyond the whole Value Area, and the size comes from your risk %.',
+    `<div class="glass"><div>${M({ va: true, oz: 'cut', ret: true, stop: true, inval: true, rr: true, dim: true })}
+      <div class="gauge"><svg viewBox="0 0 220 120" width="220"><defs><linearGradient id="gg" x1="0" x2="1"><stop offset="0" stop-color="#22e39a"/><stop offset=".55" stop-color="#f5b73b"/><stop offset="1" stop-color="#ff5a64"/></linearGradient></defs><path d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="#1d2433" stroke-width="18" stroke-linecap="round"/><path d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="url(#gg)" stroke-width="18" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="250"/><line x1="110" y1="110" x2="50" y2="70" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="110" cy="110" r="10" fill="#fff"/></svg><small>Risk per trade</small><b>1%</b><em>stays 1%. Always.</em></div></div></div>`),
+  // 8 · tested before traded + CTA
+  `<section class="slide">${bg('07')}${hdr(7)}<div class="eye">07 · Tested before traded</div><h2>No rule gets traded <span>until it's tested.</span></h2><p class="sub">Every setting is backtested on our own candles and only kept if it <b>holds up on data it was never tuned on.</b></p>
+    <div class="stage"><div class="labshot"><img src="../lp-autopilot.jpg" alt="VRS Backtest Lab"></div><div class="phone"><img src="../lp-phone.jpg" alt="VRS terminal on a phone"></div><div class="tag">REAL SOFTWARE · DEMO DATA</div></div>
+    <div class="cta"><i>⚖️</i><b>VA1 or VA2: which one holds up better?<br><span>The numbers are in the next post.</span></b></div>
+    <p class="legal">Educational content · not financial advice · trading leveraged products carries a high risk of loss</p>${foot(7, true)}</section>`,
+].join('');
+</script>
+</body></html>

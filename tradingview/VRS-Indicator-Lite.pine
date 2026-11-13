@@ -1,0 +1,586 @@
+//@version=6
+// VRS Indicator Lite · VRS Strategy zones (VA1 / VA2) by Value Research Systems (free). Generated from VRS-Indicator-Pro.pine: do not edit by hand.
+// Lite shows the ranges, the breaks and the zones. Entries, stops, R levels, grades, the backtest card and MT5 autotrade are in VRS VIP.
+indicator("VRS Indicator Lite · VRS zones (VA1 / VA2)", shorttitle = "VRS Indicator Lite", overlay = true, max_boxes_count = 500, max_lines_count = 500, max_labels_count = 500, max_bars_back = 5000)
+G_TR    = "VA1 / VA2 zones"
+G_EXIT  = "Exit plan & filters"
+G_PNL   = "Panel"
+G_STATS = "Backtest card"
+G_LOOK  = "Look"
+G_ALR   = "Alerts"
+string showIn   = input.string("VA1 + VA2", "Show", options = ["VA1 + VA2", "Only VA1", "Only VA2", "VA1, VA2, VA3…"], group = G_TR)
+string histIn   = "Small (arrow + result)" // VIP only
+int    minBars  = input.int(5, "Min. candles in a range", minval = 3, maxval = 50, group = G_TR, tooltip = "A consolidation is a tight range: at least this many candles, no wider than the range size × ATR. A candle whose BODY closes outside it is the break.")
+float  rangeAtr = input.float(1.6, "Range size (× ATR 14)", minval = 0.3, maxval = 10, step = 0.1, group = G_TR)
+float  slBuf    = input.float(0.1, "Zone dies beyond the range + (× ATR)", minval = 0.0, maxval = 3, step = 0.05, group = G_TR)
+float  tpR      = 0.0 // VIP only
+int    maxAge   = input.int(200, "Max candles a zone stays on the chart", minval = 5, maxval = 2000, group = G_TR)
+TP_FIXED  = "Fixed R (the TP field above)"
+FILT_OFF  = "Off: every signal"
+SESS_ALL  = "Any session"
+string tpModeIn = TP_FIXED // VIP only
+string tpTfIn   = "The trade's own timeframe" // VIP only
+string beIn     = "Off" // VIP only
+string partIn   = "Off" // VIP only
+string filtIn   = FILT_OFF // VIP only
+string sessIn   = SESS_ALL // VIP only
+string failIn   = "Dim (small, no alerts)" // VIP only
+bool   trailIn  = false // VIP only
+bool   awayIn   = input.bool(true, "Price must first leave the zone before a retest counts", group = G_TR)
+bool   rrIn     = false // VIP only
+R_HIDE = "Hide them once reached"
+string rHitIn   = R_HIDE // VIP only
+bool   panelOn  = input.bool(true, "Show the panel", group = G_PNL)
+bool   panelCol = input.bool(false, "Collapsed (one line: what we are waiting for)", group = G_PNL, tooltip = "TradingView panels can't be clicked: tick this to fold the panel to its one-line header (the terminal's ▴ button).")
+bool   mtfOn    = false // VIP only
+string sysName  = input.string("VA1 / VA2", "System name", group = G_PNL, tooltip = "Shown in the panel header. To keep several systems (like the terminal's saved VRS systems): set the inputs, then the indicator's Defaults -> Save as…")
+string panelPos = input.string("Top right", "Position", options = ["Top right", "Top center", "Top left", "Middle right", "Middle left", "Bottom right", "Bottom center", "Bottom left"], group = G_PNL)
+int    maxRun   = 1 // VIP only
+string pStyle   = input.string("Dark card", "Panel style", options = ["Dark card", "Light card", "Match the chart theme"], group = G_PNL)
+string panelSz  = input.string("Normal", "Panel text", options = ["Small", "Normal", "Large"], group = G_PNL)
+G_GRADE = "Signal grade"
+string gradeAl  = "All grades" // VIP only
+bool   gradeTag = false // VIP only
+bool   statsOn  = false // VIP only
+float  statsT   = 2.0 // VIP only
+string themeIn  = input.string("Auto (match chart)", "Theme", options = ["Auto (match chart)", "Light", "Dark", "Midnight", "Custom"], group = G_LOOK, tooltip = "The terminal's three palettes. Auto picks Light or Dark from the chart background. Custom uses the colours below.")
+string chartSz  = input.string("Small", "Chart text", options = ["Tiny", "Small", "Normal"], group = G_LOOK)
+color  cBuyIn   = input.color(#27b774, "Custom: buy", group = G_LOOK, inline = "c1")
+color  cSellIn  = input.color(#ef5b62, "sell", group = G_LOOK, inline = "c1")
+color  cAccIn   = input.color(#1e9a65, "accent", group = G_LOOK, inline = "c1")
+color  cTxtIn   = input.color(#111111, "Custom: text", group = G_LOOK, inline = "c2")
+color  cMutIn   = input.color(#8b9490, "muted", group = G_LOOK, inline = "c2")
+color  cPanIn   = input.color(#ffffff, "panel", group = G_LOOK, inline = "c2")
+bool   alValid  = false // VIP only
+bool   alZone   = input.bool(true, "Alert when a new zone appears (body-close break)", group = G_ALR)
+bool   alNear   = false // VIP only
+string alFmt    = "Text" // VIP only
+float tpR0 = tpModeIn == TP_FIXED ? tpR : 0.0
+float beR0 = beIn == "Stop to entry at 1R" ? 1.0 : beIn == "Stop to entry at 1.5R" ? 1.5 : beIn == "Stop to entry at 2R" ? 2.0 : 0.0
+float prR0 = partIn == "50% at 1R" ? 1.0 : partIn == "50% at 2R" ? 2.0 : 0.0
+float tgt  = tpR0 > 0 ? tpR0 : statsT
+float  bgLuma     = 0.299 * color.r(chart.bg_color) + 0.587 * color.g(chart.bg_color) + 0.114 * color.b(chart.bg_color)
+bool   chartLight = bgLuma > 140
+string theme      = themeIn == "Auto (match chart)" ? (chartLight ? "Light" : "Dark") : themeIn
+bool   lt         = theme == "Light" or (theme == "Custom" and chartLight)
+bool   dark       = not lt
+color cBuy = switch theme
+	"Light"    => #27b774
+	"Dark"     => #3aa877
+	"Midnight" => #16c784
+	=> cBuyIn
+color cSell = switch theme
+	"Light"    => #ef5b62
+	"Dark"     => #e0676d
+	"Midnight" => #f0454f
+	=> cSellIn
+color cAcc = switch theme
+	"Light"    => #1e9a65
+	"Dark"     => #3aa877
+	"Midnight" => #f5b73b
+	=> cAccIn
+color cTxt = switch theme
+	"Light"    => #111111
+	"Dark"     => #dadee3
+	"Midnight" => #e8ecf3
+	=> cTxtIn
+color cMut = switch theme
+	"Light"    => #8b9490
+	"Dark"     => #8e9baa
+	"Midnight" => #8a94a8
+	=> cMutIn
+color cPan = switch theme
+	"Light"    => #ffffff
+	"Dark"     => #272e34
+	"Midnight" => #10141c
+	=> cPanIn
+bool  pMatch = pStyle == "Match the chart theme"
+bool  pDark  = pStyle == "Dark card" or (pMatch and dark)
+color pBg    = pMatch ? cPan : pDark ? #272e34 : #ffffff
+color pHdr   = pDark ? #2d343c : #f3f6f4
+color pFrm   = pDark ? #454f5b : #d2d9d5
+color pTxt   = pMatch ? cTxt : pDark ? #e3e7eb : #111111
+color pMut   = pMatch ? cMut : pDark ? #8e9baa : #7d8783
+color pBuy   = pMatch ? cBuy : pDark ? #3fbf84 : #1c9a62
+color pSell  = pMatch ? cSell : pDark ? #ec6b72 : #d84a51
+color pAcc   = pMatch ? cAcc : pDark ? #3fbf84 : #1e9a65
+color edgeCol = lt ? cTxt : cMut
+color tagBg   = dark ? #1b2024 : #ffffff
+string szC = switch chartSz
+	"Small"  => size.small
+	"Normal" => size.normal
+	=> size.tiny
+string szS = switch panelSz
+	"Normal" => size.small
+	"Large"  => size.normal
+	=> size.tiny
+string szL = switch panelSz
+	"Normal" => size.normal
+	"Large"  => size.large
+	=> size.small
+ST_AWAY      = 0
+ST_WAIT      = 1
+ST_VALID     = 2
+ST_INVALID   = 3
+ST_EXPIRED   = 4
+ST_CANCELLED = 5
+OUT_OPEN     = 1
+OUT_SL       = 2
+type Setup
+	int    trNum
+	int    dir
+	int    bFrom
+	int    bTo
+	float  bHi
+	float  bLo
+	int    brk
+	float  zl
+	float  zh
+	float  entry
+	float  sl
+	int    state
+	int    trig    = -1
+	int    endBar  = -1
+	float  maxR    = 0.0
+	int    outc    = 0
+	float  risk    = 0.0
+	float  qHi     = na
+	float  qLo     = na
+	int    h1      = -1
+	int    h2      = -1
+	int    h3      = -1
+	int    hTp     = -1
+	int    hT      = -1
+	bool   counted = false
+	bool   pass    = true
+	string why     = ""
+	bool   nearSent = false
+	int    score   = 0
+	string grade   = "C"
+	string gWhy    = ""
+fade(color c, float op) => color.new(c, 100 - 100 * math.max(0.0, math.min(1.0, op)))
+mix(color a, color b, float k) => color.rgb(color.r(a) * k + color.r(b) * (1 - k), color.g(a) * k + color.g(b) * (1 - k), color.b(a) * k + color.b(b) * (1 - k))
+fmt(float v) => str.tostring(v, format.mintick)
+pt(float v) => str.tostring(math.abs(v), format.mintick)
+f1(float v) => str.tostring(v, "0.0")
+fnum(float v) => str.tostring(v, "#.##")
+sgnR(float v) => (v >= 0 ? "+" : "−") + str.tostring(math.abs(v), "0.0") + "R"
+cx(int x) => math.max(x, bar_index - 4500)
+shown(Setup s) =>
+	switch showIn
+		"Only VA1"       => s.trNum == 1
+		"Only VA2"       => s.trNum == 2
+		"VA1, VA2, VA3…" => true
+		=> s.trNum <= 2
+tradeEnd(Setup z, int n) =>
+	z.outc == OUT_SL ? z.endBar : tpR0 > 0 and z.hTp >= 0 ? z.hTp : z.trig + 600 <= n - 1 ? z.trig + 600 : -1
+hitOf(Setup z, int R) => R == 1 ? z.h1 : R == 2 ? z.h2 : z.h3
+sessOk(int h) =>
+	switch sessIn
+		"London + New York (07–21 UTC)" => h >= 7 and h < 21
+		"London (07–16 UTC)"            => h >= 7 and h < 16
+		"New York (12–21 UTC)"          => h >= 12 and h < 21
+		=> true
+gradeOk(Setup s) => gradeAl == "All grades" or (gradeAl == "Only A" ? s.grade == "A" : s.grade != "C")
+alertMsg(Setup s, string ev) =>
+	(s.dir < 0 ? "▼" : "▲") + " New VA" + str.tostring(s.trNum) + " zone on " + syminfo.ticker + " " + timeframe.period + ": " + fmt(s.zl) + " – " + fmt(s.zh)
+stepSetup(Setup s, bool closedBar) =>
+	bool alive = true
+	bool bv    = false
+	int  res   = 0
+	int  b     = bar_index
+	if s.state == ST_AWAY or s.state == ST_WAIT
+		if closedBar and (s.dir < 0 ? close > s.sl : close < s.sl)
+			s.state  := ST_INVALID
+			s.endBar := b
+			alive    := false
+		else if s.state == ST_AWAY
+			if (s.dir < 0 ? high < s.zl : low > s.zh)
+				s.state := ST_WAIT
+		else if (s.dir < 0 ? high >= s.zl : low <= s.zh)
+			s.state := ST_VALID
+			s.trig  := b
+			s.outc  := OUT_OPEN
+			s.risk  := math.max(math.abs(s.entry - s.sl), 1e-9)
+			s.qHi   := high
+			s.qLo   := low
+			bv      := true
+		else if b - s.brk > maxAge
+			s.state  := ST_EXPIRED
+			s.endBar := b
+			alive    := false
+	if alive and s.state == ST_VALID
+		if b >= s.trig + 600
+			alive := false
+		else if (s.dir < 0 ? high >= s.sl : low <= s.sl)
+			s.outc   := OUT_SL
+			s.endBar := b
+			alive    := false
+			if not s.counted
+				s.counted := true
+				res       := -1
+		else if b > s.trig
+			s.maxR := math.max(s.maxR, (s.dir < 0 ? s.entry - low : high - s.entry) / s.risk)
+			if s.h1 < 0 and s.maxR >= 1
+				s.h1 := b
+			if s.h2 < 0 and s.maxR >= 2
+				s.h2 := b
+			if s.h3 < 0 and s.maxR >= 3
+				s.h3 := b
+			if s.hTp < 0 and tpR0 > 0 and s.maxR >= tpR0
+				s.hTp := b
+			if s.hT < 0 and s.maxR >= tgt
+				s.hT := b
+				if not s.counted
+					s.counted := true
+					res       := 1
+	[alive, bv, res]
+viewOf(map<int, Setup> m, Setup o) => m.contains(o.brk) ? m.get(o.brk) : o
+posOf(string p) =>
+	switch p
+		"Top center"    => position.top_center
+		"Top left"      => position.top_left
+		"Middle right"  => position.middle_right
+		"Middle left"   => position.middle_left
+		"Bottom right"  => position.bottom_right
+		"Bottom center" => position.bottom_center
+		"Bottom left"   => position.bottom_left
+		=> position.top_right
+pRow(table t, int r, string s, color tc, string note, color nc, color edgeC, color bg, string sz, bool bold) =>
+	t.cell(0, r, "▍", text_color = edgeC, bgcolor = bg, text_size = sz, text_halign = text.align_left)
+	t.cell(1, r, s, text_color = tc, bgcolor = bg, text_size = sz, text_halign = text.align_left, text_formatting = bold ? text.format_bold : text.format_none)
+	t.merge_cells(1, r, 3, r)
+	t.cell(4, r, note, text_color = nc, bgcolor = bg, text_size = sz, text_halign = text.align_right, text_formatting = text.format_bold)
+pGrid(table t, int r, string a, string b, string c, string d, color tc, color edgeC, color bg, string sz, bool bold) =>
+	fm = bold ? text.format_bold : text.format_none
+	t.cell(0, r, "▍", text_color = edgeC, bgcolor = bg, text_size = sz)
+	t.cell(1, r, a, text_color = tc, bgcolor = bg, text_size = sz, text_halign = text.align_left, text_formatting = fm)
+	t.cell(2, r, b, text_color = tc, bgcolor = bg, text_size = sz, text_halign = text.align_left, text_formatting = fm)
+	t.cell(3, r, c, text_color = tc, bgcolor = bg, text_size = sz, text_halign = text.align_left, text_formatting = fm)
+	t.cell(4, r, d, text_color = tc, bgcolor = bg, text_size = sz, text_halign = text.align_left, text_formatting = fm)
+pCheck(table t, int r, bool ok, string s, string note, color noteC, color edgeC, color bg, string sz) =>
+	pRow(t, r, (ok ? "✅ " : "⬜ ") + s, ok ? pTxt : pMut, note, noteC, edgeC, bg, sz, false)
+wrapTxt(string s, int w) =>
+	array<string> ws = str.split(s, " ")
+	string out = ""
+	int    cur = 0
+	for wd in ws
+		int l = str.length(wd)
+		if cur > 0 and cur + 1 + l > w
+			out += "\n" + wd
+			cur := l
+		else
+			out += (cur > 0 ? " " : "") + wd
+			cur += (cur > 0 ? 1 : 0) + l
+	out
+htfInfo() =>
+	float tr_ = na(close[1]) ? high - low : math.max(high - low, math.abs(high - close[1]), math.abs(low - close[1]))
+	var float a = na
+	a := na(a) ? tr_ : (a * 13 + tr_) / 14
+	int   m_  = math.max(3, minBars)
+	float hh  = ta.highest(high, m_)
+	float ll  = ta.lowest(low, m_)
+	var int   md   = 0
+	var int   p    = 1
+	var float h    = na
+	var float l    = na
+	var float lim  = na
+	var int   ld   = 0
+	var int   cnt  = 0
+	var int   sDir = 0
+	var int   sSt  = -1
+	var float szl  = na
+	var float szh  = na
+	var float ssl  = na
+	var int   sBrk = 0
+	int b = bar_index
+	if sSt == 0 or sSt == 1
+		if (sDir < 0 ? close > ssl : close < ssl)
+			sSt := 3
+		else if sSt == 0
+			if (sDir < 0 ? high < szl : low > szh)
+				sSt := 1
+		else if (sDir < 0 ? high >= szl : low <= szh)
+			sSt := 2
+		else if b - sBrk > maxAge
+			sSt := 3
+	if md == 1
+		if close > h or close < l
+			int d = close > h ? 1 : -1
+			cnt  := d == ld ? cnt + 1 : 1
+			ld   := d
+			szl  := d < 0 ? close : low
+			szh  := d < 0 ? high : close
+			ssl  := d < 0 ? math.max(h, high) + a * slBuf : math.min(l, low) - a * slBuf
+			sDir := d
+			sSt  := awayIn ? 0 : 1
+			sBrk := b
+			md   := 0
+			p    := b + 1
+		else
+			float nh = math.max(h, high)
+			float nl = math.min(l, low)
+			if nh - nl > lim * 1.6
+				md := 0
+				p  := b
+			else
+				h := nh
+				l := nl
+	else if b - m_ + 1 >= p and hh - ll <= a * rangeAtr
+		md  := 1
+		h   := hh
+		l   := ll
+		lim := a * rangeAtr
+	[ld[1], cnt[1], sDir[1], sSt[1]]
+[d15, c15, zd15, zs15] = request.security(syminfo.tickerid, "15", htfInfo(), lookahead = barmerge.lookahead_on)
+[d30, c30, zd30, zs30] = request.security(syminfo.tickerid, "30", htfInfo(), lookahead = barmerge.lookahead_on)
+[d60, c60, zd60, zs60] = request.security(syminfo.tickerid, "60", htfInfo(), lookahead = barmerge.lookahead_on)
+[d240, c240, zd240, zs240] = request.security(syminfo.tickerid, "240", htfInfo(), lookahead = barmerge.lookahead_on)
+[dD, cD, zdD, zsD] = request.security(syminfo.tickerid, "D", htfInfo(), lookahead = barmerge.lookahead_on)
+string filtTf = filtIn == FILT_OFF ? "" : str.substring(filtIn, 0, str.pos(filtIn, " "))
+int filtDir = switch filtTf
+	"M15" => nz(d15)
+	"M30" => nz(d30)
+	"H1"  => nz(d60)
+	"H4"  => nz(d240)
+	"D1"  => nz(dD)
+	=> 0
+int chSecG = timeframe.in_seconds()
+htfCount(int secTf, int d, int want) => secTf >= chSecG and d == want ? 1 : 0
+int htfUp  = htfCount(900, nz(d15), 1) + htfCount(1800, nz(d30), 1) + htfCount(3600, nz(d60), 1) + htfCount(14400, nz(d240), 1) + htfCount(86400, nz(dD), 1)
+int htfDn  = htfCount(900, nz(d15), -1) + htfCount(1800, nz(d30), -1) + htfCount(3600, nz(d60), -1) + htfCount(14400, nz(d240), -1) + htfCount(86400, nz(dD), -1)
+int htfTot = htfUp + htfDn
+float trueR = na(close[1]) ? high - low : math.max(high - low, math.abs(high - close[1]), math.abs(low - close[1]))
+var float atrV = na
+atrV := na(atrV) ? trueR : (atrV * 13 + trueR) / 14
+int   mb  = math.max(3, minBars)
+float wHi = ta.highest(high, mb)
+float wLo = ta.lowest(low, mb)
+var int   rMode   = 0
+var int   ptr     = 1
+var int   rFrom   = 0
+var float rHi     = na
+var float rLo     = na
+var float rLim    = na
+var int   lastDir = 0
+var int   trCount = 0
+var array<Setup> setups = array.new<Setup>()
+var array<Setup> active = array.new<Setup>()
+var array<float> stN  = array.new<float>(3, 0.0)
+var array<float> stW  = array.new<float>(3, 0.0)
+var array<float> stR  = array.new<float>(3, 0.0)
+var array<float> stGW = array.new<float>(3, 0.0)
+var array<float> stGL = array.new<float>(3, 0.0)
+var float eqR = 0.0
+var float eqPk = 0.0
+var float eqDD = 0.0
+var int   lsCur = 0
+var int   lsMax = 0
+bool   isClosed  = barstate.isconfirmed
+int    bi        = bar_index
+bool   validBuy  = false
+bool   validSell = false
+bool   newZone   = false
+string validMsg  = ""
+string zoneMsg   = ""
+string nearMsg   = ""
+var map<int, Setup> pv = map.new<int, Setup>()
+pv.clear()
+addMsg(string acc, string m) => acc + (acc == "" ? "" : "\n") + m
+if isClosed
+	if active.size() > 0
+		array<Setup> keep = array.new<Setup>()
+		for s in active
+			[alive, bv, res] = stepSetup(s, true)
+			if bv and shown(s) and s.pass and gradeOk(s)
+				validBuy  := validBuy or s.dir > 0
+				validSell := validSell or s.dir < 0
+				validMsg  := addMsg(validMsg, alertMsg(s, "valid"))
+			if alive and s.state == ST_WAIT and not s.nearSent and shown(s) and s.pass and gradeOk(s)
+				float dNear = s.dir < 0 ? s.zl - close : close - s.zh
+				if dNear <= atrV * 0.6
+					s.nearSent := true
+					nearMsg    := addMsg(nearMsg, alertMsg(s, "almost"))
+			if alive
+				keep.push(s)
+		active := keep
+	if rMode == 1
+		if close > rHi or close < rLo
+			int dir = close > rHi ? 1 : -1
+			trCount := dir == lastDir ? trCount + 1 : 1
+			lastDir := dir
+			float zl = dir < 0 ? close : low
+			float zh = dir < 0 ? high : close
+			float minH = atrV * 0.05
+			if zh - zl < minH
+				if dir < 0
+					zh := zl + minH
+				else
+					zl := zh - minH
+			float sl = dir < 0 ? math.max(rHi, high) + atrV * slBuf : math.min(rLo, low) - atrV * slBuf
+			Setup ns = Setup.new(trCount, dir, rFrom, bi - 1, rHi, rLo, bi, zl, zh, close, sl, awayIn ? ST_AWAY : ST_WAIT)
+			bool okS = filtTf == "" or filtDir == dir
+			bool okT = sessOk(hour(time, "UTC"))
+			ns.pass := okS and okT
+			ns.why  := not okS ? "against " + filtTf + " structure" : not okT ? "outside session" : ""
+			array<Setup> keep2 = array.new<Setup>()
+			for a in active
+				if a.dir != dir and (a.state == ST_AWAY or a.state == ST_WAIT)
+					a.state  := ST_CANCELLED
+					a.endBar := bi
+				else
+					keep2.push(a)
+			active := keep2
+			setups.push(ns)
+			active.push(ns)
+			if shown(ns) and ns.pass and gradeOk(ns)
+				newZone := true
+				zoneMsg := alertMsg(ns, "zone")
+			rMode := 0
+			ptr   := bi + 1
+		else
+			float nh = math.max(rHi, high)
+			float nl = math.min(rLo, low)
+			if nh - nl > rLim * 1.6
+				rMode := 0
+				ptr   := bi
+			else
+				rHi := nh
+				rLo := nl
+	else if bi - mb + 1 >= ptr and wHi - wLo <= atrV * rangeAtr
+		rMode := 1
+		rFrom := bi - mb + 1
+		rHi   := wHi
+		rLo   := wLo
+		rLim  := atrV * rangeAtr
+else
+	for s in active
+		Setup c = s.copy()
+		[alive, bv, res] = stepSetup(c, false)
+		pv.put(c.brk, c)
+		if bv and shown(c) and c.pass and gradeOk(c)
+			validBuy  := validBuy or c.dir > 0
+			validSell := validSell or c.dir < 0
+			validMsg  := addMsg(validMsg, alertMsg(c, "valid"))
+while setups.size() > 0 and setups.first().brk < bi - 1600
+	setups.shift()
+if alZone and zoneMsg != ""
+	alert(zoneMsg, alert.freq_once_per_bar_close)
+alertcondition(newZone, "VRS new zone", "New VRS zone on {{ticker}} {{interval}}: a candle body closed outside the range")
+if barstate.islast
+	if array.size(box.all) > 0
+		for i = array.size(box.all) - 1 to 0
+			box.delete(array.get(box.all, i))
+	if array.size(line.all) > 0
+		for i = array.size(line.all) - 1 to 0
+			line.delete(array.get(line.all, i))
+	if array.size(label.all) > 0
+		for i = array.size(label.all) - 1 to 0
+			label.delete(array.get(label.all, i))
+	if array.size(table.all) > 0
+		for i = array.size(table.all) - 1 to 0
+			table.delete(array.get(table.all, i))
+	int n   = bi + 1
+	int fTo = isClosed ? bi : bi - 1
+	array<int> focusB = array.new<int>()
+	Setup lastValid = na
+	for o in setups
+		Setup z = viewOf(pv, o)
+		if shown(z) and z.pass and z.brk > n - 1500 and z.state == ST_VALID
+			lastValid := z
+	if not na(lastValid)
+		if lastValid.outc == OUT_OPEN or lastValid.endBar > n - 60
+			focusB.push(lastValid.brk)
+	int nRun    = 0
+	int fullBrk = focusB.size() > 0 ? focusB.get(0) : -1
+	if setups.size() > 0
+		for i = setups.size() - 1 to 0
+			if nRun >= maxRun
+				break
+			Setup z = viewOf(pv, setups.get(i))
+			if shown(z) and z.pass and z.brk > n - 1500 and z.state == ST_VALID and tradeEnd(z, n) == -1
+				if nRun == 0
+					fullBrk := z.brk
+				focusB.push(z.brk)
+				nRun += 1
+	array<int>   tagX = array.new<int>()
+	array<float> tagY = array.new<float>()
+	array<int>   tagD = array.new<int>()
+	for o in setups
+		Setup z = viewOf(pv, o)
+		if not shown(z) or z.brk <= n - 1500
+			continue
+		if not z.pass and failIn == "Hide"
+			continue
+		bool zLive = z.state == ST_AWAY or z.state == ST_WAIT
+		bool zDead = z.state == ST_INVALID or z.state == ST_EXPIRED or z.state == ST_CANCELLED
+		bool isF   = z.pass and (zLive or focusB.includes(z.brk))
+		if not isF and (histIn == "Hide" or (zDead and histIn != "Small + failed zones"))
+			continue
+		color  col = z.dir < 0 ? cSell : cBuy
+		float  yb  = z.dir < 0 ? z.bLo : z.bHi
+		string trS = "VA" + str.tostring(z.trNum)
+		if not isF
+			float op = zDead or not z.pass ? (lt ? 0.45 : 0.3) : (lt ? 0.8 : 0.55)
+			box.new(cx(z.bFrom), z.bHi, cx(z.bTo), z.bLo, border_color = fade(edgeCol, (lt ? 0.35 : 1.0) * op), border_width = 1, border_style = line.style_dashed, bgcolor = color(na))
+			line.new(cx(z.bFrom), yb, cx(z.brk), yb, color = fade(col, op), width = 1)
+			label.new(cx(z.bFrom), z.bHi, trS + (z.pass ? "" : " ✗"), color = color(na), style = label.style_label_lower_left, textcolor = fade(lt ? cTxt : cMut, (lt ? 0.6 : 1.0) * op), size = szC, text_formatting = text.format_bold, tooltip = z.pass ? "" : "Filtered: " + z.why)
+			continue
+		box.new(cx(z.bFrom), z.bHi, cx(z.bTo), z.bLo, border_color = fade(edgeCol, lt ? 0.45 : 0.8), border_width = 1, border_style = line.style_dashed, bgcolor = fade(cTxt, dark ? 0.045 : 0.04))
+		label.new(cx(z.bFrom), z.bHi, trS + " · " + (z.trNum == 1 ? "CHOCH" : "BOS") + (z.dir < 0 ? " ↓" : " ↑") + "", color = color(na), style = label.style_label_lower_left, textcolor = col, size = szC, text_formatting = text.format_bold)
+		line.new(cx(z.bFrom), yb, cx(z.brk), yb, color = col, width = 1)
+		if zLive
+			box.new(cx(z.brk), z.zh, bi, z.zl, border_color = fade(col, lt ? 0.8 : 0.6), border_width = 1, bgcolor = fade(col, lt ? 0.14 : 0.18), extend = extend.right, text = trS + (z.dir < 0 ? " SELL" : " BUY") + " ZONE", text_size = szC, text_color = fade(col, 0.9), text_halign = text.align_right, text_valign = text.align_center, text_formatting = text.format_bold)
+		else if z.state == ST_VALID
+			box.new(cx(z.brk), z.zh, cx(z.trig), z.zl, border_color = fade(col, lt ? 0.5 : 0.35), border_width = 1, bgcolor = fade(col, lt ? 0.07 : 0.09))
+	if rMode == 1
+		box.new(cx(rFrom), rHi, bi, rLo, border_color = fade(cAcc, lt ? 0.75 : 0.55), border_width = 1, border_style = line.style_dashed, extend = extend.right, bgcolor = fade(cAcc, 0.03))
+		label.new(cx(rFrom), rHi, "RANGE · " + str.tostring(fTo - rFrom + 1), color = color(na), style = label.style_label_lower_left, textcolor = cAcc, size = szC, text_formatting = text.format_bold)
+	if panelOn
+		float px     = close
+		Setup liveS  = na
+		Setup recS   = na
+		for o in active
+			Setup s = viewOf(pv, o)
+			if shown(s) and s.pass
+				if s.state == ST_AWAY or s.state == ST_WAIT
+					liveS := s
+		float  dist   = 0.0
+		bool   almost = false
+		string dS     = ""
+		color  lc     = pMut
+		if not na(liveS)
+			float near = liveS.dir < 0 ? liveS.zl : liveS.zh
+			dist   := liveS.dir < 0 ? near - px : px - near
+			almost := liveS.state == ST_WAIT and dist <= atrV * 0.6
+			dS     := liveS.dir < 0 ? "SELL" : "BUY"
+			lc     := liveS.dir < 0 ? pSell : pBuy
+		string mini  = "waiting for a range"
+		color  miniC = pTxt
+		if not na(liveS)
+			mini  := (almost ? "⚡ " : "⏳ ") + dS + " VA" + str.tostring(liveS.trNum) + " · " + (liveS.state == ST_AWAY ? "wait for price to leave" : dist > 0 ? pt(dist) + " to zone" : "touching")
+			miniC := lc
+		else if rMode == 1
+			mini := "⏳ range " + fmt(rLo) + " – " + fmt(rHi)
+		table pnl = table.new(posOf(panelPos), 5, 40, bgcolor = pBg, frame_color = pFrm, frame_width = 1, border_width = 0)
+		int   r   = 0
+		pRow(pnl, r, "⋮⋮  " + sysName + " ▾" + (panelCol ? "   " + mini : ""), panelCol ? miniC : pAcc, "🤖 📊 " + (panelCol ? "▾" : "▴") + " ⚙ ✕", pMut, pHdr, pHdr, szS, true)
+		r += 1
+		if not panelCol
+			if not na(liveS)
+				pRow(pnl, r, (almost ? "⚡ " : "⏳ ") + dS + " ZONE · VA" + str.tostring(liveS.trNum), pTxt, "", pMut, lc, pBg, szL, true)
+				r += 1
+				pRow(pnl, r, "Zone " + fmt(liveS.zl) + " – " + fmt(liveS.zh), pTxt, "", pMut, lc, pBg, szS, false)
+				r += 1
+				pRow(pnl, r, liveS.state == ST_AWAY ? "price is moving away from the zone" : dist > 0 ? pt(dist) + " from the zone" : "price is in the zone", pMut, "", pMut, lc, pBg, szS, false)
+				r += 1
+			else if rMode == 1
+				pRow(pnl, r, "⏳ Range forming", pTxt, "", pMut, pMut, pBg, szL, true)
+				r += 1
+				pRow(pnl, r, str.tostring(fTo - rFrom + 1) + " bars · " + fmt(rLo) + " – " + fmt(rHi), pMut, "", pMut, pMut, pBg, szS, false)
+				r += 1
+			else
+				pRow(pnl, r, "No range or zone right now", pTxt, "", pMut, pMut, pBg, szL, true)
+				r += 1
+			pRow(pnl, r, "Entry, stop, R levels, grades & MT5 autotrade: VRS VIP", pMut, "", pMut, pHdr, pHdr, szS, false)
+			r += 1

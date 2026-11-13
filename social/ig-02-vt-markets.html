@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>VRS · Instagram post · VT Markets partnership</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05070b;--ink:#f4f6fb;--mut:#9aa3b6;--gold:#f5b73b;--goldg:linear-gradient(100deg,#fff1c2 0%,#ffd36b 30%,#f5b73b 55%,#e0960c 100%);--up:#22e39a;--dn:#ff5a64;--vio:#9b7bff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#1a1a1a;font-family:Inter,'Segoe UI',system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;gap:40px;padding:40px}
+.slide{width:1080px;height:1350px;position:relative;overflow:hidden;background:var(--bg);color:var(--ink);padding:80px 84px 84px;display:flex;flex-direction:column;isolation:isolate}
+/* ---- background layers: colour blobs, perspective grid floor, light rays, grain, vignette ---- */
+.blob{position:absolute;border-radius:50%;filter:blur(110px);opacity:.55;z-index:-3}
+.b1{width:720px;height:720px;right:-220px;top:-260px;background:radial-gradient(circle,#f5b73b 0%,rgba(224,150,12,.0) 70%)}
+.b2{width:620px;height:620px;left:-260px;bottom:120px;background:radial-gradient(circle,#2b6bff 0%,transparent 70%);opacity:.32}
+.b3{width:520px;height:520px;left:38%;bottom:-260px;background:radial-gradient(circle,#22e39a 0%,transparent 70%);opacity:.22}
+.floor{position:absolute;left:-40%;right:-40%;bottom:-120px;height:700px;z-index:-2;transform:perspective(700px) rotateX(68deg);transform-origin:bottom;background-image:linear-gradient(rgba(245,183,59,.22) 2px,transparent 2px),linear-gradient(90deg,rgba(245,183,59,.22) 2px,transparent 2px);background-size:90px 90px;mask-image:linear-gradient(to top,#000 0%,transparent 85%)}
+.rays{position:absolute;inset:-20%;z-index:-2;background:conic-gradient(from 200deg at 85% 0%,transparent 0deg,rgba(255,215,120,.07) 8deg,transparent 16deg,rgba(255,215,120,.05) 26deg,transparent 34deg,rgba(255,215,120,.06) 46deg,transparent 56deg)}
+.grain{position:absolute;inset:0;z-index:5;pointer-events:none;opacity:.09;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.vig{position:absolute;inset:0;z-index:4;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,transparent 55%,rgba(0,0,0,.65) 100%)}
+.big{position:absolute;right:-10px;top:90px;font-size:440px;font-weight:900;line-height:.8;letter-spacing:-.06em;color:transparent;-webkit-text-stroke:2px rgba(245,183,59,.16);z-index:-1}
+/* ---- type ---- */
+.top{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:3}
+.top img{height:46px;filter:drop-shadow(0 0 18px rgba(245,183,59,.35))}
+.top .n{font-size:22px;font-weight:800;color:var(--mut);letter-spacing:.1em;padding:9px 16px;border-radius:30px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04)}
+.eye{display:inline-flex;align-items:center;gap:14px;font-size:24px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-top:58px;position:relative;z-index:3}
+.eye::before{content:'';width:46px;height:3px;border-radius:2px;background:var(--goldg);box-shadow:0 0 14px rgba(245,183,59,.8)}
+h1,h2{font-weight:900;letter-spacing:-.04em;position:relative;z-index:3}
+h1{font-size:96px;line-height:.98;margin-top:24px}
+h2{font-size:74px;line-height:1.02;margin-top:20px}
+h1 span,h2 span{background:var(--goldg);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 26px rgba(245,183,59,.35))}
+p.sub{font-size:33px;line-height:1.42;color:#c3cad8;margin-top:26px;max-width:880px;font-weight:500;position:relative;z-index:3}
+p.sub b{color:#fff;font-weight:800}
+/* ---- glass card around a chart ---- */
+.glass{margin-top:auto;position:relative;z-index:3;border-radius:34px;padding:2px;background:linear-gradient(140deg,rgba(255,215,120,.55),rgba(255,255,255,.06) 35%,rgba(255,255,255,.04) 65%,rgba(34,227,154,.45));box-shadow:0 40px 100px -30px rgba(0,0,0,.95),0 0 80px -20px rgba(245,183,59,.25)}
+.glass>div{border-radius:32px;background:linear-gradient(180deg,rgba(14,18,27,.92),rgba(8,11,17,.94));overflow:hidden;position:relative}
+.glass>div::before{content:'';position:absolute;inset:0;background:radial-gradient(600px 300px at 70% 0%,rgba(245,183,59,.08),transparent 70%);pointer-events:none}
+.glass svg{display:block;width:100%;height:auto;position:relative}
+.chip{position:absolute;z-index:4;font-size:20px;font-weight:900;letter-spacing:.12em;padding:10px 16px;border-radius:12px;backdrop-filter:blur(8px)}
+/* ---- footer progress ---- */
+.foot{display:flex;align-items:center;justify-content:space-between;margin-top:34px;position:relative;z-index:3}
+.bar{width:420px;height:8px;border-radius:5px;background:rgba(255,255,255,.08);overflow:hidden}.bar i{display:block;height:100%;border-radius:5px;background:var(--goldg);box-shadow:0 0 16px rgba(245,183,59,.8)}
+.swipe{font-size:26px;font-weight:800;color:var(--mut);display:flex;align-items:center;gap:12px}.swipe b{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--goldg);color:#1a1203;font-size:28px;box-shadow:0 0 30px rgba(245,183,59,.55)}
+/* ---- VA1 / VA2 split ---- */
+.split{margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:26px;position:relative;z-index:3}
+.split .glass{margin-top:0}
+.split .lab{padding:26px 26px 0;display:flex;align-items:center;gap:14px}
+.split .lab b{font-size:46px;font-weight:900;letter-spacing:-.02em;padding:4px 18px;border-radius:14px}
+.split .va1 .lab b{background:linear-gradient(135deg,#b49cff,#7b56ff);color:#fff;box-shadow:0 0 30px rgba(155,123,255,.6)}
+.split .va2 .lab b{background:var(--goldg);color:#1a1203;box-shadow:0 0 30px rgba(245,183,59,.6)}
+.split .lab span{font-size:22px;font-weight:800;color:var(--mut);letter-spacing:.06em;text-transform:uppercase;line-height:1.2}
+.split p{font-size:27px;line-height:1.35;color:#c3cad8;padding:4px 26px 26px;font-weight:500}.split p b{color:#fff}
+/* ---- gauge (risk) ---- */
+.gauge{position:absolute;left:34px;top:30px;width:270px;padding:18px 20px 16px;border-radius:24px;background:rgba(8,11,17,.82);border:1px solid rgba(255,255,255,.1);box-shadow:0 20px 50px -15px rgba(0,0,0,.9);z-index:4;text-align:center}
+.gauge small{display:block;font-size:17px;font-weight:800;letter-spacing:.14em;color:var(--mut);text-transform:uppercase}
+.gauge b{display:block;font-size:54px;font-weight:900;letter-spacing:-.03em;margin-top:-6px;background:var(--goldg);-webkit-background-clip:text;background-clip:text;color:transparent}
+.gauge em{display:block;font-style:normal;font-size:17px;color:var(--mut);font-weight:600}
+/* ---- last slide ---- */
+.stage{margin-top:auto;position:relative;height:560px;z-index:3;perspective:1600px}
+.stage .labshot{position:absolute;left:-10px;top:60px;width:840px;border-radius:26px;overflow:hidden;transform:rotateY(18deg) rotateX(8deg) rotateZ(-2deg);transform-origin:left center;box-shadow:0 50px 120px -30px rgba(0,0,0,.95),0 0 0 2px rgba(245,183,59,.35),0 0 90px -10px rgba(245,183,59,.35)}
+.stage .labshot img{display:block;width:100%}
+.stage .phone{position:absolute;right:20px;top:-10px;width:270px;border:11px solid #1c2330;border-radius:52px;overflow:hidden;transform:rotateY(-14deg) rotateZ(3deg);box-shadow:0 50px 110px -25px rgba(0,0,0,.95),0 0 0 1px #2c3445,0 0 70px -10px rgba(34,227,154,.35)}
+.stage .phone img{display:block;width:100%}
+.stage .tag{position:absolute;left:30px;bottom:6px;font-size:18px;font-weight:700;color:var(--mut);letter-spacing:.06em}
+.cta{position:relative;z-index:3;margin-top:28px;padding:26px 30px;border-radius:26px;background:linear-gradient(135deg,rgba(245,183,59,.16),rgba(245,183,59,.04));border:1px solid rgba(245,183,59,.4);display:flex;align-items:center;gap:24px}
+.cta b{font-size:36px;font-weight:900;letter-spacing:-.02em;line-height:1.15}.cta b span{background:var(--goldg);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cta i{font-style:normal;font-size:60px;filter:drop-shadow(0 0 18px rgba(245,183,59,.6))}
+.legal{position:relative;z-index:3;margin-top:18px;font-size:19px;color:#6b7486;text-align:center}
+
+.big2{position:absolute;right:-30px;top:150px;font-size:520px;font-weight:900;line-height:.8;letter-spacing:-.07em;color:transparent;-webkit-text-stroke:2px rgba(245,183,59,.18);z-index:-1}
+.x{display:flex;align-items:center;gap:22px;margin-top:56px;position:relative;z-index:3}
+.x .logo{height:58px}.x i{font-style:normal;font-size:44px;color:var(--mut);font-weight:300}
+.x .vt{font-size:44px;font-weight:900;letter-spacing:-.01em;padding:10px 22px;border-radius:16px;border:2px solid rgba(255,255,255,.18);background:rgba(255,255,255,.05)}
+.hero100{font-size:250px;font-weight:900;letter-spacing:-.07em;line-height:.86;margin-top:30px;position:relative;z-index:3;background:var(--goldg);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 50px rgba(245,183,59,.45))}
+.hero100 small{font-size:76px;letter-spacing:-.03em;display:block;margin-top:14px;line-height:1}
+/* the balance stack */
+.stack{margin-top:auto;position:relative;z-index:3;display:grid;gap:18px}
+.bal{display:flex;align-items:center;justify-content:space-between;padding:30px 36px;border-radius:28px;border:1px solid rgba(255,255,255,.12);background:rgba(14,18,27,.85);box-shadow:0 30px 80px -30px rgba(0,0,0,.9)}
+.bal span{font-size:30px;font-weight:700;color:#c3cad8}.bal b{font-size:62px;font-weight:900;letter-spacing:-.03em}
+.bal.cr{border-color:rgba(245,183,59,.55);background:linear-gradient(135deg,rgba(245,183,59,.16),rgba(14,18,27,.9))}.bal.cr b{background:var(--goldg);-webkit-background-clip:text;background-clip:text;color:transparent}
+.bal.tot{padding:34px 36px;border:2px solid rgba(34,227,154,.6);background:linear-gradient(135deg,rgba(34,227,154,.16),rgba(14,18,27,.9));box-shadow:0 0 70px -10px rgba(34,227,154,.4)}.bal.tot b{color:var(--up);font-size:78px}
+.plus{position:absolute;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--goldg);color:#1a1203;font-size:40px;font-weight:900;box-shadow:0 0 30px rgba(245,183,59,.6);z-index:2}
+/* steps */
+.steps{margin-top:auto;display:grid;gap:22px;position:relative;z-index:3}
+.st{display:flex;gap:28px;align-items:flex-start;padding:30px 34px;border-radius:28px;border:1px solid rgba(255,255,255,.1);background:rgba(14,18,27,.85)}
+.st i{font-style:normal;flex:0 0 82px;height:82px;border-radius:24px;display:grid;place-items:center;background:var(--goldg);color:#1a1203;font-size:44px;font-weight:900;box-shadow:0 0 34px rgba(245,183,59,.45)}
+.st b{display:block;font-size:40px;font-weight:900;letter-spacing:-.02em}.st p{font-size:28px;line-height:1.38;color:#c3cad8;margin-top:6px;font-weight:500}
+/* VIP */
+.shot{margin-top:40px;position:relative;z-index:3;border-radius:30px;overflow:hidden;box-shadow:0 40px 100px -30px rgba(0,0,0,.95),0 0 0 2px rgba(245,183,59,.4),0 0 80px -20px rgba(245,183,59,.35)}
+.shot img{display:block;width:100%;height:440px;object-fit:cover;object-position:left top}
+.vipg{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:18px;position:relative;z-index:3}
+.vipg div{padding:24px 26px;border-radius:24px;border:1px solid rgba(255,255,255,.1);background:rgba(14,18,27,.85)}
+.vipg b{display:block;font-size:30px;font-weight:900}.vipg span{font-size:23px;color:#aab2c3;line-height:1.35;display:block;margin-top:4px}
+/* honest slide */
+.facts{margin-top:auto;display:grid;gap:18px;position:relative;z-index:3}
+.fact{display:flex;gap:24px;align-items:center;padding:28px 32px;border-radius:26px;background:rgba(14,18,27,.85);border:1px solid rgba(255,255,255,.1)}
+.fact i{font-style:normal;font-size:54px;flex:0 0 70px;text-align:center}.fact b{display:block;font-size:34px;font-weight:900;letter-spacing:-.01em}.fact p{font-size:26px;color:#c3cad8;line-height:1.36;margin-top:4px}
+/* CTA */
+.timer{margin-top:44px;display:inline-flex;align-items:center;gap:16px;padding:16px 26px;border-radius:999px;background:var(--goldg);color:#1a1203;font-size:30px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;position:relative;z-index:3;width:max-content;box-shadow:0 0 50px rgba(245,183,59,.55)}
+.bigcta{margin-top:auto;position:relative;z-index:3;padding:44px 44px;border-radius:34px;border:2px solid rgba(245,183,59,.6);background:linear-gradient(135deg,rgba(245,183,59,.2),rgba(14,18,27,.92));text-align:center}
+.bigcta b{display:block;font-size:64px;font-weight:900;letter-spacing:-.03em;line-height:1.05}.bigcta b span{background:var(--goldg);-webkit-background-clip:text;background-clip:text;color:transparent}
+.bigcta p{font-size:30px;color:#c3cad8;margin-top:16px;font-weight:600}
+.bigcta .arrow{display:inline-grid;place-items:center;width:96px;height:96px;border-radius:50%;margin-top:26px;background:var(--goldg);color:#1a1203;font-size:54px;font-weight:900;box-shadow:0 0 50px rgba(245,183,59,.6)}
+</style></head>
+<body>
+<div id="deck"></div>
+<script>
+const TOTAL = 5, LOGO = '../brand/vrs-lockup-transparent-light-text.png';
+const bg = (big = '') => `<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="rays"></div><div class="floor"></div>${big}<div class="grain"></div><div class="vig"></div>`;
+const hdr = k => `<div class="top"><img src="${LOGO}" alt="VRS"><span class="n">${String(k + 1).padStart(2, '0')} / ${String(TOTAL).padStart(2, '0')}</span></div>`;
+const foot = k => `<div class="foot"><div class="bar"><i style="width:${(k + 1) / TOTAL * 100}%"></i></div>${k < TOTAL - 1 ? '<div class="swipe">Swipe <b>→</b></div>' : ''}</div>`;
+const S = [];
+
+// 1 · the hook
+S.push(k => `${bg('<div class="big2">×</div>')}${hdr(k)}
+  <div class="eye">New partnership · limited time</div>
+  <div class="x"><img class="logo" src="${LOGO}" alt="VRS"><i>×</i><span class="vt">VT Markets</span></div>
+  <div class="hero100">100%<small>on your deposit.</small></div>
+  <div class="stack">
+    <div class="bal"><span>Your deposit</span><b>$500</b></div>
+    <div class="bal cr"><span>+ VT Markets credit</span><b>$500</b></div>
+    <div class="bal tot"><span>You trade with</span><b>$1,000</b></div>
+  </div>${foot(k)}`);
+
+// 2 · how it works
+S.push(k => `${bg('<div class="big">3</div>')}${hdr(k)}
+  <div class="eye">How it works</div>
+  <h2>Three steps. <span>Ten minutes.</span></h2>
+  <div class="steps">
+    <div class="st"><i>1</i><div><b>Open a VT Markets account</b><p>A new MT5 account through the link in our bio. Only accounts through our link get the offer.</p></div></div>
+    <div class="st"><i>2</i><div><b>Make your deposit</b><p>VT Markets adds 100% of it as trading credit. Deposit $500, trade with $1,000.</p></div></div>
+    <div class="st"><i>3</i><div><b>Send us your account number</b><p>On our site. We switch VRS VIP on for free, usually within 24 hours.</p></div></div>
+  </div>${foot(k)}`);
+
+// 3 · VIP on top
+S.push(k => `${bg()}${hdr(k)}
+  <div class="eye">And on top of that</div>
+  <h2>VRS VIP. <span>Free.</span></h2>
+  <p class="sub">Normally €29 a month. Free for as long as you trade with VT Markets.</p>
+  <div class="shot"><img src="../lp-sys-spot.jpg" alt="VRS Indicator on a gold chart"></div>
+  <div class="vipg">
+    <div><b>📈 VRS Indicator Pro</b><span>The zone, the entry, the stop, 1R / 2R / 3R</span></div>
+    <div><b>🛡 VRS Executor</b><span>Lots from your risk %, daily loss lock</span></div>
+    <div><b>🤖 Autopilot</b><span>Takes your setups on MT5, inside your limits</span></div>
+    <div><b>💬 VIP Discord</b><span>Setup reviews, help, the monthly challenge</span></div>
+  </div>${foot(k)}`);
+
+// 4 · read this first (honest)
+S.push(k => `${bg('<div class="big">!</div>')}${hdr(k)}
+  <div class="eye">Read this first</div>
+  <h2>No small print <span>hidden.</span></h2>
+  <div class="facts">
+    <div class="fact"><i>💳</i><div><b>The credit is not cash</b><p>It is trading credit from VT Markets. You can't withdraw it. VT Markets' terms say how it works.</p></div></div>
+    <div class="fact"><i>🛡</i><div><b>Same risk rules</b><p>Size your risk from your own deposit, not the credit. 1% stays 1%.</p></div></div>
+    <div class="fact"><i>🌍</i><div><b>Not in every country</b><p>VT Markets' promotion terms decide who can get it. Check them before you deposit.</p></div></div>
+    <div class="fact"><i>⏳</i><div><b>Limited time</b><p>The 100% credit is only for accounts opened while the promotion runs.</p></div></div>
+  </div>${foot(k)}`);
+
+// 5 · CTA
+S.push(k => `${bg('<div class="big">→</div>')}${hdr(k)}
+  <div class="eye">Your move</div>
+  <h1>Trade with more. <span>Risk the same.</span></h1>
+  <div class="timer">⏳ Limited time</div>
+  <div class="bigcta"><b>Link in <span>bio</span></b><p>Open your VT Markets account · deposit · get 100% credit + VRS VIP free</p><div class="arrow">↗</div></div>
+  <p class="legal">Promotion by VT Markets, their terms apply. Credit is not withdrawable. Trading leveraged products carries a high risk of losing money. We earn a commission from VT Markets.</p>${foot(k)}`);
+
+document.getElementById('deck').innerHTML = S.map((f, k) => `<section class="slide">${f(k)}</section>`).join('');
+</script>
+</body></html>

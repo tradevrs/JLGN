@@ -1,0 +1,23 @@
+17,492 lines of code. One trading system. 🛠
+
+I didn't want another indicator. I wanted the whole thing: the chart, the risk, the bot and the proof that it works.
+
+So VRS became five pieces:
+📈 The VRS Indicator on TradingView
+🛡 VRS Executor, next to MT5 on your own PC
+🧪 The Backtest Lab
+🤖 The Autopilot
+🔐 The server that ties it together
+
+The scariest moment so far: in testing, the bot risked 35% on an account set to 1%. Every open browser tab was running its own bot. Now there's one bot per account, a hard cap on total risk, and a check before every order.
+
+That's why everything gets tested on demo first.
+
+Next in this series: 30 days of the bot, live, every day. Wins and losses. Follow so you don't miss it.
+
+Which part do you want to see built next? 👇
+
+—
+Software only, not financial advice. Trading leveraged products carries a high risk of losing money.
+
+#buildinpublic #trading #algotrading #tradingbot #forextrading #gold #mt5 #tradingview #behindthescenes #founder

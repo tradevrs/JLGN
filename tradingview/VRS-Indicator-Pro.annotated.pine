@@ -1,0 +1,967 @@
+//@version=6
+// =====================================================================
+//  VRS INDICATOR PRO · THE VRS STRATEGY (VALUE RETEST) · VA1 / VA2  (v2)  · Value Research Systems
+//  consolidation -> body-close break -> zone -> retest
+//  VA1 = the first consolidation broken in a new direction (change of character, CHOCH)
+//  VA2 = the next consolidation broken in the SAME direction (break of structure, BOS)
+//  Zone = the breaking candle from its body close to its full wick, extended right until price comes back.
+//  Retest of the zone = valid signal. Entry = body close of the breaking candle, SL beyond the consolidation,
+//  TP open (1R / 2R / 3R levels shown) or a fixed R target.
+//
+//  v2: multi-timeframe structure (non-repainting), structure + session filters on the chart, a live backtest card
+//      (win rate, net R, profit factor, drawdown for VA1 / VA2), "almost" alerts, JSON webhook alerts, A / B / C grades.
+//
+//  Port of trScan() (gp-shared.js, section 7) and TR.svg() / TR.panel() (terminal.html).
+//  If the rules or the drawing change there, change them here too.
+//
+//  Published on TradingView as an INVITE-ONLY script (VRS VIP members). Customers never get this file:
+//  they get access to the published script (Admin -> TradingView invites). VRS-Indicator-Lite (zones only, free) is built from it.
+//  Alerts: create an alert on this indicator with "Any alert() function call".
+// =====================================================================
+indicator("VRS Indicator Pro · VRS trades (VA1 / VA2): entry, stop, grades", shorttitle = "VRS Indicator Pro", overlay = true, max_boxes_count = 500, max_lines_count = 500, max_labels_count = 500, max_bars_back = 5000)
+
+// ---------- settings: the same as ⚙ VRS settings in the terminal (same names, same defaults, same order) ----------
+G_TR    = "VA1 / VA2 signals"
+G_EXIT  = "Exit plan & filters"
+G_PNL   = "Panel"
+G_STATS = "Backtest card"
+G_LOOK  = "Look"
+G_ALR   = "Alerts"
+
+string showIn   = input.string("VA1 + VA2", "Show", options = ["VA1 + VA2", "Only VA1", "Only VA2", "VA1, VA2, VA3…"], group = G_TR)
+string histIn   = input.string("Small (arrow + result)", "Older signals", options = ["Small (arrow + result)", "Small + failed zones", "Hide"], group = G_TR)
+int    minBars  = input.int(5, "Min. candles in a range", minval = 3, maxval = 50, group = G_TR, tooltip = "A consolidation is a tight range: at least this many candles, no wider than the range size × ATR. A candle whose BODY closes outside it is the break.")
+float  rangeAtr = input.float(1.6, "Range size (× ATR 14)", minval = 0.3, maxval = 10, step = 0.1, group = G_TR)
+float  slBuf    = input.float(0.1, "Stop buffer (× ATR)", minval = 0.0, maxval = 3, step = 0.05, group = G_TR)
+float  tpR      = input.float(0.0, "Take profit (R, 0 = open)", minval = 0.0, maxval = 20, step = 0.5, group = G_TR)
+int    maxAge   = input.int(200, "Max candles to wait for the retest", minval = 5, maxval = 2000, group = G_TR)
+
+TP_FIXED  = "Fixed R (the TP field above)"
+FILT_OFF  = "Off: every signal"
+SESS_ALL  = "Any session"
+string tpModeIn = input.string(TP_FIXED, "Take profit", options = [TP_FIXED, "At the opposite zone", "Close on an opposite signal", "None (trailing stop only)"], group = G_EXIT, tooltip = "The terminal's 🤖 auto-trade bot follows the exit plan for the trades it opens. Here it sets the TP drawn on the chart (only Fixed R draws one) and the plan shown in the panel.")
+string tpTfIn   = input.string("The trade's own timeframe", "…zone / signal on", options = ["The trade's own timeframe", "M5", "M15", "M30", "H1", "H4", "D1"], group = G_EXIT)
+string beIn     = input.string("Off", "Breakeven", options = ["Off", "Stop to entry at 1R", "Stop to entry at 1.5R", "Stop to entry at 2R"], group = G_EXIT)
+string partIn   = input.string("Off", "Partial close", options = ["Off", "50% at 1R", "50% at 2R"], group = G_EXIT)
+string filtIn   = input.string(FILT_OFF, "Only trade with the structure of", options = [FILT_OFF, "M15 (its last break goes the same way)", "M30 (its last break goes the same way)", "H1 (its last break goes the same way)", "H4 (its last break goes the same way)", "D1 (its last break goes the same way)"], group = G_EXIT, tooltip = "A signal only counts when the last VRS break on that timeframe goes the same way. Uses closed candles of that timeframe only: never repaints.")
+string sessIn   = input.string(SESS_ALL, "Only signals in session", options = [SESS_ALL, "London + New York (07–21 UTC)", "London (07–16 UTC)", "New York (12–21 UTC)"], group = G_EXIT, tooltip = "The breaking candle must close inside this session.")
+string failIn   = input.string("Dim (small, no alerts)", "Signals that fail a filter", options = ["Dim (small, no alerts)", "Hide"], group = G_EXIT, tooltip = "Filtered signals never alert and are left out of the backtest card.")
+bool   trailIn  = input.bool(false, "Trail the stop behind each new BOS (every new break in your direction moves the stop to that range's stop)", group = G_EXIT)
+
+bool   awayIn   = input.bool(true, "Price must first leave the zone before a retest counts", group = G_TR)
+bool   rrIn     = input.bool(true, "Show 1R / 2R / 3R levels after a signal", group = G_TR)
+R_HIDE = "Hide them once reached"
+string rHitIn   = input.string(R_HIDE, "Reached R levels", options = [R_HIDE, "Show a ✓ where they were reached"], group = G_TR)
+
+bool   panelOn  = input.bool(true, "Show the panel", group = G_PNL)
+bool   panelCol = input.bool(false, "Collapsed (one line: what we are waiting for)", group = G_PNL, tooltip = "TradingView panels can't be clicked: tick this to fold the panel to its one-line header (the terminal's ▴ button).")
+bool   mtfOn    = input.bool(false, "Multi-timeframe structure strip + card (M15 · M30 · H1 · H4 · D1)", group = G_PNL, tooltip = "The last VRS break on each higher timeframe (▲ up / ▼ down), from closed candles only. Expanded: also its newest zone.")
+string sysName  = input.string("VA1 / VA2", "System name", group = G_PNL, tooltip = "Shown in the panel header. To keep several systems (like the terminal's saved VRS systems): set the inputs, then the indicator's Defaults -> Save as…")
+string panelPos = input.string("Top right", "Position", options = ["Top right", "Top center", "Top left", "Middle right", "Middle left", "Bottom right", "Bottom center", "Bottom left"], group = G_PNL)
+int    maxRun   = input.int(1, "Running trades on the chart", minval = 1, maxval = 4, group = G_PNL, tooltip = "1 = only the newest trade (cleanest). More: older running trades keep their entry, stop and tag; only the newest gets the risk band and R levels.")
+string pStyle   = input.string("Dark card", "Panel style", options = ["Dark card", "Light card", "Match the chart theme"], group = G_PNL)
+string panelSz  = input.string("Normal", "Panel text", options = ["Small", "Normal", "Large"], group = G_PNL)
+
+G_GRADE = "Signal grade"
+string gradeAl  = input.string("All grades", "Alert on", options = ["All grades", "A and B", "Only A"], group = G_GRADE, tooltip = "Every setup gets a score out of 5: higher timeframes agreeing (2), London / New York session (1), a well-formed range (1), a normal stop size (1). A = 4–5, B = 3, C = 0–2.")
+bool   gradeTag = input.bool(true, "Show the grade on the consolidation tag", group = G_GRADE, tooltip = "Only the consolidation tag carries the grade (e.g. VA1 · CHOCH ↓ · A). Hover it to see why.")
+
+bool   statsOn  = input.bool(false, "Show the backtest card (expanded panel)", group = G_STATS, tooltip = "Every signal on the loaded candles, scored in R: +target when price reached it before the stop, −1R when the stop came first. A candle that touches both counts as a loss. No spread or commission. Past results don't promise future results.")
+float  statsT   = input.float(2.0, "Target for the card when TP is open (R)", minval = 0.5, maxval = 20, step = 0.5, group = G_STATS)
+
+string themeIn  = input.string("Auto (match chart)", "Theme", options = ["Auto (match chart)", "Light", "Dark", "Midnight", "Custom"], group = G_LOOK, tooltip = "The terminal's three palettes. Auto picks Light or Dark from the chart background. Custom uses the colours below.")
+string chartSz  = input.string("Small", "Chart text", options = ["Tiny", "Small", "Normal"], group = G_LOOK)
+color  cBuyIn   = input.color(#27b774, "Custom: buy", group = G_LOOK, inline = "c1")
+color  cSellIn  = input.color(#ef5b62, "sell", group = G_LOOK, inline = "c1")
+color  cAccIn   = input.color(#1e9a65, "accent", group = G_LOOK, inline = "c1")
+color  cTxtIn   = input.color(#111111, "Custom: text", group = G_LOOK, inline = "c2")
+color  cMutIn   = input.color(#8b9490, "muted", group = G_LOOK, inline = "c2")
+color  cPanIn   = input.color(#ffffff, "panel", group = G_LOOK, inline = "c2")
+
+bool   alValid  = input.bool(true, "Alert when a signal turns valid (price retested the zone)", group = G_ALR, tooltip = "Like the terminal's pop-up. Create an alert on this indicator with “Any alert() function call”.")
+bool   alZone   = input.bool(false, "Alert when a new zone appears (body-close break)", group = G_ALR)
+bool   alNear   = input.bool(false, "Alert when price closes near a waiting zone (⚡ almost)", group = G_ALR)
+string alFmt    = input.string("Text", "Alert message", options = ["Text", "JSON (webhook)"], group = G_ALR, tooltip = "JSON sends {\"event\",\"side\",\"va\",\"grade\",\"score\",\"symbol\",\"tf\",\"entry\",\"sl\",\"tp\",\"zone_lo\",\"zone_hi\"} for bots and webhooks.")
+
+// the system's fixed-R take profit (0 = none): only "Fixed R" has one, like trTpR()
+float tpR0 = tpModeIn == TP_FIXED ? tpR : 0.0
+// the exit plan's breakeven and partial-close levels in R (0 = off): drawn on the running trade
+float beR0 = beIn == "Stop to entry at 1R" ? 1.0 : beIn == "Stop to entry at 1.5R" ? 1.5 : beIn == "Stop to entry at 2R" ? 2.0 : 0.0
+float prR0 = partIn == "50% at 1R" ? 1.0 : partIn == "50% at 2R" ? 2.0 : 0.0
+float tgt  = tpR0 > 0 ? tpR0 : statsT          // what the backtest card scores
+bool  jsonOn = alFmt == "JSON (webhook)"
+
+// ---------- colours: the terminal palettes (gp-theme.css) ----------
+float  bgLuma     = 0.299 * color.r(chart.bg_color) + 0.587 * color.g(chart.bg_color) + 0.114 * color.b(chart.bg_color)
+bool   chartLight = bgLuma > 140
+string theme      = themeIn == "Auto (match chart)" ? (chartLight ? "Light" : "Dark") : themeIn
+bool   lt         = theme == "Light" or (theme == "Custom" and chartLight)
+bool   dark       = not lt
+
+color cBuy = switch theme
+    "Light"    => #27b774
+    "Dark"     => #3aa877
+    "Midnight" => #16c784
+    => cBuyIn
+color cSell = switch theme
+    "Light"    => #ef5b62
+    "Dark"     => #e0676d
+    "Midnight" => #f0454f
+    => cSellIn
+color cAcc = switch theme
+    "Light"    => #1e9a65
+    "Dark"     => #3aa877
+    "Midnight" => #f5b73b
+    => cAccIn
+color cTxt = switch theme
+    "Light"    => #111111
+    "Dark"     => #dadee3
+    "Midnight" => #e8ecf3
+    => cTxtIn
+color cMut = switch theme
+    "Light"    => #8b9490
+    "Dark"     => #8e9baa
+    "Midnight" => #8a94a8
+    => cMutIn
+color cPan = switch theme
+    "Light"    => #ffffff
+    "Dark"     => #272e34
+    "Midnight" => #10141c
+    => cPanIn
+// the panel has its own colours: a dark or light card, whatever the chart looks like (or the chart's own palette)
+bool  pMatch = pStyle == "Match the chart theme"
+bool  pDark  = pStyle == "Dark card" or (pMatch and dark)
+color pBg    = pMatch ? cPan : pDark ? #272e34 : #ffffff      // the terminal's own card colours (--panel / --panel2 / --line)
+color pHdr   = pDark ? #2d343c : #f3f6f4
+color pFrm   = pDark ? #454f5b : #d2d9d5
+color pTxt   = pMatch ? cTxt : pDark ? #e3e7eb : #111111
+color pMut   = pMatch ? cMut : pDark ? #8e9baa : #7d8783
+color pBuy   = pMatch ? cBuy : pDark ? #3fbf84 : #1c9a62
+color pSell  = pMatch ? cSell : pDark ? #ec6b72 : #d84a51
+color pAcc   = pMatch ? cAcc : pDark ? #3fbf84 : #1e9a65
+
+color edgeCol = lt ? cTxt : cMut         // range outlines: the text colour on light (soft), the muted grey on dark
+color tagBg   = dark ? #1b2024 : #ffffff  // the "VA1 · CHOCH" tag
+
+string szC = switch chartSz
+    "Small"  => size.small
+    "Normal" => size.normal
+    => size.tiny
+string szS = switch panelSz
+    "Normal" => size.small
+    "Large"  => size.normal
+    => size.tiny
+string szL = switch panelSz
+    "Normal" => size.normal
+    "Large"  => size.large
+    => size.small
+
+// ---------- one setup, as trScan() keeps it ----------
+ST_AWAY      = 0   // zone made, price still has to leave it first
+ST_WAIT      = 1   // waiting for the retest
+ST_VALID     = 2   // price retested the zone: the signal
+ST_INVALID   = 3   // a candle closed beyond the stop first
+ST_EXPIRED   = 4   // no retest within the max candles
+ST_CANCELLED = 5   // a break the other way came first
+OUT_OPEN     = 1
+OUT_SL       = 2
+
+type Setup
+    int    trNum            // 1 = VA1, 2 = VA2, 3 = VA3…
+    int    dir              // 1 = buy, -1 = sell
+    int    bFrom            // the consolidation: first and last candle, high and low
+    int    bTo
+    float  bHi
+    float  bLo
+    int    brk              // the breaking candle
+    float  zl               // the zone
+    float  zh
+    float  entry
+    float  sl
+    int    state
+    int    trig    = -1     // the retest candle (entry)
+    int    endBar  = -1
+    float  maxR    = 0.0    // best R reached after the entry
+    int    outc    = 0      // OUT_OPEN / OUT_SL
+    float  risk    = 0.0
+    float  qHi     = na     // the retest candle's high / low
+    float  qLo     = na
+    int    h1      = -1     // the candle that first reached 1R / 2R / 3R / the fixed TP (= trScan's path)
+    int    h2      = -1
+    int    h3      = -1
+    int    hTp     = -1
+    int    hT      = -1     // ...the backtest card's target
+    bool   counted = false  // already scored in the backtest card
+    bool   pass    = true   // passes the structure + session filters
+    string why     = ""     // why not
+    bool   nearSent = false // "almost" alert sent
+    int    score   = 0      // signal grade: score out of 5, the letter, and what it was made of
+    string grade   = "C"
+    string gWhy    = ""
+
+// ---------- helpers ----------
+fade(color c, float op) => color.new(c, 100 - 100 * math.max(0.0, math.min(1.0, op)))
+mix(color a, color b, float k) => color.rgb(color.r(a) * k + color.r(b) * (1 - k), color.g(a) * k + color.g(b) * (1 - k), color.b(a) * k + color.b(b) * (1 - k))
+fmt(float v) => str.tostring(v, format.mintick)
+pt(float v) => str.tostring(math.abs(v), format.mintick)
+f1(float v) => str.tostring(v, "0.0")
+fnum(float v) => str.tostring(v, "#.##")
+sgnR(float v) => (v >= 0 ? "+" : "−") + str.tostring(math.abs(v), "0.0") + "R"
+// drawings may not reach further back than the history buffer (max_bars_back): never ask for more
+cx(int x) => math.max(x, bar_index - 4500)
+
+shown(Setup s) =>
+    switch showIn
+        "Only VA1"       => s.trNum == 1
+        "Only VA2"       => s.trNum == 2
+        "VA1, VA2, VA3…" => true
+        => s.trNum <= 2
+
+// where a triggered trade ended: the stop candle, the candle that reached the system's fixed TP, or -1 = STILL RUNNING
+tradeEnd(Setup z, int n) =>
+    z.outc == OUT_SL ? z.endBar : tpR0 > 0 and z.hTp >= 0 ? z.hTp : z.trig + 600 <= n - 1 ? z.trig + 600 : -1
+
+hitOf(Setup z, int R) => R == 1 ? z.h1 : R == 2 ? z.h2 : z.h3
+
+// the exit plan in words, like trExitDesc()
+exitDesc() =>
+    string onTf = tpTfIn == "The trade's own timeframe" ? "" : " " + tpTfIn
+    float  be = beIn == "Stop to entry at 1R" ? 1.0 : beIn == "Stop to entry at 1.5R" ? 1.5 : beIn == "Stop to entry at 2R" ? 2.0 : 0.0
+    float  pr = partIn == "50% at 1R" ? 1.0 : partIn == "50% at 2R" ? 2.0 : 0.0
+    string fl = filtIn == FILT_OFF ? "" : str.substring(filtIn, 0, str.pos(filtIn, " "))
+    string m  = tpModeIn == TP_FIXED ? (tpR > 0 ? "TP " + fnum(tpR) + "R" : "TP open") : tpModeIn == "At the opposite zone" ? "TP at opposite zone" + onTf : tpModeIn == "Close on an opposite signal" ? "exit on opposite signal" + onTf : "no TP"
+    m + (be > 0 ? " · BE at " + fnum(be) + "R" : "") + (trailIn ? " · trail behind BOS" : "") + (pr > 0 ? " · 50% off at " + fnum(pr) + "R" : "") + (fl != "" ? " · only with " + fl + " structure" : "")
+
+sessOk(int h) =>
+    switch sessIn
+        "London + New York (07–21 UTC)" => h >= 7 and h < 21
+        "London (07–16 UTC)"            => h >= 7 and h < 16
+        "New York (12–21 UTC)"          => h >= 12 and h < 21
+        => true
+
+// does this setup's grade pass the alert filter?
+gradeOk(Setup s) => gradeAl == "All grades" or (gradeAl == "Only A" ? s.grade == "A" : s.grade != "C")
+
+// alert text: plain, or JSON for webhooks / bots
+alertMsg(Setup s, string ev) =>
+    string side = s.dir > 0 ? "buy" : "sell"
+    float  tp   = tpR0 > 0 ? s.entry + s.dir * math.abs(s.entry - s.sl) * tpR0 : na
+    if jsonOn
+        "{\"event\":\"" + ev + "\",\"side\":\"" + side + "\",\"va\":" + str.tostring(s.trNum) + ",\"grade\":\"" + s.grade + "\",\"score\":" + str.tostring(s.score) + ",\"symbol\":\"" + syminfo.ticker + "\",\"tf\":\"" + timeframe.period + "\",\"entry\":" + fmt(s.entry) + ",\"sl\":" + fmt(s.sl) + ",\"tp\":" + (na(tp) ? "null" : fmt(tp)) + ",\"zone_lo\":" + fmt(s.zl) + ",\"zone_hi\":" + fmt(s.zh) + "}"
+    else
+        string arrow = s.dir < 0 ? "▼ SELL" : "▲ BUY"
+        string head  = ev == "valid" ? " valid on " : ev == "zone" ? " zone on " : " almost: price near the zone on "
+        string body  = ev == "valid" ? ": price retested the zone" : ev == "zone" ? ": body close " + (s.dir < 0 ? "below" : "above") + " the range (" + (s.trNum == 1 ? "CHOCH" : "BOS") + ") · zone " + fmt(s.zl) + " – " + fmt(s.zh) : ": zone " + fmt(s.zl) + " – " + fmt(s.zh)
+        arrow + " VA" + str.tostring(s.trNum) + " [" + s.grade + "]" + head + syminfo.ticker + " " + timeframe.period + body + " · entry " + fmt(s.entry) + " · SL " + fmt(s.sl) + (na(tp) ? "" : " · TP " + fmt(tp))
+
+// one candle for one setup: leave the zone, retest, stop, expiry, then what happened after the entry.
+// Returns [still followed, turned valid, card result: 1 = reached the card's target first, -1 = stopped first, 0 = nothing yet]
+stepSetup(Setup s, bool closedBar) =>
+    bool alive = true
+    bool bv    = false
+    int  res   = 0
+    int  b     = bar_index
+    if s.state == ST_AWAY or s.state == ST_WAIT
+        if closedBar and (s.dir < 0 ? close > s.sl : close < s.sl)
+            s.state  := ST_INVALID
+            s.endBar := b
+            alive    := false
+        else if s.state == ST_AWAY
+            if (s.dir < 0 ? high < s.zl : low > s.zh)
+                s.state := ST_WAIT
+        else if (s.dir < 0 ? high >= s.zl : low <= s.zh)
+            s.state := ST_VALID
+            s.trig  := b
+            s.outc  := OUT_OPEN
+            s.risk  := math.max(math.abs(s.entry - s.sl), 1e-9)
+            s.qHi   := high
+            s.qLo   := low
+            bv      := true
+        else if b - s.brk > maxAge
+            s.state  := ST_EXPIRED
+            s.endBar := b
+            alive    := false
+    // after the entry. Careful (no wishful fills): on the entry candle only the stop counts, a candle that touches both is a loss.
+    if alive and s.state == ST_VALID
+        if b >= s.trig + 600
+            alive := false
+        else if (s.dir < 0 ? high >= s.sl : low <= s.sl)
+            s.outc   := OUT_SL
+            s.endBar := b
+            alive    := false
+            if not s.counted
+                s.counted := true
+                res       := -1
+        else if b > s.trig
+            s.maxR := math.max(s.maxR, (s.dir < 0 ? s.entry - low : high - s.entry) / s.risk)
+            if s.h1 < 0 and s.maxR >= 1
+                s.h1 := b
+            if s.h2 < 0 and s.maxR >= 2
+                s.h2 := b
+            if s.h3 < 0 and s.maxR >= 3
+                s.h3 := b
+            if s.hTp < 0 and tpR0 > 0 and s.maxR >= tpR0
+                s.hTp := b
+            if s.hT < 0 and s.maxR >= tgt
+                s.hT := b
+                if not s.counted
+                    s.counted := true
+                    res       := 1
+    [alive, bv, res]
+
+viewOf(map<int, Setup> m, Setup o) => m.contains(o.brk) ? m.get(o.brk) : o
+
+posOf(string p) =>
+    switch p
+        "Top center"    => position.top_center
+        "Top left"      => position.top_left
+        "Middle right"  => position.middle_right
+        "Middle left"   => position.middle_left
+        "Bottom right"  => position.bottom_right
+        "Bottom center" => position.bottom_center
+        "Bottom left"   => position.bottom_left
+        => position.top_right
+
+// The panel table has 5 columns: 0 = the card's coloured left edge "▍", 1-3 = the text (merged), 4 = the note on the right.
+// Only the valid-signal card uses columns 1-4 separately (its ENTRY / SL / RISK / NOW grid, like the terminal).
+pRow(table t, int r, string s, color tc, string note, color nc, color edgeC, color bg, string sz, bool bold) =>
+    t.cell(0, r, "▍", text_color = edgeC, bgcolor = bg, text_size = sz, text_halign = text.align_left)
+    t.cell(1, r, s, text_color = tc, bgcolor = bg, text_size = sz, text_halign = text.align_left, text_formatting = bold ? text.format_bold : text.format_none)
+    t.merge_cells(1, r, 3, r)
+    t.cell(4, r, note, text_color = nc, bgcolor = bg, text_size = sz, text_halign = text.align_right, text_formatting = text.format_bold)
+
+// one row of the ENTRY / SL / RISK / NOW grid
+pGrid(table t, int r, string a, string b, string c, string d, color tc, color edgeC, color bg, string sz, bool bold) =>
+    fm = bold ? text.format_bold : text.format_none
+    t.cell(0, r, "▍", text_color = edgeC, bgcolor = bg, text_size = sz)
+    t.cell(1, r, a, text_color = tc, bgcolor = bg, text_size = sz, text_halign = text.align_left, text_formatting = fm)
+    t.cell(2, r, b, text_color = tc, bgcolor = bg, text_size = sz, text_halign = text.align_left, text_formatting = fm)
+    t.cell(3, r, c, text_color = tc, bgcolor = bg, text_size = sz, text_halign = text.align_left, text_formatting = fm)
+    t.cell(4, r, d, text_color = tc, bgcolor = bg, text_size = sz, text_halign = text.align_left, text_formatting = fm)
+
+// a checklist line: ✅ done (text colour) or ⬜ still to come (grey), and a note on the right
+pCheck(table t, int r, bool ok, string s, string note, color noteC, color edgeC, color bg, string sz) =>
+    pRow(t, r, (ok ? "✅ " : "⬜ ") + s, ok ? pTxt : pMut, note, noteC, edgeC, bg, sz, false)
+
+// break a long line into lines of at most w characters (TradingView table cells don't wrap by themselves)
+wrapTxt(string s, int w) =>
+    array<string> ws = str.split(s, " ")
+    string out = ""
+    int    cur = 0
+    for wd in ws
+        int l = str.length(wd)
+        if cur > 0 and cur + 1 + l > w
+            out += "\n" + wd
+            cur := l
+        else
+            out += (cur > 0 ? " " : "") + wd
+            cur += (cur > 0 ? 1 : 0) + l
+    out
+
+// =====================================================================
+//  HIGHER TIMEFRAMES: the same consolidation / break rules, run inside request.security().
+//  Only structure (last break, VRS count) and the newest zone. Values of the last CLOSED candle: never repaints.
+// =====================================================================
+htfInfo() =>
+    float tr_ = na(close[1]) ? high - low : math.max(high - low, math.abs(high - close[1]), math.abs(low - close[1]))
+    var float a = na
+    a := na(a) ? tr_ : (a * 13 + tr_) / 14
+    int   m_  = math.max(3, minBars)
+    float hh  = ta.highest(high, m_)
+    float ll  = ta.lowest(low, m_)
+    var int   md   = 0
+    var int   p    = 1
+    var float h    = na
+    var float l    = na
+    var float lim  = na
+    var int   ld   = 0
+    var int   cnt  = 0
+    var int   sDir = 0
+    var int   sSt  = -1     // newest zone: -1 none, 0 away, 1 waiting, 2 retested (valid), 3 gone
+    var float szl  = na
+    var float szh  = na
+    var float ssl  = na
+    var int   sBrk = 0
+    int b = bar_index
+    if sSt == 0 or sSt == 1
+        if (sDir < 0 ? close > ssl : close < ssl)
+            sSt := 3
+        else if sSt == 0
+            if (sDir < 0 ? high < szl : low > szh)
+                sSt := 1
+        else if (sDir < 0 ? high >= szl : low <= szh)
+            sSt := 2
+        else if b - sBrk > maxAge
+            sSt := 3
+    if md == 1
+        if close > h or close < l
+            int d = close > h ? 1 : -1
+            cnt  := d == ld ? cnt + 1 : 1
+            ld   := d
+            szl  := d < 0 ? close : low
+            szh  := d < 0 ? high : close
+            ssl  := d < 0 ? math.max(h, high) + a * slBuf : math.min(l, low) - a * slBuf
+            sDir := d
+            sSt  := awayIn ? 0 : 1
+            sBrk := b
+            md   := 0
+            p    := b + 1
+        else
+            float nh = math.max(h, high)
+            float nl = math.min(l, low)
+            if nh - nl > lim * 1.6
+                md := 0
+                p  := b
+            else
+                h := nh
+                l := nl
+    else if b - m_ + 1 >= p and hh - ll <= a * rangeAtr
+        md  := 1
+        h   := hh
+        l   := ll
+        lim := a * rangeAtr
+    [ld[1], cnt[1], sDir[1], sSt[1]]
+
+[d15, c15, zd15, zs15] = request.security(syminfo.tickerid, "15", htfInfo(), lookahead = barmerge.lookahead_on)
+[d30, c30, zd30, zs30] = request.security(syminfo.tickerid, "30", htfInfo(), lookahead = barmerge.lookahead_on)
+[d60, c60, zd60, zs60] = request.security(syminfo.tickerid, "60", htfInfo(), lookahead = barmerge.lookahead_on)
+[d240, c240, zd240, zs240] = request.security(syminfo.tickerid, "240", htfInfo(), lookahead = barmerge.lookahead_on)
+[dD, cD, zdD, zsD] = request.security(syminfo.tickerid, "D", htfInfo(), lookahead = barmerge.lookahead_on)
+
+// the structure filter's timeframe ("" = off) and its last break direction now
+string filtTf = filtIn == FILT_OFF ? "" : str.substring(filtIn, 0, str.pos(filtIn, " "))
+int filtDir = switch filtTf
+    "M15" => nz(d15)
+    "M30" => nz(d30)
+    "H1"  => nz(d60)
+    "H4"  => nz(d240)
+    "D1"  => nz(dD)
+    => 0
+
+// how many higher timeframes (at or above the chart's) have their last break up / down: the grade's biggest part
+int chSecG = timeframe.in_seconds()
+htfCount(int secTf, int d, int want) => secTf >= chSecG and d == want ? 1 : 0
+int htfUp  = htfCount(900, nz(d15), 1) + htfCount(1800, nz(d30), 1) + htfCount(3600, nz(d60), 1) + htfCount(14400, nz(d240), 1) + htfCount(86400, nz(dD), 1)
+int htfDn  = htfCount(900, nz(d15), -1) + htfCount(1800, nz(d30), -1) + htfCount(3600, nz(d60), -1) + htfCount(14400, nz(d240), -1) + htfCount(86400, nz(dD), -1)
+int htfTot = htfUp + htfDn
+
+// =====================================================================
+//  THE ENGINE: trScan() run candle by candle (same result as scanning the whole history at once).
+//  It only moves on CLOSED candles. The live candle is shown from copies (see "preview"), so nothing it does can stick.
+// =====================================================================
+// ATR 14 exactly like trAtrA(): Wilder smoothing that starts from the first candle's range
+float trueR = na(close[1]) ? high - low : math.max(high - low, math.abs(high - close[1]), math.abs(low - close[1]))
+var float atrV = na
+atrV := na(atrV) ? trueR : (atrV * 13 + trueR) / 14
+
+int   mb  = math.max(3, minBars)
+float wHi = ta.highest(high, mb)
+float wLo = ta.lowest(low, mb)
+
+var int   rMode   = 0       // 0 = looking for a consolidation, 1 = inside one
+var int   ptr     = 1       // the first candle a new consolidation may start at
+var int   rFrom   = 0
+var float rHi     = na
+var float rLo     = na
+var float rLim    = na
+var int   lastDir = 0
+var int   trCount = 0
+var array<Setup> setups = array.new<Setup>()   // recent setups, for drawing
+var array<Setup> active = array.new<Setup>()   // setups still waiting, or trades still running
+
+// backtest card: per VA1 / VA2 / VA3+ ... trades, wins, net R, gross win, gross loss; and the equity curve of all of them
+var array<float> stN  = array.new<float>(3, 0.0)
+var array<float> stW  = array.new<float>(3, 0.0)
+var array<float> stR  = array.new<float>(3, 0.0)
+var array<float> stGW = array.new<float>(3, 0.0)
+var array<float> stGL = array.new<float>(3, 0.0)
+var float eqR = 0.0
+var float eqPk = 0.0
+var float eqDD = 0.0
+var int   lsCur = 0
+var int   lsMax = 0
+
+bool   isClosed  = barstate.isconfirmed        // a break, and a close beyond the stop, need a CLOSED candle
+int    bi        = bar_index
+bool   validBuy  = false
+bool   validSell = false
+bool   newZone   = false
+string validMsg  = ""
+string zoneMsg   = ""
+string nearMsg   = ""
+var map<int, Setup> pv = map.new<int, Setup>()  // the live candle's view of the setups that are still followed
+pv.clear()
+
+addMsg(string acc, string m) => acc + (acc == "" ? "" : "\n") + m
+
+if isClosed
+    // 1) every setup already made
+    if active.size() > 0
+        array<Setup> keep = array.new<Setup>()
+        for s in active
+            [alive, bv, res] = stepSetup(s, true)
+            if bv and shown(s) and s.pass and gradeOk(s)
+                validBuy  := validBuy or s.dir > 0
+                validSell := validSell or s.dir < 0
+                validMsg  := addMsg(validMsg, alertMsg(s, "valid"))
+            if res != 0 and shown(s) and s.pass
+                int bk = math.min(s.trNum, 3) - 1
+                stN.set(bk, stN.get(bk) + 1)
+                if res > 0
+                    stW.set(bk, stW.get(bk) + 1)
+                    stR.set(bk, stR.get(bk) + tgt)
+                    stGW.set(bk, stGW.get(bk) + tgt)
+                    eqR   += tgt
+                    lsCur := 0
+                else
+                    stR.set(bk, stR.get(bk) - 1)
+                    stGL.set(bk, stGL.get(bk) + 1)
+                    eqR   -= 1
+                    lsCur += 1
+                    lsMax := math.max(lsMax, lsCur)
+                eqPk := math.max(eqPk, eqR)
+                eqDD := math.max(eqDD, eqPk - eqR)
+            // ⚡ almost: a waiting zone with price closing within 0.6 ATR of it
+            if alive and s.state == ST_WAIT and not s.nearSent and shown(s) and s.pass and gradeOk(s)
+                float dNear = s.dir < 0 ? s.zl - close : close - s.zh
+                if dNear <= atrV * 0.6
+                    s.nearSent := true
+                    nearMsg    := addMsg(nearMsg, alertMsg(s, "almost"))
+            if alive
+                keep.push(s)
+        active := keep
+
+    // 2) consolidations and breaks (the forming candle never breaks a range)
+    if rMode == 1
+        if close > rHi or close < rLo                              // a candle BODY closes outside the range
+            int dir = close > rHi ? 1 : -1
+            trCount := dir == lastDir ? trCount + 1 : 1
+            lastDir := dir
+            float zl = dir < 0 ? close : low
+            float zh = dir < 0 ? high : close
+            float minH = atrV * 0.05
+            if zh - zl < minH
+                if dir < 0
+                    zh := zl + minH
+                else
+                    zl := zh - minH
+            float sl = dir < 0 ? math.max(rHi, high) + atrV * slBuf : math.min(rLo, low) - atrV * slBuf
+            Setup ns = Setup.new(trCount, dir, rFrom, bi - 1, rHi, rLo, bi, zl, zh, close, sl, awayIn ? ST_AWAY : ST_WAIT)
+            // filters: structure of the higher timeframe (at this moment), and the session of the breaking candle
+            bool okS = filtTf == "" or filtDir == dir
+            bool okT = sessOk(hour(time, "UTC"))
+            ns.pass := okS and okT
+            ns.why  := not okS ? "against " + filtTf + " structure" : not okT ? "outside session" : ""
+            // grade: score out of 5 -> A (4-5) / B (3) / C (0-2)
+            int   agree = dir > 0 ? htfUp : htfDn
+            int   pH    = htfTot == 0 ? 1 : agree * 4 >= htfTot * 3 ? 2 : agree * 2 >= htfTot ? 1 : 0
+            int   hUtc  = hour(time, "UTC")
+            int   pS    = hUtc >= 7 and hUtc < 21 ? 1 : 0
+            int   nBars = bi - rFrom
+            int   pR    = nBars >= mb + 3 ? 1 : 0
+            float stopA = math.abs(close - sl) / atrV
+            int   pK    = stopA >= 0.5 and stopA <= 2.5 ? 1 : 0
+            ns.score := pH + pS + pR + pK
+            ns.grade := ns.score >= 4 ? "A" : ns.score == 3 ? "B" : "C"
+            ns.gWhy  := "Grade " + ns.grade + " · " + str.tostring(ns.score) + "/5\n" + (pH == 2 ? "✓✓" : pH == 1 ? "✓" : "✗") + " higher timeframes " + str.tostring(agree) + "/" + str.tostring(htfTot) + " agree\n" + (pS == 1 ? "✓" : "✗") + " London / New York session\n" + (pR == 1 ? "✓" : "✗") + " well-formed range (" + str.tostring(nBars) + " candles)\n" + (pK == 1 ? "✓" : "✗") + " normal stop (" + str.tostring(stopA, "0.0") + "× ATR)"
+            // a break the other way cancels zones that were still waiting (the structure changed)
+            array<Setup> keep2 = array.new<Setup>()
+            for a in active
+                if a.dir != dir and (a.state == ST_AWAY or a.state == ST_WAIT)
+                    a.state  := ST_CANCELLED
+                    a.endBar := bi
+                else
+                    keep2.push(a)
+            active := keep2
+            setups.push(ns)
+            active.push(ns)
+            if shown(ns) and ns.pass and gradeOk(ns)
+                newZone := true
+                zoneMsg := alertMsg(ns, "zone")
+            rMode := 0
+            ptr   := bi + 1
+        else
+            float nh = math.max(rHi, high)
+            float nl = math.min(rLo, low)
+            if nh - nl > rLim * 1.6                                // a huge wick: not a clean range anymore
+                rMode := 0
+                ptr   := bi
+            else
+                rHi := nh
+                rLo := nl
+    else if bi - mb + 1 >= ptr and wHi - wLo <= atrV * rangeAtr  // the last candles fit inside range size × ATR
+        rMode := 1
+        rFrom := bi - mb + 1
+        rHi   := wHi
+        rLo   := wLo
+        rLim  := atrV * rangeAtr
+else
+    // preview: the live (still forming) candle on COPIES. A retest shows (and alerts) at once, like the terminal;
+    // a close beyond the stop or a break only counts when the candle has closed.
+    for s in active
+        Setup c = s.copy()
+        [alive, bv, res] = stepSetup(c, false)
+        pv.put(c.brk, c)
+        if bv and shown(c) and c.pass and gradeOk(c)
+            validBuy  := validBuy or c.dir > 0
+            validSell := validSell or c.dir < 0
+            validMsg  := addMsg(validMsg, alertMsg(c, "valid"))
+
+// only the last 1500 candles are drawn (as in the terminal): forget older setups
+while setups.size() > 0 and setups.first().brk < bi - 1600
+    setups.shift()
+
+// ---------- alerts ----------
+if alValid and validMsg != ""
+    alert(validMsg, alert.freq_once_per_bar)
+if alZone and zoneMsg != ""
+    alert(zoneMsg, alert.freq_once_per_bar_close)
+if alNear and nearMsg != ""
+    alert(nearMsg, alert.freq_once_per_bar_close)
+alertcondition(validBuy, "VRS valid BUY", "▲ BUY VRS signal valid on {{ticker}} {{interval}}: price retested the zone")
+alertcondition(validSell, "VRS valid SELL", "▼ SELL VRS signal valid on {{ticker}} {{interval}}: price retested the zone")
+alertcondition(newZone, "VRS new zone", "New VRS zone on {{ticker}} {{interval}}: a candle body closed outside the range")
+
+// =====================================================================
+//  THE CHART: the same picture as the terminal (redrawn on the last candle)
+// =====================================================================
+if barstate.islast
+    if array.size(box.all) > 0
+        for i = array.size(box.all) - 1 to 0
+            box.delete(array.get(box.all, i))
+    if array.size(line.all) > 0
+        for i = array.size(line.all) - 1 to 0
+            line.delete(array.get(line.all, i))
+    if array.size(label.all) > 0
+        for i = array.size(label.all) - 1 to 0
+            label.delete(array.get(label.all, i))
+    if array.size(table.all) > 0
+        for i = array.size(table.all) - 1 to 0
+            table.delete(array.get(table.all, i))
+
+    int n   = bi + 1
+    int fTo = isClosed ? bi : bi - 1     // the last closed candle of a range still forming
+
+    // what deserves attention: setups still waiting, and the newest signal. Everything older is drawn small (or not at all).
+    // Signals that fail a filter are never in focus.
+    array<int> focusB = array.new<int>()
+    Setup lastValid = na
+    for o in setups
+        Setup z = viewOf(pv, o)
+        if shown(z) and z.pass and z.brk > n - 1500 and z.state == ST_VALID
+            lastValid := z
+    if not na(lastValid)
+        if lastValid.outc == OUT_OPEN or lastValid.endBar > n - 60
+            focusB.push(lastValid.brk)
+    // trades still running stay on the chart (the newest few), with their levels drawn up to the current candle.
+    // Only ONE trade gets the full picture (risk band + R levels): the newest running one, else the newest signal.
+    int nRun    = 0
+    int fullBrk = focusB.size() > 0 ? focusB.get(0) : -1
+    if setups.size() > 0
+        for i = setups.size() - 1 to 0
+            if nRun >= maxRun
+                break
+            Setup z = viewOf(pv, setups.get(i))
+            if shown(z) and z.pass and z.brk > n - 1500 and z.state == ST_VALID and tradeEnd(z, n) == -1
+                if nRun == 0
+                    fullBrk := z.brk
+                focusB.push(z.brk)
+                nRun += 1
+
+    array<int>   tagX = array.new<int>()     // SELL / BUY entry tags, drawn last (on top of everything)
+    array<float> tagY = array.new<float>()
+    array<int>   tagD = array.new<int>()
+    for o in setups
+        Setup z = viewOf(pv, o)
+        if not shown(z) or z.brk <= n - 1500
+            continue
+        if not z.pass and failIn == "Hide"
+            continue
+        bool zLive = z.state == ST_AWAY or z.state == ST_WAIT
+        bool zDead = z.state == ST_INVALID or z.state == ST_EXPIRED or z.state == ST_CANCELLED
+        bool isF   = z.pass and (zLive or focusB.includes(z.brk))
+        if not isF and (histIn == "Hide" or (zDead and histIn != "Small + failed zones"))
+            continue
+        color  col = z.dir < 0 ? cSell : cBuy
+        float  yb  = z.dir < 0 ? z.bLo : z.bHi
+        string trS = "VA" + str.tostring(z.trNum)
+
+        if not isF
+            // ---- history (and filtered signals): small and quiet
+            float op = zDead or not z.pass ? (lt ? 0.45 : 0.3) : (lt ? 0.8 : 0.55)
+            box.new(cx(z.bFrom), z.bHi, cx(z.bTo), z.bLo, border_color = fade(edgeCol, (lt ? 0.35 : 1.0) * op), border_width = 1, border_style = line.style_dashed, bgcolor = color(na))
+            line.new(cx(z.bFrom), yb, cx(z.brk), yb, color = fade(col, op), width = 1)
+            label.new(cx(z.bFrom), z.bHi, trS + (z.pass ? "" : " ✗"), color = color(na), style = label.style_label_lower_left, textcolor = fade(lt ? cTxt : cMut, (lt ? 0.6 : 1.0) * op), size = szC, text_formatting = text.format_bold, tooltip = z.pass ? "" : "Filtered: " + z.why)
+            if z.state == ST_VALID
+                bool   win = z.maxR >= (tpR0 > 0 ? tpR0 : 1.0)
+                string res = tpR0 > 0 ? (z.maxR >= tpR0 ? "+" + fnum(tpR0) + "R" : z.outc == OUT_SL ? "−1R" : "open") : z.outc == OUT_SL ? (win ? "+" + f1(z.maxR) + "R" : "−1R") : "+" + f1(z.maxR) + "R"
+                label.new(cx(z.trig), z.entry, "•", color = color(na), style = label.style_none, textcolor = fade(col, z.pass ? 1.0 : 0.4), size = szC)
+                label.new(cx(z.trig), z.dir < 0 ? z.qHi : z.qLo, res, color = color(na), style = z.dir < 0 ? label.style_label_lower_left : label.style_label_upper_left, textcolor = fade(win ? cBuy : cMut, z.pass ? 0.9 : 0.4), size = szC, text_formatting = text.format_bold)
+            continue
+
+        // ---- in focus: the full picture
+        // the setup: a quiet grey outline with ONE tag ("VA1 · CHOCH ↑"), no grade here (the grade sits on the SELL / BUY tag only)
+        box.new(cx(z.bFrom), z.bHi, cx(z.bTo), z.bLo, border_color = fade(edgeCol, lt ? 0.45 : 0.8), border_width = 1, border_style = line.style_dashed, bgcolor = fade(cTxt, dark ? 0.045 : 0.04))
+        label.new(cx(z.bFrom), z.bHi, trS + " · " + (z.trNum == 1 ? "CHOCH" : "BOS") + (z.dir < 0 ? " ↓" : " ↑") + (gradeTag ? " · " + z.grade : ""), color = color(na), style = label.style_label_lower_left, textcolor = col, size = szC, text_formatting = text.format_bold, tooltip = z.gWhy)
+        line.new(cx(z.bFrom), yb, cx(z.brk), yb, color = col, width = 1)
+        // the zone only stays while it is unused: once price has reacted to it (the retest), it is removed
+        if zLive
+            box.new(cx(z.brk), z.zh, bi, z.zl, border_color = fade(col, lt ? 0.8 : 0.6), border_width = 1, bgcolor = fade(col, lt ? 0.14 : 0.18), extend = extend.right, text = trS + (z.dir < 0 ? " SELL" : " BUY") + " ZONE", text_size = szC, text_color = fade(col, 0.9), text_halign = text.align_right, text_valign = text.align_center, text_formatting = text.format_bold)
+        if z.state == ST_VALID
+            // running: up to the current candle · finished: up to the stop / TP candle
+            int   te      = tradeEnd(z, n)
+            bool  running = te == -1
+            int   xe      = running ? bi : cx(te)
+            float risk    = math.abs(z.entry - z.sl)
+            float g       = running ? 1.0 : (lt ? 0.8 : 0.7)     // running = full strength, finished = a little softer (still readable on white)
+            // the entry candle: the SELL / BUY tag carries the setup's grade ("SELL · A"), hover for why; a small dot at the entry price
+            // (the SELL / BUY tag itself is drawn after all setups, so no other tag can ever cover it)
+            tagX.push(cx(z.trig))
+            tagY.push(z.dir < 0 ? z.qHi : z.qLo)
+            tagD.push(z.dir)
+            label.new(cx(z.trig), z.entry, "•", color = color(na), style = label.style_none, textcolor = col, size = szC)
+            float  nowR  = (close - z.entry) * z.dir / (risk > 0 ? risk : 1.0)
+            bool   tpHit = te >= 0 and tpR0 > 0 and z.maxR >= tpR0
+            string head  = z.outc == OUT_SL ? (z.maxR >= 1 ? "stopped" : "stopped −1R") : tpHit ? "TP " + fnum(tpR0) + "R ✓" : running and z.trig < n - 1 ? sgnR(nowR) : "+" + f1(z.maxR) + "R"
+            string sub   = "E " + fmt(z.entry) + (z.trig < n - 1 and z.maxR >= 0.05 and not tpHit ? " · max +" + f1(z.maxR) + "R" : "")
+            // every level of ONE trade in ITS colour (buy green, sell red). The stop line is always red.
+            // Levels start at the ENTRY candle, and only the main trade gets the risk band and R levels.
+            bool full = z.brk == fullBrk
+            int  xs   = cx(z.trig)
+            if full
+                box.new(xs, math.max(z.entry, z.sl), xe, math.min(z.entry, z.sl), border_color = color(na), border_width = 0, bgcolor = fade(col, (lt ? 0.08 : 0.1) * g))
+            line.new(xs, z.entry, xe, z.entry, color = fade(col, 0.85 * g), width = 1)
+            line.new(xs, z.sl, xe, z.sl, color = fade(cSell, 0.6 * g), width = 1, style = line.style_dashed)
+            if tpR0 > 0
+                float yp = z.entry + z.dir * risk * tpR0
+                line.new(xs, yp, xe, yp, color = fade(col, 0.85 * g), width = 1)
+                label.new(xe, yp, "TP " + fnum(tpR0) + "R " + fmt(yp), color = color(na), style = label.style_label_left, textcolor = fade(col, running ? 1.0 : 0.6), size = szC, text_formatting = text.format_bold)
+            // R levels: only while the trade runs (a stopped / finished trade has no targets left).
+            // One already reached stops AT the candle that reached it; only levels still ahead run on to now
+            if rrIn and running and full
+                for R = 1 to 3
+                    if R == tpR0 or R == beR0 or R == prR0
+                        continue    // that level is drawn as the TP / breakeven / partial line instead
+                    float yr  = z.entry + z.dir * risk * R
+                    int   kc  = hitOf(z, R)
+                    bool  hit = kc >= 0 and kc <= (te >= 0 ? te : n - 1)
+                    if hit and rHitIn == R_HIDE
+                        continue    // already reached: gone (VRS settings -> "Reached R levels" shows them as ✓ tags)
+                    line.new(xs, yr, hit ? cx(kc) : xe, yr, color = fade(col, (hit ? 0.32 : (lt ? 0.62 : 0.55) - R * 0.1) * g), width = 1, style = line.style_dotted)
+                    if hit
+                        // the "1R ✓" tag sits LEFT of the candle that reached it, on the side price came from (above the line for a buy, below for a sell)
+                        label.new(cx(kc), yr, "•", color = color(na), style = label.style_none, textcolor = fade(col, g), size = szC)
+                        label.new(cx(kc), yr, str.tostring(R) + "R ✓", color = fade(chart.bg_color, 0.92 * g), style = z.dir > 0 ? label.style_label_lower_right : label.style_label_upper_right, textcolor = fade(col, 0.92 * g), size = szC, text_formatting = text.format_bold)
+                    else
+                        label.new(xe, yr, str.tostring(R) + "R", color = color(na), style = label.style_label_left, textcolor = fade(col, (running ? 0.8 : 0.5) - R * 0.08), size = szC, text_formatting = text.format_bold)
+            // the exit plan on the running trade: breakeven ("BE 1R" -> "BE ✓" once reached) and partial close ("50% 2R" -> "50% ✓")
+            bool beHit = beR0 > 0 and z.maxR >= beR0
+            if running and full
+                for j = 0 to 1
+                    float lv = j == 0 ? beR0 : prR0
+                    if lv <= 0 or lv == tpR0
+                        continue
+                    float yv   = z.entry + z.dir * risk * lv
+                    bool  done = z.maxR >= lv
+                    line.new(xs, yv, xe, yv, color = fade(cAcc, done ? 0.4 : 0.75), width = 1, style = line.style_dashed)
+                    label.new(xe, yv, (j == 0 ? "BE " : "50% ") + (done ? "✓" : fnum(lv) + "R"), color = fade(cAcc, lt ? 0.12 : 0.2), style = label.style_label_left, textcolor = cAcc, size = szC, text_formatting = text.format_bold, tooltip = j == 0 ? "Breakeven: move the stop to the entry once price reaches " + fnum(lv) + "R" : "Partial close: take 50% off at " + fnum(lv) + "R")
+            // the trade tag at the end: "▼ VA2  +0.6R" (solid while running, tinted when finished). No grade here: it is on the SELL / BUY tag.
+            string pill = (z.dir > 0 ? "▲" : "▼") + " VA" + str.tostring(z.trNum) + "  " + head
+            label.new(xe, z.entry, pill, color = running ? fade(col, 0.95) : fade(col, lt ? 0.16 : 0.22), style = label.style_label_left, textcolor = running ? #ffffff : col, size = szC, text_formatting = text.format_bold, tooltip = sub)
+            // the stop: its own small red chip, so it never melts into the risk band; once breakeven is reached it says so
+            label.new(xe, z.sl, "SL " + fmt(z.sl) + (running and beHit ? " → BE" : ""), color = fade(cSell, lt ? 0.12 : 0.2), style = label.style_label_left, textcolor = cSell, size = szC, text_formatting = text.format_bold)
+
+    // the SELL / BUY entry tags, last, so they always sit on top
+    if tagX.size() > 0
+        for i = 0 to tagX.size() - 1
+            int td = tagD.get(i)
+            label.new(tagX.get(i), tagY.get(i), td < 0 ? "SELL" : "BUY", color = fade(td < 0 ? cSell : cBuy, 0.9), style = td < 0 ? label.style_label_down : label.style_label_up, textcolor = #ffffff, size = szC, text_formatting = text.format_bold)
+
+    // a range still forming at the right edge: an outline and a short tag
+    if rMode == 1
+        box.new(cx(rFrom), rHi, bi, rLo, border_color = fade(cAcc, lt ? 0.75 : 0.55), border_width = 1, border_style = line.style_dashed, extend = extend.right, bgcolor = fade(cAcc, 0.03))
+        label.new(cx(rFrom), rHi, "RANGE · " + str.tostring(fTo - rFrom + 1), color = color(na), style = label.style_label_lower_left, textcolor = cAcc, size = szC, text_formatting = text.format_bold)
+
+    // =====================================================================
+    //  THE PANEL: "what are we waiting for" (top right), laid out like the terminal's: header + one card
+    // =====================================================================
+    if panelOn
+        float px     = close
+        Setup liveS  = na     // the newest setup still waiting
+        Setup recS   = na     // a signal from the last 15 candles, trade still open
+        for o in active
+            Setup s = viewOf(pv, o)
+            if shown(s) and s.pass
+                if s.state == ST_AWAY or s.state == ST_WAIT
+                    liveS := s
+                else if s.state == ST_VALID and s.outc == OUT_OPEN and s.trig >= n - 15
+                    recS := s
+        float  dist   = 0.0
+        bool   almost = false
+        string dS     = ""
+        color  lc     = pMut
+        if not na(liveS)
+            float near = liveS.dir < 0 ? liveS.zl : liveS.zh
+            dist   := liveS.dir < 0 ? near - px : px - near
+            almost := liveS.state == ST_WAIT and dist <= atrV * 0.6
+            dS     := liveS.dir < 0 ? "SELL" : "BUY"
+            lc     := liveS.dir < 0 ? pSell : pBuy
+
+        // collapsed: one line in the header (still shows what we wait for)
+        string mini  = "waiting for a range"
+        color  miniC = pTxt
+        if not na(recS)
+            mini  := (recS.dir < 0 ? "▼ VALID SELL VA" : "▲ VALID BUY VA") + str.tostring(recS.trNum) + " @ " + fmt(recS.entry)
+            miniC := recS.dir < 0 ? pSell : pBuy
+        else if not na(liveS)
+            mini  := (almost ? "⚡ " : "⏳ ") + dS + " VA" + str.tostring(liveS.trNum) + " · " + (liveS.state == ST_AWAY ? "wait for price to leave" : dist > 0 ? pt(dist) + " to zone" : "touching")
+            miniC := lc
+        else if rMode == 1
+            mini := "⏳ range " + fmt(rLo) + " – " + fmt(rHi)
+
+        // a real panel: solid background, a thin frame, a tinted header
+        table pnl = table.new(posOf(panelPos), 5, 40, bgcolor = pBg, frame_color = pFrm, frame_width = 1, border_width = 0)
+        int   r   = 0
+        // header like the terminal's: grip, the system name ▾, (collapsed) the status, and its icons
+        pRow(pnl, r, "⋮⋮  " + sysName + " ▾" + (panelCol ? "   " + mini : ""), panelCol ? miniC : pAcc, "🤖 📊 " + (panelCol ? "▾" : "▴") + " ⚙ ✕", pMut, pHdr, pHdr, szS, true)
+        r += 1
+
+        // higher timeframes (only those at or above the chart's): last break per timeframe
+        int chSec = timeframe.in_seconds()
+        array<string> nm  = array.from("M15", "M30", "H1", "H4", "D1")
+        array<int>    sec = array.from(900, 1800, 3600, 14400, 86400)
+        array<int>    dd  = array.from(nz(d15), nz(d30), nz(d60), nz(d240), nz(dD))
+        array<int>    cc  = array.from(nz(c15), nz(c30), nz(c60), nz(c240), nz(cD))
+        array<int>    zd  = array.from(nz(zd15), nz(zd30), nz(zd60), nz(zd240), nz(zdD))
+        array<int>    zs  = array.from(nz(zs15, -1), nz(zs30, -1), nz(zs60, -1), nz(zs240, -1), nz(zsD, -1))
+        int nUp = 0
+        int nDn = 0
+        string strip = ""
+        for k = 0 to 4
+            if sec.get(k) >= chSec
+                int d = dd.get(k)
+                nUp += d > 0 ? 1 : 0
+                nDn += d < 0 ? 1 : 0
+                strip += (strip == "" ? "" : "   ") + nm.get(k) + (d > 0 ? " ▲" : d < 0 ? " ▼" : " –")
+        if mtfOn and strip != ""
+            string bias  = nUp > nDn ? "▲ " + str.tostring(nUp) + "/" + str.tostring(nUp + nDn) : nDn > nUp ? "▼ " + str.tostring(nDn) + "/" + str.tostring(nUp + nDn) : "mixed"
+            color  biasC = nUp > nDn ? pBuy : nDn > nUp ? pSell : pMut
+            pRow(pnl, r, strip, pMut, bias, biasC, pHdr, pHdr, szS, false)
+            r += 1
+
+        if not panelCol
+            // ---- a signal right now: the terminal's "go" card (tinted, ENTRY / SL / RISK / NOW grid, ticket button)
+            if not na(recS)
+                color sc  = recS.dir < 0 ? pSell : pBuy
+                color gb  = mix(sc, pBg, pDark ? 0.14 : 0.09)
+                int   ago = bi - recS.trig
+                pRow(pnl, r, (recS.dir < 0 ? "▼ VALID SELL · VA" : "▲ VALID BUY · VA") + str.tostring(recS.trNum), pTxt, "", pMut, sc, gb, szL, true)
+                r += 1
+                pRow(pnl, r, (ago > 0 ? str.tostring(ago) + " bars ago" : "this candle") + " · price retested the zone", pMut, "", pMut, sc, gb, szS, false)
+                r += 1
+                pGrid(pnl, r, "ENTRY", "SL", "RISK", "NOW", pMut, sc, gb, szS, false)
+                r += 1
+                pGrid(pnl, r, fmt(recS.entry), fmt(recS.sl), pt(recS.entry - recS.sl), "+" + f1(recS.maxR) + "R max", pTxt, sc, gb, szS, true)
+                r += 1
+                pnl.cell(0, r, "▍", text_color = sc, bgcolor = gb, text_size = szS)
+                pnl.cell(1, r, "→ Fill order ticket", text_color = pTxt, bgcolor = pHdr, text_size = szS, text_halign = text.align_center, text_formatting = text.format_bold)
+                pnl.merge_cells(1, r, 4, r)
+                r += 1
+            // ---- a setup building: title, "setup building", the checklist (✅ / ⬜, notes on the right), entry / SL / exit plan, Set limit + Ticket
+            if not na(liveS) and na(recS)
+                color gl = pBg
+                pRow(pnl, r, (almost ? "⚡ ALMOST " : "⏳ ") + dS + " · VA" + str.tostring(liveS.trNum), pTxt, "", pMut, lc, gl, szL, true)
+                r += 1
+                pRow(pnl, r, almost ? "price is close to the zone" : "setup building", pMut, "", pMut, lc, gl, szS, false)
+                r += 1
+                pCheck(pnl, r, true, wrapTxt("Consolidation " + fmt(liveS.bLo) + " – " + fmt(liveS.bHi), 26), str.tostring(liveS.bTo - liveS.bFrom + 1) + " bars", pAcc, lc, gl, szS)
+                r += 1
+                pCheck(pnl, r, true, wrapTxt("Body close " + (liveS.dir < 0 ? "below" : "above") + " it (" + (liveS.trNum == 1 ? "CHOCH" : "BOS") + ") at " + fmt(liveS.entry), 26), "", pAcc, lc, gl, szS)
+                r += 1
+                if awayIn
+                    pCheck(pnl, r, liveS.state == ST_WAIT, "Price leaves the zone", "", pAcc, lc, gl, szS)
+                    r += 1
+                pCheck(pnl, r, false, wrapTxt("Retest the zone " + fmt(liveS.zl) + " – " + fmt(liveS.zh), 18), liveS.state == ST_WAIT ? (dist > 0 ? pt(dist) + " away" : "touching") : "", pAcc, lc, gl, szS)
+                r += 1
+                pRow(pnl, r, wrapTxt("Entry " + fmt(liveS.entry) + " · SL " + fmt(liveS.sl) + " (" + pt(liveS.entry - liveS.sl) + ") · " + exitDesc(), 40), pMut, "", pMut, lc, gl, szS, false)
+                r += 1
+                if liveS.state == ST_WAIT
+                    pnl.cell(0, r, "▍", text_color = lc, bgcolor = gl, text_size = szS)
+                    pnl.cell(1, r, "⚡ Set " + dS + " limit @ " + fmt(liveS.entry), text_color = #ffffff, bgcolor = fade(lc, 0.85), text_size = szS, text_halign = text.align_center, text_formatting = text.format_bold)
+                    pnl.merge_cells(1, r, 3, r)
+                    pnl.cell(4, r, "Ticket", text_color = pTxt, bgcolor = pHdr, text_size = szS, text_halign = text.align_center, text_formatting = text.format_bold)
+                    r += 1
+                else
+                    pRow(pnl, r, "⚡ One-click limit appears once price has left the zone", pMut, "", pMut, lc, gl, szS, true)
+                    r += 1
+            // ---- a signal AND the next setup: the slim "Next" card
+            if not na(recS) and not na(liveS)
+                pRow(pnl, r, "⏳ Next: " + dS + " VA" + str.tostring(liveS.trNum), pTxt, "", pMut, lc, pBg, szS, true)
+                r += 1
+                pRow(pnl, r, liveS.state == ST_AWAY ? "waiting for price to leave the zone" : dist > 0 ? pt(dist) + " from the zone" : "touching the zone", pMut, "", pMut, lc, pBg, szS, false)
+                if liveS.state == ST_WAIT
+                    r += 1
+                    pnl.cell(0, r, "▍", text_color = lc, bgcolor = pBg, text_size = szS)
+                    pnl.cell(1, r, "⚡ Set " + dS + " limit @ " + fmt(liveS.entry), text_color = #ffffff, bgcolor = fade(lc, 0.85), text_size = szS, text_halign = text.align_center, text_formatting = text.format_bold)
+                    pnl.merge_cells(1, r, 4, r)
+                r += 1
+            // ---- only a range forming
+            if rMode == 1 and na(liveS) and na(recS)
+                int nBuy  = lastDir == 1 ? trCount + 1 : 1      // which VRS a break each way would be
+                int nSell = lastDir == -1 ? trCount + 1 : 1
+                pRow(pnl, r, "⏳ Range forming", pTxt, "", pMut, pMut, pBg, szL, true)
+                r += 1
+                pRow(pnl, r, str.tostring(fTo - rFrom + 1) + " bars · " + fmt(rLo) + " – " + fmt(rHi), pMut, "", pMut, pMut, pBg, szS, false)
+                r += 1
+                pCheck(pnl, r, true, "Consolidation", "", pAcc, pMut, pBg, szS)
+                r += 1
+                pCheck(pnl, r, false, "Body close above " + fmt(rHi) + " →", "BUY VA" + str.tostring(nBuy), pBuy, pMut, pBg, szS)
+                r += 1
+                pCheck(pnl, r, false, "Body close below " + fmt(rLo) + " →", "SELL VA" + str.tostring(nSell), pSell, pMut, pBg, szS)
+                r += 1
+            // ---- nothing at all
+            if rMode != 1 and na(liveS) and na(recS)
+                pRow(pnl, r, "VRS signals on", pTxt, "", pMut, pMut, pBg, szL, true)
+                r += 1
+                pRow(pnl, r, "No range or zone right now · waiting for a consolidation", pMut, "", pMut, pMut, pBg, szS, false)
+                r += 1
+
+            // ---- STRUCTURE (optional): one compact line per higher timeframe
+            if mtfOn and strip != ""
+                pRow(pnl, r, "STRUCTURE", pMut, filtTf != "" ? "filter " + filtTf : "", pAcc, pHdr, pHdr, szS, true)
+                r += 1
+                for k = 0 to 4
+                    if sec.get(k) < chSec
+                        continue
+                    int    d   = dd.get(k)
+                    int    zsk = zs.get(k)
+                    int    zdk = zd.get(k)
+                    string brkT = nm.get(k) + "   " + (d == 0 ? "no break yet" : (d > 0 ? "▲ " : "▼ ") + (cc.get(k) == 1 ? "CHOCH" : "BOS") + " · VA" + str.tostring(cc.get(k)))
+                    string zT   = zsk == 0 ? (zdk > 0 ? "BUY" : "SELL") + " zone" : zsk == 1 ? (zdk > 0 ? "BUY" : "SELL") + " zone waiting" : zsk == 2 ? (zdk > 0 ? "BUY" : "SELL") + " retested" : "–"
+                    color  zc   = zsk >= 0 and zsk <= 2 ? (zdk > 0 ? pBuy : pSell) : pMut
+                    pRow(pnl, r, brkT, d > 0 ? pBuy : d < 0 ? pSell : pMut, zT, zc, nm.get(k) == filtTf ? pAcc : pBg, pBg, szS, nm.get(k) == filtTf)
+                    r += 1
+
+            // ---- BACKTEST (optional): every signal on the loaded candles, scored in R
+            if statsOn
+                float tN  = stN.sum()
+                float tW  = stW.sum()
+                float tR  = stR.sum()
+                float tGW = stGW.sum()
+                float tGL = stGL.sum()
+                bool  filtersOn = filtTf != "" or sessIn != SESS_ALL
+                pRow(pnl, r, "BACKTEST · target " + fnum(tgt) + "R" + (filtersOn ? " · filtered" : ""), pMut, tN > 0 ? sgnR(tR) : "", tR >= 0 ? pBuy : pSell, pHdr, pHdr, szS, true)
+                r += 1
+                for k = 0 to 2
+                    float nk = stN.get(k)
+                    if nk > 0
+                        float netK = stR.get(k)
+                        pRow(pnl, r, (k == 2 ? "VA3+" : "VA" + str.tostring(k + 1)) + "   " + str.tostring(nk, "#") + " trades · " + str.tostring(stW.get(k) / nk * 100, "0") + "% win", pTxt, sgnR(netK), netK >= 0 ? pBuy : pSell, pBg, pBg, szS, false)
+                        r += 1
+                if tN > 0
+                    string pf = tGL > 0 ? str.tostring(tGW / tGL, "0.00") : "∞"
+                    pRow(pnl, r, "PF " + pf + " · " + sgnR(tR / tN) + "/trade · DD " + f1(eqDD) + "R · streak " + str.tostring(lsMax), pMut, "", pMut, pBg, pBg, szS, false)
+                    r += 1
+                else
+                    pRow(pnl, r, "No finished trades yet", pMut, "", pMut, pBg, pBg, szS, false)
+                    r += 1

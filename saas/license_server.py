@@ -97,18 +97,21 @@ PLANS = {
                 "blurb": "One MT5 account, the full terminal and the journal."},
     # "lifetime" = one-time payment for lifetime access (limited to LIFETIME_SEATS)
     # lifetime3 = Lifetime paid in 3 monthly instalments (payment-plan downsell)
-    # "pro" = VRS VIP, the one paid level: VRS Indicator Pro + VRS Executor + the VIP Discord.
-    # Also given for free (interval "broker") to people who open an account with a partner broker through our link.
-    "pro": {"name": "VRS VIP", "month": 29, "year": 197, "lifetime": 497, "lifetime3": 179, "accounts": 5, "machines": 2,
-            "features": ["terminal", "journal", "alerts", "drawings", "layers", "basket", "manage", "paper", "copy",
-                         "goldzone_pro", "lab", "autotrade"],
-            "blurb": "VRS Indicator Pro on TradingView + VRS Executor on MT5 (risk manager, bot, TradingView → MT5 autotrade) + the VIP Discord."},
-    "elite": {"name": "VRS Executor Elite", "month": 59, "year": 590, "accounts": 25, "machines": 3, "hidden": True,
+    # The funnel (2026-11-13): Free (Lite) -> VIP (the indicator) -> Elite (the software).
+    # "pro" = VRS VIP: VRS Indicator Pro on TradingView + the VIP Discord. No MT5 software (accounts 0, machines 0).
+    #   Free (interval "broker") for people who open a VT Markets account through our link, or €29/month.
+    # "elite" = VRS Elite, the upsell: everything in VIP + VRS Executor (terminal, risk manager, journal, paper accounts),
+    #   the Autopilot bot, the Backtest Lab and TradingView -> MT5 autotrade. Lifetime is only sold for Elite.
+    "pro": {"name": "VRS VIP", "month": 29, "year": 197, "accounts": 0, "machines": 0,
+            "features": ["goldzone_pro"],
+            "blurb": "VRS Indicator Pro on TradingView (entry, stop, R levels, grades, backtest card, alerts) + the VIP Discord."},
+    "elite": {"name": "VRS Elite", "month": 59, "year": 497, "lifetime": 997, "lifetime3": 349, "accounts": 5, "machines": 2,
               "features": ["terminal", "journal", "alerts", "drawings", "layers", "basket", "manage", "paper", "copy",
                            "goldzone_pro", "lab", "autotrade", "priority"],
-              "blurb": "For many accounts and small teams: 25 accounts, 3 PCs, priority support."},
+              "blurb": "Everything in VIP + VRS Executor on MT5: the risk manager, the Autopilot bot, the Backtest Lab and TradingView → MT5 autotrade."},
 }
-TRIAL_PLAN = "pro"
+# The free trial is VRS Elite: 7 days of everything, then the customer keeps VIP (or VIP free through VT Markets) or Elite.
+TRIAL_PLAN = "elite"
 # Founding members: the first GP_FOUNDING_SEATS Pro customers pay these prices for as long as they stay subscribed.
 # Real scarcity: the seat count is live, and it closes at GP_FOUNDING_END (YYYY-MM-DD) or when the seats are gone.
 FOUNDING = {"plan": "pro", "month": 19, "year": 147, "seats": int(env("GP_FOUNDING_SEATS", "100") or 100), "ends": env("GP_FOUNDING_END", "")}
@@ -254,9 +257,13 @@ def effective(u) -> dict:
     valid = st in ("trialing", "active", "past_due") or (st == "canceled" and end > now)
     if u["banned"]:
         st, valid = "banned", False
-    plan = PLANS.get(u["plan"] or "", None)
-    return {"status": st, "valid": valid, "plan": u["plan"], "interval": u["interval"], "period_end": end,
-            "cancel_at_end": bool(u["cancel_at_end"]), "days_left": max(0, -int(-(end - now) // 86400)) if end else 0,
+    pl, ivl = u["plan"], u["interval"]
+    if not valid and not u["banned"] and (u["broker_status"] or "") == "approved":
+        # an approved VT Markets account keeps VIP for free, also after an Elite trial or subscription ends
+        st, valid, pl, ivl, end = "active", True, "pro", "broker", LIFETIME_END
+    plan = PLANS.get(pl or "", None)
+    return {"status": st, "valid": valid, "plan": pl, "interval": ivl, "period_end": end,
+            "cancel_at_end": bool(u["cancel_at_end"]) and ivl != "broker", "days_left": max(0, -int(-(end - now) // 86400)) if end else 0,
             "limits": {"accounts": plan["accounts"], "machines": plan["machines"]} if plan else {"accounts": 0, "machines": 1},
             "features": plan["features"] if plan else []}
 
@@ -344,7 +351,7 @@ def me(u) -> dict:
             "addons": json.loads(u["addons"] or "{}"), "paused_until": u["paused_until"] or 0,
             "tradingview": {"user": u["tv_user"] or "", "granted": bool(u["tv_granted"])},
             "broker": {"broker": u["broker"] or "", "login": u["broker_login"] or "", "status": u["broker_status"] or ""},
-            "discord_vip": DISCORD_VIP if effective(u)["valid"] and u["plan"] == "pro" else "",
+            "discord_vip": DISCORD_VIP if effective(u)["valid"] and effective(u)["plan"] in ("pro", "elite") else "",
             "ref": {"code": ref_code(u), "joined": refs["n"], "rewarded": refs["paid"]}}
 
 
@@ -525,7 +532,7 @@ def checkout(b: CheckoutIn, authorization: Optional[str] = Header(default=None))
         raise HTTPException(400, "Unknown plan.")
     fs = founding_state()
     if b.interval in ("lifetime", "lifetime3") and fs["lifetime_left"] <= 0 and u["interval"] not in ("lifetime", "lifetime3"):
-        raise HTTPException(400, "Lifetime is sold out. Pro yearly is the best deal now.")
+        raise HTTPException(400, "Lifetime is sold out. Elite yearly is the best deal now.")
     found = b.plan == FOUNDING["plan"] and b.interval in ("month", "year") and (bool(u["founding"]) or fs["open"])
     trial = b.trial and TRIAL_CARD and u["status"] in ("none", None) and b.interval != "lifetime"
     if TEST_MODE:  # simulated payment: activates the plan immediately so you can test the whole flow
@@ -726,7 +733,7 @@ async def webhook(request: Request):
     if typ == "checkout.session.completed" and (obj.get("metadata") or {}).get("interval") == "lifetime":
         uid = int(obj.get("client_reference_id") or 0)  # lifetime deal: one-time payment, access until 2100
         q("UPDATE users SET stripe_customer=?, plan=?, interval='lifetime', status='active', period_end=?, cancel_at_end=0 WHERE id=?",
-          obj.get("customer"), (obj.get("metadata") or {}).get("plan", "pro"), LIFETIME_END, uid)
+          obj.get("customer"), (obj.get("metadata") or {}).get("plan", "elite"), LIFETIME_END, uid)
         q("INSERT INTO payments(user_id,ts,amount,currency,descr,ref) VALUES(?,?,?,?,?,?)", uid, time.time(),
           (obj.get("amount_total") or 0) / 100, (obj.get("currency") or "eur").upper(), "Lifetime deal", obj.get("id"))
         u = q("SELECT * FROM users WHERE id=?", uid, one=True)
@@ -799,7 +806,9 @@ def verify(b: VerifyIn, request: Request):
     machines = json.loads(u["machines"] or "{}")
     reason = "" if s["valid"] else {"expired": "Your subscription has ended.", "past_due": "Payment failed.",
                                      "canceled": "Your subscription was cancelled.", "banned": "This account is blocked. Contact support."}.get(s["status"], "No active subscription.")
-    if s["valid"] and b.machine not in machines and len(machines) >= s["limits"]["machines"]:
+    if s["valid"] and "terminal" not in s["features"]:
+        reason = "VRS Executor (terminal, bot, Backtest Lab) is part of VRS Elite. Upgrade in your dashboard: Plan & billing."
+    elif s["valid"] and b.machine not in machines and len(machines) >= s["limits"]["machines"]:
         reason = (f"This license is already used on {len(machines)} PC(s), the maximum for your plan. "
                   "Remove a PC in your dashboard, or upgrade.")
     if not reason or b.machine in machines:
@@ -1202,8 +1211,11 @@ def admin_brokers_set(b: BrokerActIn, x_admin_token: Optional[str] = Header(defa
     if not u:
         raise HTTPException(404, "Customer not found.")
     if b.approve:
-        q("UPDATE users SET broker_status='approved', plan='pro', interval='broker', status='active', period_end=?, cancel_at_end=0 WHERE id=?",
-          LIFETIME_END, b.id)
+        if u["plan"] == "elite" and effective(u)["valid"]:  # Elite trial or paid Elite: keep it; VIP stays free afterwards (see effective)
+            q("UPDATE users SET broker_status='approved' WHERE id=?", b.id)
+        else:
+            q("UPDATE users SET broker_status='approved', plan='pro', interval='broker', status='active', period_end=?, cancel_at_end=0 WHERE id=?",
+              LIFETIME_END, b.id)
     else:
         q("UPDATE users SET broker_status='rejected' WHERE id=?", b.id)
         if u["interval"] == "broker":  # had VIP through the broker: it ends now
@@ -1228,34 +1240,40 @@ def admin_customers_csv(x_admin_token: Optional[str] = Header(default=None), aut
     return Response(buf.getvalue(), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=vrs-customers.csv"})
 
 
-# ------------------------------------------------------------------ monthly challenge
-# Every month a free paper-trading challenge: same start balance and rules for everyone, ranked by % return.
-# Results come from the trader's bridge (paper account with fixed rules). The top places win Pro.
+# ------------------------------------------------------------------ weekly challenge
+# Every week (Monday 00:00 – Sunday 23:59 UTC) a free paper-trading challenge: same start balance and rules for everyone,
+# ranked by % return (equal return to 0.1% -> the smaller drawdown wins). One prize: #1 wins 1 month of VRS Elite.
+# A week fits the 7-day free trial exactly. Whoever played last week is entered again automatically (same nickname).
 # Results are produced on the trader's own PC: check the winners' trades before you give the prize (Admin > Challenge).
 CH = {"on": env("GP_CHALLENGE_ON", "1") == "1", "balance": float(env("GP_CHALLENGE_BALANCE", "10000") or 10000),
       "leverage": int(env("GP_CHALLENGE_LEVERAGE", "100") or 100), "daily_loss": float(env("GP_CHALLENGE_DAILY_LOSS", "5") or 5),
-      "max_dd": float(env("GP_CHALLENGE_MAX_DD", "10") or 10), "min_trades": int(env("GP_CHALLENGE_MIN_TRADES", "15") or 15),
-      # "label:days of Pro|…" for 1st, 2nd, 3rd place
+      "max_dd": float(env("GP_CHALLENGE_MAX_DD", "10") or 10), "min_trades": int(env("GP_CHALLENGE_MIN_TRADES", "5") or 5),
+      # "label:days of Elite|…" for 1st (2nd, 3rd … if you ever want more prizes)
       "prizes": [(x.split(":")[0], int(x.split(":")[1])) for x in
-                 (env("GP_CHALLENGE_PRIZES", "Pro for 12 months:365|Pro for 6 months:182|Pro for 3 months:91")).split("|") if ":" in x]}
+                 (env("GP_CHALLENGE_PRIZES", "1 month of VRS Elite:30")).split("|") if ":" in x]}
 
 
-def _month_bounds(ts: float):
+def _week_bounds(ts: float):
     t = time.gmtime(ts)
-    start = calendar.timegm((t.tm_year, t.tm_mon, 1, 0, 0, 0, 0, 0, 0))  # 1st of the month 00:00 UTC
-    ny, nm = (t.tm_year + 1, 1) if t.tm_mon == 12 else (t.tm_year, t.tm_mon + 1)
-    end = calendar.timegm((ny, nm, 1, 0, 0, 0, 0, 0, 0)) - 1
-    return int(start), int(end), time.strftime("%B %Y", t)
+    day0 = calendar.timegm((t.tm_year, t.tm_mon, t.tm_mday, 0, 0, 0, 0, 0, 0))
+    start = day0 - t.tm_wday * 86400  # Monday 00:00 UTC
+    end = start + 7 * 86400 - 1       # Sunday 23:59:59 UTC
+    a, b = time.gmtime(start), time.gmtime(end)
+    label = f"Week {int(time.strftime('%V', t))} Challenge · {a.tm_mday} {time.strftime('%b', a)} – {b.tm_mday} {time.strftime('%b', b)}"
+    return int(start), int(end), label
 
 
 def current_challenge():
-    """This month's challenge (made on first use)."""
-    start, end, label = _month_bounds(time.time())
-    cid = time.strftime("%Y-%m", time.gmtime())
+    """This week's challenge (made on first use). Ids like 2026-W47 (ISO week), so they sort after the old monthly ones."""
+    start, end, label = _week_bounds(time.time())
+    cid = time.strftime("%G-W%V", time.gmtime())
     row = q("SELECT * FROM challenges WHERE id=?", cid, one=True)
+    if row and row["prizes"] != json.dumps(CH["prizes"]) and not q("SELECT 1 FROM challenge_entries WHERE challenge_id=? AND COALESCE(prize,'')<>''", cid, one=True):
+        q("UPDATE challenges SET prizes=? WHERE id=?", json.dumps(CH["prizes"]), cid)  # new prizes count for the running week too (until a prize is given)
+        row = q("SELECT * FROM challenges WHERE id=?", cid, one=True)
     if not row:
         q("INSERT OR IGNORE INTO challenges(id,name,start,end,balance,leverage,daily_loss,max_dd,min_trades,prizes) VALUES(?,?,?,?,?,?,?,?,?,?)",
-          cid, f"{label} Challenge", start, end, CH["balance"], CH["leverage"], CH["daily_loss"], CH["max_dd"], CH["min_trades"],
+          cid, label, start, end, CH["balance"], CH["leverage"], CH["daily_loss"], CH["max_dd"], CH["min_trades"],
           json.dumps(CH["prizes"]))
         row = q("SELECT * FROM challenges WHERE id=?", cid, one=True)
     return row
@@ -1275,7 +1293,7 @@ def _ranked(cid: str):
     def key(r):
         out = r["status"] in ("failed", "disqualified")
         qual = (r["trades"] or 0) >= (ch["min_trades"] if ch else 0)
-        return (out, not qual, -(r["return_pct"] or 0), -(r["trades"] or 0))
+        return (out, not qual, -round(r["return_pct"] or 0, 1), r["max_dd_pct"] or 0, -(r["trades"] or 0))
     return ch, sorted(rows, key=key)
 
 
@@ -1294,7 +1312,7 @@ def _entry_for_bridge(e, ch) -> dict:
 
 @app.get("/api/challenge")
 def challenge_board(authorization: Optional[str] = Header(default=None)):
-    """Public: this month's challenge, the leaderboard (nicknames only) and last month's winners. With a login: your entry too."""
+    """Public: this week's challenge, the leaderboard (nicknames only), last week's winner and the hall of fame. With a login: your entry too."""
     if not CH["on"]:
         return {"on": False}
     ch = current_challenge()
@@ -1310,20 +1328,32 @@ def challenge_board(authorization: Optional[str] = Header(default=None)):
         pch, prows = _ranked(prev["id"])
         k = 0
         for r in prows:
-            if (r["trades"] or 0) >= pch["min_trades"] and r["status"] not in ("failed", "disqualified") and k < 3:
+            if (r["trades"] or 0) >= pch["min_trades"] and r["status"] not in ("failed", "disqualified") and k < 1:
                 k += 1; winners.append(_board_row(r, k, pch))
+    hall = []  # the hall of fame: #1 of each of the last 8 weeks, and who won the most weeks
+    for c in q("SELECT * FROM challenges WHERE id<? ORDER BY id DESC LIMIT 8", ch["id"]):
+        cc, rr = _ranked(c["id"])
+        w = next((r for r in rr if (r["trades"] or 0) >= cc["min_trades"] and r["status"] not in ("failed", "disqualified")), None)
+        if w:
+            hall.append({"week": c["name"], "nickname": w["nickname"], "return_pct": w["return_pct"] or 0})
     me = None
     if authorization:
         try:
             u = user_from(authorization)
             e = q("SELECT * FROM challenge_entries WHERE challenge_id=? AND user_id=?", ch["id"], u["id"], one=True)
+            if not e and prev and effective(u)["valid"]:  # played last week: entered again automatically, same nickname
+                pe = q("SELECT * FROM challenge_entries WHERE challenge_id=? AND user_id=?", prev["id"], u["id"], one=True)
+                if pe and not q("SELECT id FROM challenge_entries WHERE challenge_id=? AND lower(nickname)=?", ch["id"], pe["nickname"].lower(), one=True):
+                    q("INSERT INTO challenge_entries(id,challenge_id,user_id,nickname,joined,status,equity,return_pct,trades) VALUES(?,?,?,?,?,?,?,?,?)",
+                      secrets.token_hex(8), ch["id"], u["id"], pe["nickname"], time.time(), "active", ch["balance"], 0, 0)
+                    e = q("SELECT * FROM challenge_entries WHERE challenge_id=? AND user_id=?", ch["id"], u["id"], one=True)
             if e:
                 rank = next((b["rank"] for b in board if b["nickname"] == e["nickname"]), None)
                 me = {**_entry_for_bridge(e, ch), "status": e["status"], "rank": rank, "return_pct": e["return_pct"] or 0,
                       "trades": e["trades"] or 0, "fail": e["fail"] or "", "linked": bool(e["login"]), "prize": e["prize"] or ""}
         except HTTPException:
             pass
-    return {"on": True, "challenge": _ch_public(ch), "board": board, "previous": {"name": prev["name"], "winners": winners} if prev else None, "me": me}
+    return {"on": True, "challenge": _ch_public(ch), "board": board, "previous": {"name": prev["name"], "winners": winners} if prev else None, "hall": hall, "me": me}
 
 
 class ChallengeJoinIn(BaseModel):
@@ -1345,7 +1375,7 @@ def challenge_join(b: ChallengeJoinIn, authorization: Optional[str] = Header(def
     if len(nick) < 3:
         raise HTTPException(400, "Pick a nickname of at least 3 letters or numbers.")
     if q("SELECT id FROM challenge_entries WHERE challenge_id=? AND lower(nickname)=?", ch["id"], nick.lower(), one=True):
-        raise HTTPException(409, "That nickname is taken this month. Pick another one.")
+        raise HTTPException(409, "That nickname is taken this week. Pick another one.")
     eid = secrets.token_hex(8)
     q("INSERT INTO challenge_entries(id,challenge_id,user_id,nickname,joined,status,equity,return_pct,trades) VALUES(?,?,?,?,?,?,?,?,?)",
       eid, ch["id"], u["id"], nick, time.time(), "active", ch["balance"], 0, 0)
@@ -1432,15 +1462,15 @@ def admin_challenge_action(b: ChallengeActIn, x_admin_token: Optional[str] = Hea
     elif b.action == "reinstate":
         q("UPDATE challenge_entries SET status='active', fail='' WHERE id=?", e["id"])
         msg = "Back in the challenge."
-    elif b.action == "award":  # give the prize: days of Pro on top of what they have
+    elif b.action == "award":  # give the prize: days of Elite on top of what they have
         if not u:
             raise HTTPException(400, "This account no longer exists.")
-        days = b.days or 365
+        days = b.days or 30
         base = LIFETIME_END if u["interval"] == "lifetime" else max(u["period_end"] or 0, time.time())
         if u["interval"] != "lifetime":
-            q("UPDATE users SET plan='pro', status='active', period_end=?, cancel_at_end=0 WHERE id=?", base + days * 86400, u["id"])
-        q("UPDATE challenge_entries SET prize=? WHERE id=?", b.text or f"{days} days of Pro", e["id"])
-        msg = f"Prize given: {b.text or f'{days} days of Pro'} added to {email}."
+            q("UPDATE users SET plan='elite', status='active', period_end=?, cancel_at_end=0 WHERE id=?", base + days * 86400, u["id"])
+        q("UPDATE challenge_entries SET prize=? WHERE id=?", b.text or f"{days} days of Elite", e["id"])
+        msg = f"Prize given: {b.text or f'{days} days of Elite'} added to {email}."
     else:
         raise HTTPException(400, "Unknown action.")
     _log(who, "challenge_" + b.action, email, f"{e['challenge_id']} · {e['nickname']} {b.text}".strip())
