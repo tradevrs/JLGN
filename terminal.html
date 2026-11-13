@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%230d1528%22%2F%3E%3Crect%20x%3D%223.9%22%20y%3D%2220%22%20width%3D%2224.2%22%20height%3D%223.9%22%20fill%3D%22%23f5b73b%22%20fill-opacity%3D%22.28%22%2F%3E%3Cpath%20d%3D%22M8%209.75%2014.5%2021.4%2024.5%208.25%22%20fill%3D%22none%22%20stroke%3D%22%23f7bd45%22%20stroke-width%3D%223.6%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2214.5%22%20cy%3D%2221.4%22%20r%3D%221.6%22%20fill%3D%22%23fff%22%20stroke%3D%22%230a1020%22%20stroke-width%3D%22.5%22%2F%3E%3C%2Fsvg%3E"><link rel="apple-touch-icon" href="vrs-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Goldmine Pro Terminal</title>
+<title>VRS Terminal</title>
 <link rel="stylesheet" href="gp-theme.css?v=20261110v">
 <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.0.8/dist/lightweight-charts.standalone.production.js"></script>
-<script src="gp-shared.js?v=20261111a"></script>
+<script src="gp-shared.js?v=20261113a"></script>
 <style>
 html,body{overflow:hidden}
 #app{height:100%;display:grid;grid-template-rows:auto auto 1fr}
@@ -97,6 +98,38 @@ html,body{overflow:hidden}
 
 /* chart */
 .chartwrap{position:relative;min-height:0;background:var(--chart)}
+/* split: two charts in the chart area, always the same width and height */
+.charts{display:flex;min-height:0;min-width:0}
+.charts>.splitter{flex:none;width:7px;cursor:col-resize;background:var(--line);position:relative;touch-action:none;transition:background .15s}
+.charts>.splitter::after{content:"";position:absolute;left:2px;top:50%;width:3px;height:36px;margin-top:-18px;border-radius:3px;background:var(--line2)}
+.charts>.splitter:hover,.charts>.splitter.drag{background:var(--accbg)}.charts>.splitter:hover::after,.charts>.splitter.drag::after{background:var(--acc)}
+.charts.dragging>iframe{pointer-events:none}
+/* the selected chart's border: one frame that glides to the chart you click */
+.charts.on{position:relative}
+#splitSel{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none;z-index:20;border:2px solid color-mix(in srgb,var(--acc) 60%,transparent);border-radius:3px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--acc) 12%,transparent);
+  transition:opacity .14s ease-out}
+#splitSel.snap{transition:none;opacity:0}
+@media (prefers-reduced-motion:reduce){#splitSel{transition:none}}
+.charts.on.rside>.chartwrap{order:3}.charts.on.rside>.splitter{order:2}.charts.on.rside>iframe{order:1}
+.charts.on>iframe{cursor:pointer}.charts.dragging{cursor:col-resize;user-select:none}
+.charts>.chartwrap{flex:1 1 0;min-width:0}
+.charts>iframe{flex:1 1 0;min-width:0;border:0;background:var(--chart);display:block}
+#splitBtn.on{color:var(--acc);border-color:var(--accline);background:var(--accbg)}
+@media (max-width:860px){.charts{flex-direction:column}.charts>.chartwrap,.charts>iframe{flex:1 1 0;min-height:0}.charts>.splitter{width:auto;height:7px;cursor:row-resize}.charts>.splitter::after{left:50%;top:2px;width:36px;height:3px;margin:0 0 0 -18px}.charts.dragging{cursor:row-resize}}
+/* the second chart (terminal.html?embed=1): only the chart, its toolbar, drawings, indicators and VRS */
+html.embed .top .brand,html.embed #wBtn,html.embed .top .acct,html.embed #conn,html.embed .top [data-act=settings],html.embed #splitBtn,html.embed #sessions,
+html.embed #watch,html.embed #ticket,html.embed .dock,html.embed #banner,html.embed #fab,html.embed .ctools .trade{display:none!important}
+html.embed .main{grid-template-columns:minmax(0,1fr)!important}
+html.embed .center{grid-template-rows:minmax(0,1fr)!important;border:0}
+html.embed .top #indBtn,html.embed .top #ccBtn{display:inline-flex!important}
+html.embed .top{position:absolute;z-index:40;bottom:34px;left:76px;height:auto;min-height:0;width:max-content;max-width:calc(100% - 150px);padding:4px 6px;gap:6px;border:1px solid var(--line2);border-radius:12px;background:color-mix(in srgb,var(--panel) 92%,transparent);backdrop-filter:blur(6px);box-shadow:0 8px 24px -10px rgba(0,0,0,.35);overflow-x:auto;scrollbar-width:none}
+html.embed .top::-webkit-scrollbar{display:none}
+html.embed .top .grow,html.embed .top .kbd,html.embed .top #symDesc,html.embed .top .ibtn span{display:none}
+html.embed .top .sym{height:24px;padding:0 7px;border-radius:7px}html.embed .top .sym b{font-size:12px}
+html.embed .top .seg{padding:1px;gap:0;border-radius:8px}html.embed .top .seg button{height:22px;padding:0 6px;font-size:11px;min-width:0}
+html.embed .top .ibtn{height:24px;width:24px;padding:0;justify-content:center}html.embed .top .ibtn svg{width:14px;height:14px}
+html.embed .top{padding:3px 4px!important;gap:4px!important;border-radius:10px!important;bottom:30px!important}
+html.embed #app{grid-template-rows:minmax(0,1fr)}html.embed .main{grid-row:1}
 #chart,#draw,#tl{position:absolute;top:0;right:0;bottom:0;left:var(--railW)}
 #draw{z-index:4;pointer-events:none;width:calc(100% - var(--railW));height:100%;overflow:hidden}
 #tl{z-index:6;pointer-events:none;overflow:hidden}
@@ -143,7 +176,7 @@ html,body{overflow:hidden}
 .zone.win{background:color-mix(in srgb,var(--buy) 14%,transparent);border:1px solid color-mix(in srgb,var(--buy) 40%,transparent)}
 .zone.win span{color:var(--up)}
 
-/* trade labels on the chart: the ORIGINAL Goldmine Sync style
+/* trade labels on the chart: the ORIGINAL VRS style
    (white box · 1.2px border in the line colour · radius 5 · 18px · bold 11px system font · dark text · red × inside) */
 .chip:hover{z-index:2}
 .chip{position:absolute;left:0;top:0;display:flex;align-items:center;gap:6px;height:18px;font:700 11px -apple-system,'SF Pro Text','Segoe UI',Arial,sans-serif;white-space:nowrap;pointer-events:auto;user-select:none}
@@ -474,6 +507,15 @@ input[type=range]{width:100%;accent-color:var(--acc)}
   .prow .acts [data-pa=pct]{display:none}
   .hc{padding:6px 8px}.hc b{font-size:13.5px}
 }
+/* split: the second chart lives in a narrow frame, so the phone rules above would kick in there (narrower tool rail, no OHLC
+   legend, …) and the two charts would look different, which shows as a jump when you switch. It always looks like the main chart. */
+html.embed{--railW:40px}
+html.embed #rail button{width:32px;height:28px}
+html.embed #lgOhlc,html.embed #lgInd{display:flex!important}
+html.embed #lgTf{display:inline!important}
+html.embed .ctools{right:76px}html.embed .ctools button{height:28px;padding:0 9px}
+html.embed #cacts{top:68px;right:auto;flex-wrap:wrap;overflow:visible}
+html.embed .top{display:none!important} /* its symbol / timeframe: select it, then use the bar at the top (same as the main chart) */
 
 #trPanel{position:absolute;right:calc(var(--psw, 64px) + 10px);top:44px;z-index:7;width:244px;display:none;flex-direction:column;gap:6px;font-size:11.5px;color:var(--text);pointer-events:auto}
 #trPanel.on{display:flex}
@@ -507,7 +549,7 @@ input[type=range]{width:100%;accent-color:var(--acc)}
 #trPanel .trk{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:4px 0}#trPanel .trk span{font-size:9.5px;color:var(--mut);text-transform:uppercase}#trPanel .trk b{display:block;font-size:12px;color:var(--text);text-transform:none;font-variant-numeric:tabular-nums}
 #trPanel .trc .btn{margin-top:7px;width:100%}
 #trPanel .bt{color:var(--buy);font-weight:800}#trPanel .st{color:var(--sell);font-weight:800}
-@media (max-width:860px){#trPanel{width:220px;top:auto;bottom:34px;right:calc(var(--psw, 56px) + 6px);font-size:11px}#trPanel .trc ul,#trPanel .trr{display:none}#trPanel .trc.almost ul{display:grid}}
+@media (max-width:860px){html:not(.embed) #trPanel{width:220px;top:auto;bottom:34px;right:calc(var(--psw, 56px) + 6px);font-size:11px}html:not(.embed) #trPanel .trc ul,html:not(.embed) #trPanel .trr{display:none}html:not(.embed) #trPanel .trc.almost ul{display:grid}} /* the split chart keeps the desktop VRS panel */
 
 .mbody.bt p{font-size:12.5px;line-height:1.5}
 .btopts{display:flex;align-items:end;gap:10px;flex-wrap:wrap}.btopts label{min-width:150px}
@@ -586,14 +628,14 @@ input[type=range]{width:100%;accent-color:var(--acc)}
 
 #trPanel .tatfs{display:flex;gap:3px;flex-wrap:wrap;margin:3px 0}#trPanel .tatfs i{font-style:normal;font-size:10px;font-weight:800;padding:1px 6px;border-radius:4px;border:1px solid var(--line2);color:var(--mut)}#trPanel .tatfs i.ok{border-color:var(--acc);color:var(--acc)}
 
-/* TR panel on the light theme: crisp white cards, soft shadow, same layout */
+/* VRS panel on the light theme: crisp white cards, soft shadow, same layout */
 [data-theme="light"] #trPanel .trc,[data-theme="light"] #trPanel .trh,[data-theme="light"] #trPanel .trauto{background:rgba(255,255,255,.94);border-color:rgba(20,40,35,.12);box-shadow:0 8px 24px -14px rgba(20,40,35,.35)}
 [data-theme="light"] #trPanel .trc.go.s{background:color-mix(in srgb,var(--sell) 9%,#fff)}[data-theme="light"] #trPanel .trc.go.b{background:color-mix(in srgb,var(--buy) 9%,#fff)}
 [data-theme="light"] #trPanel .trh button{background:#fff;border-color:rgba(20,40,35,.14)}
 [data-theme="light"] #trPanel li i{border-color:rgba(20,40,35,.25)}
 
 /* how close each auto timeframe is to a trade: grey = nothing · dotted = range forming · outline = zone waiting · amber = almost · filled = order working */
-#trPanel .tatfs i,#trPanel .tahot i{font-style:normal;font-size:10px;font-weight:800;padding:1px 6px;border-radius:4px;border:1px solid var(--line2);color:var(--mut);white-space:nowrap;font-variant-numeric:tabular-nums}
+#trPanel .tatfs .tasym{font-size:10px;font-weight:900;color:var(--text);margin:0 2px 0 4px;align-self:center}#trPanel .tatfs .tasym:first-child{margin-left:0}#trPanel .tatfs i,#trPanel .tahot i{font-style:normal;font-size:10px;font-weight:800;padding:1px 6px;border-radius:4px;border:1px solid var(--line2);color:var(--mut);white-space:nowrap;font-variant-numeric:tabular-nums}
 #trPanel i.ph-range{border-style:dashed;color:var(--text)}
 #trPanel i.ph-zone{color:var(--text);border-color:currentColor}#trPanel i.ph-zone.sell{color:var(--sell)}#trPanel i.ph-zone.buy{color:var(--buy)}
 #trPanel i.ph-almost{color:#fff;border-color:transparent;background:var(--orange,#e0962c);animation:taNear 1.6s ease-in-out infinite}
@@ -607,13 +649,14 @@ input[type=range]{width:100%;accent-color:var(--acc)}
   <header class="top">
     <button class="ibtn sq" id="wBtn" data-act="watchDrawer" title="Watchlist" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
     <div class="brand">
-      <svg viewBox="0 0 32 32"><defs><linearGradient id="lgG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffdc91"/><stop offset="1" stop-color="#e0960c"/></linearGradient></defs><path d="M16 2.5 28.5 9.5v13L16 29.5 3.5 22.5v-13z" fill="url(#lgG)"/><path d="M9.5 19.5l4.2-5 3.3 3.2 5.5-6.7" fill="none" stroke="#1a1203" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <b>Goldmine</b><span>PRO</span>
+      <svg viewBox="0 0 32 32" class="vrs-logo"><defs><linearGradient id="vrsBg10" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#16213b"/><stop offset="1" stop-color="#060a14"/></linearGradient><radialGradient id="vrsGl10" cx=".78" cy=".18" r=".7"><stop offset="0" stop-color="#f5b73b" stop-opacity=".3"/><stop offset="1" stop-color="#f5b73b" stop-opacity="0"/></radialGradient><linearGradient id="vrsAu10" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe7a3"/><stop offset=".45" stop-color="#f7bd45"/><stop offset="1" stop-color="#d4850a"/></linearGradient><linearGradient id="vrsZn10" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f5b73b" stop-opacity="0"/><stop offset=".25" stop-color="#f5b73b" stop-opacity=".32"/><stop offset=".75" stop-color="#f5b73b" stop-opacity=".32"/><stop offset="1" stop-color="#f5b73b" stop-opacity="0"/></linearGradient></defs><rect width="32" height="32" rx="7" fill="url(#vrsBg10)"/><rect width="32" height="32" rx="7" fill="url(#vrsGl10)"/><rect x="3.9" y="20" width="24.2" height="3.9" fill="url(#vrsZn10)"/><path d="M8 9.75 14.5 21.4 24.5 8.25" fill="none" stroke="url(#vrsAu10)" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14.5" cy="21.4" r="1.45" fill="#fff" stroke="#0a1020" stroke-width=".5"/></svg>
+      <b>VRS</b><span>TERMINAL</span>
     </div>
     <button class="sym" data-act="palette" title="Search symbols & commands (Ctrl+K)"><b id="symName">—</b><small id="symDesc"></small><kbd class="kbd">Ctrl K</kbd></button>
     <div class="seg" id="tfBar"></div>
     <button class="ibtn" id="indBtn" data-act="indicators" title="Indicators & overlays"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-6 4 4 8-9"/><path d="M14 6h6v6"/></svg><span>Indicators</span></button>
     <button class="ibtn" id="ccBtn" data-act="chartSettings" title="Chart colours & theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.8 1.6-1.6 0-.5-.2-.8-.4-1.1-.3-.3-.4-.6-.4-1.1 0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5C21 6.4 17 3 12 3z"/><circle cx="7.5" cy="10.5" r="1.2" fill="currentColor"/><circle cx="11" cy="7" r="1.2" fill="currentColor"/><circle cx="15.5" cy="8" r="1.2" fill="currentColor"/></svg><span>Chart</span></button>
+    <button class="ibtn" id="splitBtn" onclick="toggleSplit()" title="Split: a second chart next to this one (same size, with drawings, indicators and VRS)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16"/></svg><span>Split</span></button>
     <div class="grow"></div>
     <div class="sessions" id="sessions" title="Market sessions"></div>
     <button class="acct" data-act="accounts" title="Switch account">
@@ -638,7 +681,7 @@ input[type=range]{width:100%;accent-color:var(--acc)}
     </aside>
 
     <section class="center">
-      <div class="chartwrap" id="chartwrap">
+      <div class="charts" id="charts"><div class="chartwrap" id="chartwrap">
         <nav id="rail"></nav>
         <div id="chart"></div>
         <div id="axCd" title="Time until this candle closes"></div>
@@ -651,7 +694,7 @@ input[type=range]{width:100%;accent-color:var(--acc)}
         <div id="dtb"></div>
         <div id="pickHint"></div>
         <div class="ctools"><button class="mobile-only trade" data-act="openTicket" title="Open the order panel">⇅ Trade</button><button data-act="emaToggle" id="emaBtn" title="Show / hide the moving averages">EMA</button><button data-act="lblMode" id="lblBtn" title="Labels: small → lines only → hidden">Labels: small</button><button data-act="alertHere" title="Alert at current price (A = at crosshair)">🔔<span class="lbt"> Alert</span></button><button data-act="fit" title="Reset view (0)">⤢<span class="lbt"> Fit</span></button></div>
-      </div>
+      </div></div>
       <section class="dock">
         <div id="dockGrip" title="Drag to resize · tap to hide / show"></div>
         <div class="dend"><span class="dpl" id="dockPl"></span><button class="dfold" id="dockFold" data-act="dockFold" title="Hide the panel">▾</button></div>
@@ -661,7 +704,7 @@ input[type=range]{width:100%;accent-color:var(--acc)}
           <button data-tab="history">History</button>
           <button data-tab="alerts">Alerts<i id="nAl">0</i></button>
           <button data-tab="copy">Copy trading</button>
-          <button data-tab="tvauto" title="GoldZone Pro alerts from TradingView, traded on MT5">TV autotrade</button>
+          <button data-tab="tvauto" title="VRS Indicator Pro alerts from TradingView, traded on MT5">TV autotrade</button>
           <a href="journal.html" target="_blank" title="Open the full trading journal">📒 Journal ↗</a></div>
           <div id="tabTools"></div>
         </nav>
@@ -717,9 +760,27 @@ input[type=range]{width:100%;accent-color:var(--acc)}
 <div id="toasts"></div>
 
 <script>
+// Split: the second chart is this same page with ?embed=1, shown next to the main chart (all features, no second bot)
+const EMBED = new URLSearchParams(location.search).has('embed');
+if (EMBED) {
+  document.documentElement.classList.add('embed');
+  const g = store.get.bind(store), s = store.set.bind(store), own = k => k === 'symbol' || k === 'tf' ? 'split_' + k : k;
+  store.get = (k, d) => g(own(k), d);
+  store.set = (k, v) => { if (k === 'login' || k === 'watch' || k === 'split') return; s(own(k), v) }; // the main chart owns the account and watchlist
+  window.beep = () => {};                                                                                // sounds come from the main chart only
+  // a click in this chart's price area selects it (its symbol / timeframe bar works without selecting)
+  // selected on RELEASE of a click that did not move: dragging / scrolling this chart never selects it, and the switch never
+  // happens in the middle of a press (the rest of that press would then pan the chart that just moved here)
+  let down = null;
+  addEventListener('pointerdown', e => { down = e.target.closest?.('.top, .modal, #palette, .pop, #trPanel') ? null : { x: e.clientX, y: e.clientY } }, true);
+  addEventListener('pointerup', e => { const d = down; down = null; if (d && Math.hypot(e.clientX - d.x, e.clientY - d.y) < 6) parent.postMessage({ vrsSplit: 'select', ...splitSnap() }, '*') }, true);
+  // main -> this chart: show that symbol + timeframe
+  addEventListener('message', e => { const d = e.data; if (e.source !== parent || d?.vrsSplit !== 'set') return;
+    splitTake(d) });
+}
 'use strict';
 /* =====================================================================
-   GOLDMINE PRO TERMINAL
+   VRS TERMINAL
    (utilities, settings, bridge client, demo broker and dialogs live in gp-shared.js)
    ===================================================================== */
 const LWC = window.LightweightCharts;
@@ -787,7 +848,7 @@ function atr(c, n = 14) {
   for (let i = Math.max(1, c.length - 300); i < c.length; i++) { const tr = Math.max(c[i].high - c[i].low, Math.abs(c[i].high - c[i - 1].close), Math.abs(c[i].low - c[i - 1].close)); a = a ? (a * (n - 1) + tr) / n : tr }
   return a;
 }
-/* ---------- TR backtest: the same rules on every timeframe, TR1 vs TR2, scored in R ----------
+/* ---------- VRS backtest: the same rules on every timeframe, VA1 vs VA2, scored in R ----------
    A trade = a valid retest. Result at a target of xR: +x if price reached x R before the stop, −1 if the stop came first,
    still open = not counted. Careful by design: on the entry candle only the stop counts; a candle touching stop AND target = loss.
    No spread / commission included (subtract roughly your spread ÷ stop distance per trade). */
@@ -808,10 +869,10 @@ function openBacktest() {
   closePopover();
   const tfs = ['M1', 'M3', 'M5', 'M15', 'M30', 'H1', 'H4', 'D1'];
   if (BT.mode === 'opt') return openOptimizer();
-  openModal(`<h3>📊 TR backtest · ${esc(S.symbol)}</h3><div class="mbody bt">
+  openModal(`<h3>📊 VRS backtest · ${esc(S.symbol)}</h3><div class="mbody bt">
     <div class="seg btmode"><button class="on">By timeframe</button><button onclick="btMode('opt')">🔍 Find the best settings</button></div>
     <a class="btn acc" href="${labUrl()}" target="_blank" style="align-self:flex-start">🧪 Open the full Backtest Lab ↗ <small style="font-weight:600;opacity:.85">exits · breakeven · scaling in · advice</small></a>
-    <p>Runs the TR rules (your current TR settings) over the past candles of every timeframe you pick, and scores <b>TR1 vs TR2</b> in R: +target when price reached it before the stop, −1 when the stop came first.</p>
+    <p>Runs the VRS rules (your current VRS settings) over the past candles of every timeframe you pick, and scores <b>VA1 vs VA2</b> in R: +target when price reached it before the stop, −1 when the stop came first.</p>
     <div class="btopts"><div class="btchips">${tfs.map(t => `<button class="${BT.tfs.includes(t) ? 'on' : ''}" onclick="btTf('${t}',this)">${t}</button>`).join('')}</div>
       <label>Candles per timeframe<select id="btCount" onchange="BT.count=+this.value;store.set('btCount',BT.count)">${[2000, 5000, 10000, 20000].map(v => `<option ${v === BT.count ? 'selected' : ''} value="${v}">${v.toLocaleString()}</option>`).join('')}</select></label>
       <button class="btn acc" id="btRun" onclick="btRun()">▶ Run backtest</button></div>
@@ -819,17 +880,21 @@ function openBacktest() {
   </div><div class="mact"><button class="btn ghost" data-m="no">Close</button></div>`, true);
   if (BT.rows.length && BT.sym === S.symbol) btRender();
 }
-/* ---------- settings optimizer: try many TR settings × take-profit targets × timeframes at once ----------
+/* ---------- settings optimizer: try many VRS settings × take-profit targets × timeframes at once ----------
    Honest by design: settings are ranked on the first 70% of the candles, and every row also shows how the SAME settings
    did on the last 30% they were not picked on ("unseen"). Settings that only look good on the first part are curve-fitted. */
-const OPT = Object.assign({ risk: 1, minBars: [3, 4, 5, 6, 8], range: [1, 1.3, 1.6, 2, 2.5], buf: [0, .1, .25], away: [true, false], age: [200], tp: [1, 1.5, 2, 3], be: [0], tr: ['1', '2', '12'], dir: ['b'], sess: ['all'],
+const OPT = Object.assign({ risk: 1, minBars: [3, 4, 5, 6, 8], range: [1, 1.3, 1.6, 2, 2.5], buf: [0, .1, .25], away: [true, false], age: [200], tp: [1, 1.5, 2, 3], be: [0], tr: ['1', '2', '12'], dir: ['b'], sess: ['all'], wd: ['all'], htf: ['off'], vol: ['all'],
   minTrades: 20, rank: 'both', cost: 'real', comm: 0, sprPts: 20, kill: true, oos: 30, onlyRob: false, show: 50, tfF: '' }, store.get('optCfg', {}));
 OPT.res = []; OPT.busy = false; OPT.sel = -1; OPT.sort = null; OPT.C = null;
 const saveOPT = () => { const { res, busy, sel, sort, C, ...k } = OPT; store.set('optCfg', k) };
-const OPT_CHOICES = { minBars: [3, 4, 5, 6, 7, 8, 10, 12], range: [.8, 1, 1.3, 1.6, 2, 2.5, 3], buf: [0, .1, .25, .5], away: [true, false], age: [10, 20, 50, 100, 200, 500], tp: [1, 1.5, 2, 2.5, 3, 4, 5], be: [0, 1, 1.5, 2], tr: ['1', '2', '12', '3', 'all'], dir: ['b', 'l', 's'], sess: ['all', 'ln', 'lo', 'ny', 'as'] };
-const OPT_LBL = { minBars: v => v, range: v => v + '×', buf: v => v + '×', away: v => v ? 'Yes' : 'No', age: v => '≤ ' + v, tp: v => v + 'R', be: v => +v ? v + 'R' : 'Off', tr: v => ({ 1: 'TR1', 2: 'TR2', 12: 'TR1+2', 3: 'TR3+', all: 'All TR' })[v],
-  dir: v => ({ b: 'Buys + sells', l: 'Buys only', s: 'Sells only' })[v], sess: v => ({ all: 'All day', ln: 'London + NY', lo: 'London', ny: 'New York', as: 'Asia' })[v] };
-const OPT_SESS = { all: () => true, ln: h => h >= 7 && h < 21, lo: h => h >= 7 && h < 16, ny: h => h >= 12 && h < 21, as: h => h >= 21 || h < 7 }; // UTC hours of the fill
+const OPT_CHOICES = { minBars: [3, 4, 5, 6, 7, 8, 10, 12, 15, 20], range: [.6, .8, 1, 1.3, 1.6, 2, 2.5, 3, 3.5, 4], buf: [0, .1, .25, .5, .75, 1], away: [true, false], age: [10, 20, 50, 100, 200, 500, 1000], tp: [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10], be: [0, .5, 1, 1.5, 2, 2.5, 3], tr: ['1', '2', '12', '3', 'all'], dir: ['b', 'l', 's'],
+  sess: ['all', 'ln', 'lo', 'ny', 'as', 's1', 's2', 's3'], wd: ['all', 'mid', 'nomo', 'nofr', 'mo', 'tu', 'we', 'th', 'fr'], htf: ['off', 'M15', 'M30', 'H1', 'H4', 'D1'], vol: ['all', 'calm', 'norm', 'fast', 'nofast'] };
+const OPT_LBL = { minBars: v => v, range: v => v + '×', buf: v => v + '×', away: v => v ? 'Yes' : 'No', age: v => '≤ ' + v, tp: v => v + 'R', be: v => +v ? v + 'R' : 'Off', tr: v => ({ 1: 'VA1', 2: 'VA2', 12: 'VA1+2', 3: 'VA3+', all: 'All VA' })[v],
+  dir: v => ({ b: 'Buys + sells', l: 'Buys only', s: 'Sells only' })[v], sess: v => ({ all: 'All day', ln: 'London + NY', lo: 'London', ny: 'New York', as: 'Asia', s1: 'London open 7–12', s2: 'Overlap 12–16', s3: 'NY afternoon 16–21' })[v],
+  wd: v => ({ all: 'Every day', mid: 'Tue–Thu', nomo: 'No Monday', nofr: 'No Friday', mo: 'Mon', tu: 'Tue', we: 'Wed', th: 'Thu', fr: 'Fri' })[v], htf: v => v === 'off' ? 'Off' : 'With ' + v, vol: v => ({ all: 'Any', calm: 'Calm', norm: 'Normal', fast: 'Fast', nofast: 'Not fast' })[v] };
+const OPT_SESS = { all: () => true, ln: h => h >= 7 && h < 21, lo: h => h >= 7 && h < 16, ny: h => h >= 12 && h < 21, as: h => h >= 21 || h < 7, s1: h => h >= 7 && h < 12, s2: h => h >= 12 && h < 16, s3: h => h >= 16 && h < 21 }; // UTC hours of the fill
+const OPT_WD = { all: () => true, mid: d => d >= 1 && d <= 3, nomo: d => d !== 0, nofr: d => d !== 4, mo: d => d === 0, tu: d => d === 1, we: d => d === 2, th: d => d === 3, fr: d => d === 4 }; // 0 = Monday (UTC day of the fill)
+const OPT_VOL = { all: () => true, calm: v => v === 0, norm: v => v === 1, fast: v => v === 2, nofast: v => v !== 2 }; // ATR at the break vs its 300-candle average: < 0.8 calm, > 1.25 fast
 const optGroup = (tr, g) => g === 'all' || (g === '12' ? tr <= 2 : g === '3' ? tr >= 3 : tr === +g);
 const n0 = v => Number(v || 0).toLocaleString('en-US');
 const labUrl = () => 'lab.html' + (CFG.demo ? '?demo=1' : '');
@@ -837,7 +902,7 @@ function btMode(m) { BT.mode = m; m === 'opt' ? openOptimizer() : openBacktest()
 function optChip(k, v, b) { const a = OPT[k], i = a.findIndex(x => String(x) === String(v)); if (i >= 0) { if (a.length > 1) a.splice(i, 1) } else a.push(v); const ch = OPT_CHOICES[k].map(String); a.sort((x, y) => ch.indexOf(String(x)) - ch.indexOf(String(y))); saveOPT(); b.parentElement.outerHTML = optRow(k); optEst() }
 const optRow = k => `<div class="btchips">${OPT_CHOICES[k].map(v => `<button class="${OPT[k].some(x => String(x) === String(v)) ? 'on' : ''}" onclick="optChip('${k}',${typeof v === 'string' ? `'${v}'` : v},this)">${OPT_LBL[k](v)}</button>`).join('')}</div>`;
 const optScansTf = () => OPT.minBars.length * OPT.range.length * OPT.buf.length * OPT.away.length;
-const optPer = () => OPT.age.length * OPT.tr.length * OPT.dir.length * OPT.sess.length * OPT.tp.length * OPT.be.length;
+const optPer = () => OPT.age.length * OPT.tr.length * OPT.dir.length * OPT.sess.length * OPT.wd.length * OPT.htf.length * OPT.vol.length * OPT.tp.length * OPT.be.length;
 function optEst() { const el = $('#optEst'); if (!el) return; const s = BT.tfs.length * optScansTf(), r = s * optPer(); el.innerHTML = `${BT.tfs.length} timeframe${BT.tfs.length === 1 ? '' : 's'} × ${n0(optScansTf())} range settings × ${n0(optPer())} entry / exit / filter variants = <b>${n0(r)}</b> results${r > 400000 ? ' <b class="dn">· a lot: this can take minutes, drop some values</b>' : ''}` }
 
 /* ---------- the finder's engine: one walk per trade gives the result for every take profit × breakeven at once ----------
@@ -872,11 +937,14 @@ function optList(D, r, tps, bes) { // every trade of one scan, with its result f
     const kill = s.state === 'invalid' && !!s.fillKill; if (s.state !== 'valid' && !(kill && OPT.kill)) continue;
     const e = s.state === 'valid' ? s.trig : s.end, risk = Math.abs(s.entry - s.sl); if (e < 0 || !(risk > 0)) continue;
     const t = C[e].time;
-    out.push({ e, t, h: new Date((t - GP.off) * 1000).getUTCHours(), dir: s.dir, tr: s.tr, wk: s.wk ?? s.brk, brk: s.brk, entry: s.entry, sl: s.sl, costR: (D.spr[e] + D.comm) / risk, out: optOutcomes(C, s, e, kill, D.spr, tps, bes, D.comm, cap) });
+    const ud = new Date((t - GP.off) * 1000), a0 = Math.max(0, s.brk - 300), am = (D.ps[s.brk + 1] - D.ps[a0]) / (s.brk + 1 - a0), vr = (D.A[s.brk] || 0) / (am || 1);
+    out.push({ e, t, h: ud.getUTCHours(), wd: (ud.getUTCDay() + 6) % 7, vol: vr < .8 ? 0 : vr > 1.25 ? 2 : 1, al: {}, dir: s.dir, tr: s.tr, wk: s.wk ?? s.brk, brk: s.brk, entry: s.entry, sl: s.sl, costR: (D.spr[e] + D.comm) / risk, out: optOutcomes(C, s, e, kill, D.spr, tps, bes, D.comm, cap) });
   }
   return out;
 }
 // would this trade exist with a shorter "max wait for the retest"? (exactly what trScan would decide, from the candle where price left the zone)
+// +1 = the last break on higher timeframe H (before this trade) goes the same way as the trade
+const optAl = (x, H) => { const B = OPT.C?.hb?.[H]; if (!B) return 0; let lo = 0, hi = B.t.length; while (lo < hi) { const m = (lo + hi) >> 1; if (B.t[m] <= x.t) lo = m + 1; else hi = m } return lo ? B.d[lo - 1] * x.dir : 0 };
 const optAgeOk = (x, age) => x.e < Math.max(x.wk + 2, x.brk + age + 2);
 function optStats(list, ci, split, t0, span) {
   let n = 0, w = 0, s = 0, s2 = 0, gp = 0, gl = 0, eq = 0, pk = 0, dd = 0, st = 0, ms = 0, cost = 0, an = 0, aw = 0, as = 0, agp = 0, agl = 0, bn = 0, bw = 0, bs = 0; const q = [0, 0, 0, 0], qn = [0, 0, 0, 0];
@@ -907,11 +975,11 @@ function openOptimizer() {
     <div class="fgrid">
       ${box('Data', [['Timeframes', `<div class="btchips">${tfs.map(t => `<button class="${BT.tfs.includes(t) ? 'on' : ''}" onclick="btTf('${t}',this);optEst()">${t}</button>`).join('')}</div>`],
         ['Candles per TF', sel([2000, 5000, 10000, 20000, 50000, 100000].map(v => [v, v.toLocaleString() + (v === 100000 ? ' (max)' : '')]), BT.count, "BT.count=+this.value;store.set('btCount',BT.count);OPT.C=null")],
-        ['Unseen part', sel([[20, 'Last 20%'], [30, 'Last 30%'], [40, 'Last 40%']], OPT.oos, 'OPT.oos=+this.value;saveOPT()')]])}
+        ['Unseen part', sel([[20, 'Last 20%'], [30, 'Last 30%'], [40, 'Last 40%'], [50, 'Last 50%']], OPT.oos, 'OPT.oos=+this.value;saveOPT()')]])}
       ${box('Range (the consolidation)', [['Min. candles', optRow('minBars')], ['Size × ATR', optRow('range')], ['Stop buffer × ATR', optRow('buf')]])}
       ${box('Entry', [['Which signals', optRow('tr')], ['Leave zone first', optRow('away')], ['Max wait (candles)', optRow('age')]])}
       ${box('Exit', [['Take profit', optRow('tp')], ['Breakeven at', optRow('be')]])}
-      ${box('Filters', [['Direction', optRow('dir')], ['Session (UTC)', optRow('sess')]])}
+      ${box('Filters', [['Direction', optRow('dir')], ['Session (UTC)', optRow('sess')], ['Weekday', optRow('wd')], ['Higher-TF trend', optRow('htf')], ['Volatility', optRow('vol')]])}
       ${box('Costs & scoring', [['Costs', sel([['real', 'Real: MT5 spread per candle'], ['fixed', 'Fixed spread'], ['none', 'No costs (old way)']], OPT.cost, 'OPT.cost=this.value;saveOPT()')],
         ['Spread / commission', `<span class="row" style="gap:6px"><input style="width:70px" value="${OPT.sprPts}" title="Fixed spread in points (also used when MT5 has no spread stored)" onchange="OPT.sprPts=Math.max(0,+this.value||0);saveOPT()"><small class="mut">pts</small><input style="width:70px" value="${OPT.comm}" title="Commission per lot, round turn, account currency" onchange="OPT.comm=Math.max(0,+String(this.value).replace(',','.')||0);saveOPT()"><small class="mut">per lot</small></span>`],
         ['Fill + stop candle', `<label class="tg"><input type="checkbox" ${OPT.kill ? 'checked' : ''} onchange="OPT.kill=this.checked;saveOPT()"><span></span>count as −1R</label>`],
@@ -931,7 +999,15 @@ async function optRun() {
   const prog = msg => { if (out) out.innerHTML = `<div class="btempty"><span class="spin"></span>${msg}<div class="optbar"><i style="width:${(done / total * 100).toFixed(1)}%"></i></div></div>`; if (btn) btn.textContent = `Testing… ${Math.round(done / total * 100)}%` };
   const key = S.symbol + '|' + BT.count + '|' + S.login; if (!OPT.C || OPT.C.key !== key) OPT.C = { key, data: {} };
   const tps = OPT.tp.map(Number), bes = OPT.be.map(Number), nB = bes.length, ageMax = Math.max(...OPT.age), pt = S.point || .01, live = S.ask && S.bid ? Math.round((S.ask - S.bid) / pt) : OPT.sprPts, pu = perUnit();
+  const HB = {}; // higher-timeframe breaks for the trend filter: times + directions, with the chart's VRS settings
   try {
+    for (const H of OPT.htf.filter(h => h !== 'off')) {
+      let HD = OPT.C.data[H];
+      if (!HD) { prog(`Loading ${H} candles for the trend filter…`); try { const r = await api(`/api/candles?${L()}&symbol=${enc(S.symbol)}&timeframe=${H}&count=${Math.min(BT.count, 20000)}&spread=1`); const C = r?.candles || []; if (C.length > 1) C.pop(); if (C.length >= 200) HD = OPT.C.data[H] = { C, A: trAtrA(C), sec: TF_SEC[H] } } catch {} }
+      if (!HD) continue; const rr = trEngine(HD.C, { ...TRC }, { closed: HD.C.length, A: HD.A, point: S.point }), L2 = rr.setups.map(s => [HD.C[s.brk].time + HD.sec, s.dir]).sort((a, b) => a[0] - b[0]);
+      HB[H] = { t: L2.map(q => q[0]), d: L2.map(q => q[1]) };
+    }
+    OPT.C.hb = HB; const alOf = optAl;
     for (const tf of tfs) {
       let D = OPT.C.data[tf];
       if (!D) {
@@ -942,27 +1018,32 @@ async function optRun() {
         if (C.length < 200) { done += optScansTf(); continue }
         D = OPT.C.data[tf] = { C, A: trAtrA(C), sec: TF_SEC[tf] };
       }
+      if (!D.ps) { D.ps = new Float64Array(D.A.length + 1); for (let i = 0; i < D.A.length; i++) D.ps[i + 1] = D.ps[i] + (D.A[i] || 0) }
       D.spr = Float32Array.from(D.C, c => OPT.cost === 'none' ? 0 : (OPT.cost === 'fixed' ? OPT.sprPts : c.spread > 0 ? c.spread : live) * pt);
       D.comm = OPT.cost === 'none' || !OPT.comm || !pu ? 0 : OPT.comm / pu;
       const C = D.C, tc = C[0].time, span = (C[C.length - 1].time - tc) || 1, split = tc + span * (1 - OPT.oos / 100), weeks = span / 604800;
       for (const mb of OPT.minBars) for (const rg of OPT.range) for (const bf of OPT.buf) for (const aw of OPT.away) {
         const r = trEngine(C, { ...TRC, minBars: mb, rangeAtr: rg, slBuf: bf, away: aw, maxAge: ageMax }, { closed: C.length, A: D.A, point: S.point }), list = optList(D, r, tps, bes);
+        for (const x of list) for (const H of Object.keys(HB)) x.al[H] = alOf(x, H);
         for (const age of OPT.age) { const la = age >= ageMax ? list : list.filter(x => optAgeOk(x, age));
           for (const trf of OPT.tr) { const lg = la.filter(x => optGroup(x.tr, trf));
             for (const dir of OPT.dir) { const ld = dir === 'b' ? lg : lg.filter(x => dir === 'l' ? x.dir > 0 : x.dir < 0);
               for (const ss of OPT.sess) { const ls = ss === 'all' ? ld : ld.filter(x => OPT_SESS[ss](x.h));
+              for (const wd of OPT.wd) { const lw = wd === 'all' ? ls : ls.filter(x => OPT_WD[wd](x.wd));
+              for (const htf of OPT.htf) { if (htf !== 'off' && (!HB[htf] || TF_SEC[htf] <= TF_SEC[tf])) continue; const lh = htf === 'off' ? lw : lw.filter(x => x.al[htf] === 1);
+              for (const vol of OPT.vol) { const lv = vol === 'all' ? lh : lh.filter(x => OPT_VOL[vol](x.vol)); if (lv.length < 10) continue;
                 for (let ti = 0; ti < tps.length; ti++) for (let bi = 0; bi < nB; bi++) {
                   if (bes[bi] && bes[bi] >= tps[ti]) continue; // breakeven at or after the target = the same as no breakeven
-                  const st = optStats(ls, ti * nB + bi, split, tc, span); if (!st.n) continue;
-                  OPT.res.push({ tf, mb, rg, bf, aw, age, trf, dir, sess: ss, t: tps[ti], be: bes[bi], ...st, pw: st.n / Math.max(1e-9, weeks), days: span / 86400 });
-                } } } } }
+                  const st = optStats(lv, ti * nB + bi, split, tc, span); if (!st.n || st.a.n < 10) continue; // fewer than 10 trades in the first part is never shown: not kept (memory)
+                  OPT.res.push({ tf, mb, rg, bf, aw, age, trf, dir, sess: ss, wd, htf, vol, t: tps[ti], be: bes[bi], ...st, pw: st.n / Math.max(1e-9, weeks), days: span / 86400 });
+                } } } } } } } }
         if (++done % 4 === 0) { prog(`${tf}: ${done} of ${total} range settings tested · ${OPT.res.length.toLocaleString()} results`); await sleep(0) }
       }
     }
   } finally { OPT.busy = false; if (btn) btn.textContent = '▶ Test all combinations' }
   OPT.ms = Date.now() - t0; optRender();
 }
-const optDesc = x => `${x.tf} · ${OPT_LBL.tr(x.trf)} · range ≥ ${x.mb} · size ${x.rg}× · stop buf. ${x.bf}× · ${x.aw ? 'leave first' : 'no leave rule'} · wait ≤ ${x.age} · TP ${x.t}R${x.be ? ' · BE ' + x.be + 'R' : ''}${x.dir !== 'b' ? ' · ' + OPT_LBL.dir(x.dir) : ''}${x.sess !== 'all' ? ' · ' + OPT_LBL.sess(x.sess) : ''}`;
+const optDesc = x => `${x.tf} · ${OPT_LBL.tr(x.trf)} · range ≥ ${x.mb} · size ${x.rg}× · stop buf. ${x.bf}× · ${x.aw ? 'leave first' : 'no leave rule'} · wait ≤ ${x.age} · TP ${x.t}R${x.be ? ' · BE ' + x.be + 'R' : ''}${x.dir !== 'b' ? ' · ' + OPT_LBL.dir(x.dir) : ''}${x.sess !== 'all' ? ' · ' + OPT_LBL.sess(x.sess) : ''}${x.wd && x.wd !== 'all' ? ' · ' + OPT_LBL.wd(x.wd) : ''}${x.htf && x.htf !== 'off' ? ' · with ' + x.htf + ' trend' : ''}${x.vol && x.vol !== 'all' ? ' · ' + OPT_LBL.vol(x.vol).toLowerCase() + ' market' : ''}`;
 const OPT_COLS = { n: x => x.n, pw: x => x.pw, win: x => x.win, avg: x => x.avg, net: x => x.net, pf: x => x.pf, dd: x => -x.dd, streak: x => -x.streak, tt: x => x.tt, cost: x => -x.cost, bn: x => x.b.n, bwin: x => x.b.win, bavg: x => x.b.avg, bnet: x => x.b.net, q: x => x.qp - x.qa / 10 };
 function optSortBy(k) { OPT.sort = OPT.sort?.k === k ? (OPT.sort.d > 0 ? { k, d: -1 } : null) : { k, d: 1 }; optRender() }
 function optRows() { const sc = OPT.sort ? OPT_COLS[OPT.sort.k] : OPT_SCORE[OPT.rank], d = OPT.sort ? OPT.sort.d : 1; return OPT.res.filter(x => x.a.n >= OPT.minTrades && (!OPT.tfF || x.tf === OPT.tfF) && (!OPT.onlyRob || optRob(x))).sort((p, q) => (sc(q) - sc(p)) * d) }
@@ -971,7 +1052,7 @@ function optRender() {
   const all = optRows(), rows = all.slice(0, OPT.show), pool = OPT.res.filter(x => x.a.n >= OPT.minTrades), best = f => pool.reduce((p, x) => !p || f(x) > f(p) ? x : p, null);
   if (!pool.length) { out.innerHTML = `<div class="btempty">No combination had ${OPT.minTrades}+ trades in the first ${100 - OPT.oos}%. Load more candles, lower “Min. trades”, or try smaller timeframes. (${n0(OPT.res.length)} results tested)</div>`; return }
   const R = (v, d = 1) => `<b class="${v > 0 ? 'up' : v < 0 ? 'dn' : ''}">${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toFixed(d)}R</b>`, pc = v => `${v >= 0 ? '+' : '−'}${Math.abs(v * OPT.risk).toFixed(1)}%`, ix = x => OPT.res.indexOf(x);
-  const acts = x => `<button class="btn sm" onclick="event.stopPropagation();optApply(${ix(x)})" title="Use these settings on the chart">Use</button><button class="btn sm ghost" onclick="event.stopPropagation();optSave(${ix(x)})" title="Save as a named TR system">☆</button><button class="btn sm acc" onclick="event.stopPropagation();optLab(${ix(x)})" title="Deep test this exact setting in the Backtest Lab: best exit, breakeven, scaling in">🧪 Lab</button>`;
+  const acts = x => `<button class="btn sm" onclick="event.stopPropagation();optApply(${ix(x)})" title="Use these settings on the chart">Use</button><button class="btn sm ghost" onclick="event.stopPropagation();optSave(${ix(x)})" title="Save as a named VRS system">☆</button><button class="btn sm acc" onclick="event.stopPropagation();optLab(${ix(x)})" title="Deep test this exact setting in the Backtest Lab: best exit, breakeven, scaling in">🧪 Lab</button>`;
   const card = (x, icon, title, main) => !x ? '' : `<div class="optcard" onclick="optDetail(${ix(x)})" style="cursor:pointer"><small>${icon} ${title}</small><b>${main}</b><span>${esc(optDesc(x))}</span>
       <span>${x.n} trades · ${x.pw.toFixed(1)}/week · win ${x.win.toFixed(0)}% · ${R(x.avg, 2)} per trade · max DD −${x.dd.toFixed(1)}R</span>
       <span class="${optRob(x) ? 'ok' : 'warn'}">${x.b.n ? `${optRob(x) ? '✓' : '✗'} Unseen: ${x.b.n} trades · win ${x.b.win.toFixed(0)}% · ${R(x.b.net)}` : 'No unseen trades to check'}</span><div style="display:flex;gap:6px">${acts(x)}</div></div>`;
@@ -996,7 +1077,7 @@ function optRender() {
 function optTradesOf(x) { // the trades of one result (scanned again with exactly its settings)
   const D = OPT.C?.data[x.tf]; if (!D) return [];
   const r = trEngine(D.C, { ...TRC, minBars: x.mb, rangeAtr: x.rg, slBuf: x.bf, away: x.aw, maxAge: x.age }, { closed: D.C.length, A: D.A, point: S.point });
-  return optList(D, r, [x.t], [x.be]).filter(q => optGroup(q.tr, x.trf) && (x.dir === 'b' || (x.dir === 'l' ? q.dir > 0 : q.dir < 0)) && OPT_SESS[x.sess](q.h)).map(q => ({ ...q, r: q.out[0] })).filter(q => q.r === q.r);
+  return optList(D, r, [x.t], [x.be]).filter(q => optGroup(q.tr, x.trf) && (x.dir === 'b' || (x.dir === 'l' ? q.dir > 0 : q.dir < 0)) && OPT_SESS[x.sess](q.h) && OPT_WD[x.wd || 'all'](q.wd) && OPT_VOL[x.vol || 'all'](q.vol) && (!x.htf || x.htf === 'off' || optAl(q, x.htf) === 1)).map(q => ({ ...q, r: q.out[0] })).filter(q => q.r === q.r);
 }
 function optSpark(pts, split, W = 700, H = 170) {
   if (pts.length < 2) return '<p class="mut">Not enough trades for a curve.</p>';
@@ -1028,13 +1109,13 @@ function optCsv() {
 }
 const OPT_EXIT = { tpMode: 'R', tpTf: '', trail: false, partR: 0, filt: '' }; // what the finder tested: fixed R (+ its breakeven), no other extras
 const optShow = g => g === '1' ? 'tr1' : g === '2' ? 'tr2' : g === '12' ? 'both' : 'all';
-const optCfg = x => ({ ...trPick(TRC), ...OPT_EXIT, minBars: x.mb, rangeAtr: x.rg, slBuf: x.bf, away: x.aw, maxAge: x.age, tp: x.t, beR: x.be || 0, show: optShow(x.trf) });
+const optCfg = x => ({ ...trPick(TRC), ...OPT_EXIT, minBars: x.mb, rangeAtr: x.rg, slBuf: x.bf, away: x.aw, maxAge: x.age, tp: x.t, beR: x.be || 0, show: optShow(x.trf), filt: x.htf && x.htf !== 'off' ? x.htf : '' });
 function optSave(i) { const x = OPT.res[i]; if (x) trSaveAs(optCfg(x), x.tf, () => openOptimizer()) }
 function optApply(i) {
   const x = OPT.res[i]; if (!x) return;
-  Object.assign(TRC, OPT_EXIT, { on: true, minBars: x.mb, rangeAtr: x.rg, slBuf: x.bf, away: x.aw, maxAge: x.age, tp: x.t, beR: x.be || 0, show: optShow(x.trf) }); saveTRC();
+  Object.assign(TRC, OPT_EXIT, { on: true, minBars: x.mb, rangeAtr: x.rg, slBuf: x.bf, away: x.aw, maxAge: x.age, tp: x.t, beR: x.be || 0, show: optShow(x.trf), filt: x.htf && x.htf !== 'off' ? x.htf : '' }); saveTRC();
   resolveModal(null); TR.key = ''; Overlay.dirty = true; TR.tick(); if (S.tf !== x.tf) setTF(x.tf);
-  toast(`Using: ${optDesc(x)}${x.dir !== 'b' || x.sess !== 'all' ? ' · the side / session filter is not part of a TR system: follow it yourself' : ''}`, 'ok', 8000);
+  toast(`Using: ${optDesc(x)}${x.dir !== 'b' || x.sess !== 'all' || (x.wd && x.wd !== 'all') || (x.vol && x.vol !== 'all') ? ' · the side / session / weekday / volatility filter is not part of a VRS system: follow it yourself' : ''}`, 'ok', 8000);
 }
 // 🧪 hand this exact setting to the Backtest Lab: it loads the timeframes around it and tests every exit, breakeven, partial, trailing stop and scaling in
 function optLab(i) {
@@ -1070,22 +1151,22 @@ function btRender() {
   const R = v => `<b class="${v > 0 ? 'up' : v < 0 ? 'dn' : ''}">${v > 0 ? '+' : ''}${v.toFixed(1)}R</b>`;
   const seg = `<div class="seg btseg">${[...BT_TARGETS.map(t => [String(t), t + 'R']), ['best', 'Best target']].map(([k, l]) => `<button class="${BT.target === k ? 'on' : ''}" onclick="BT.target='${k}';store.set('btTarget','${k}');btRender()">${l}</button>`).join('')}</div>`;
   const tfMax = {}; for (const x of scored) if (!tfMax[x.r.tf] || x.s.net > tfMax[x.r.tf]) tfMax[x.r.tf] = x.s.net;
-  out.innerHTML = `<div class="btwin">🏆 Best: <b>${best.r.tf} · TR${best.r.tr}</b> with a ${best.s.t}R target: ${R(best.s.net)} over ${best.s.n} trades · win rate ${best.s.win.toFixed(0)}% · profit factor ${best.s.pf.toFixed(2)}${best.s.n < 20 ? ' <span class="warn">· few trades, treat with care</span>' : ''}</div>
+  out.innerHTML = `<div class="btwin">🏆 Best: <b>${best.r.tf} · VA${best.r.tr}</b> with a ${best.s.t}R target: ${R(best.s.net)} over ${best.s.n} trades · win rate ${best.s.win.toFixed(0)}% · profit factor ${best.s.pf.toFixed(2)}${best.s.n < 20 ? ' <span class="warn">· few trades, treat with care</span>' : ''}</div>
     <div class="bthead"><span>Take profit at</span>${seg}</div>
-    <div class="btscroll"><table class="bttbl"><thead><tr><th>TF</th><th>TR</th><th>Trades</th><th>Win %</th><th>Net</th><th>Per trade</th><th>Profit factor</th><th>Max DD</th><th>Loss streak</th><th>${BT.target === 'best' ? 'Target' : 'Open'}</th><th>Per week</th></tr></thead><tbody>
+    <div class="btscroll"><table class="bttbl"><thead><tr><th>TF</th><th>VA</th><th>Trades</th><th>Win %</th><th>Net</th><th>Per trade</th><th>Profit factor</th><th>Max DD</th><th>Loss streak</th><th>${BT.target === 'best' ? 'Target' : 'Open'}</th><th>Per week</th></tr></thead><tbody>
       ${scored.map(({ r, s }) => `<tr class="${r === best.r ? 'best' : ''} ${BT.sel === r.tf + r.tr ? 'sel' : ''}" onclick="BT.sel='${r.tf}${r.tr}';btRender()" title="Show the trades">
-        <td><b>${r.tf}</b></td><td><span class="trb t${r.tr}">TR${r.tr}</span></td><td>${s.n}</td><td>${s.n ? s.win.toFixed(0) + '%' : '—'}</td><td>${R(s.net)}${s.net === tfMax[r.tf] && s.n ? ' ◂' : ''}</td><td>${s.n ? (s.avg >= 0 ? '+' : '') + s.avg.toFixed(2) + 'R' : '—'}</td>
+        <td><b>${r.tf}</b></td><td><span class="trb t${r.tr}">VA${r.tr}</span></td><td>${s.n}</td><td>${s.n ? s.win.toFixed(0) + '%' : '—'}</td><td>${R(s.net)}${s.net === tfMax[r.tf] && s.n ? ' ◂' : ''}</td><td>${s.n ? (s.avg >= 0 ? '+' : '') + s.avg.toFixed(2) + 'R' : '—'}</td>
         <td>${s.n ? s.pf.toFixed(2) : '—'}</td><td>${s.n ? '−' + s.dd.toFixed(1) + 'R' : '—'}</td><td>${s.streak}</td><td>${BT.target === 'best' ? s.t + 'R' : s.open}</td><td>${(s.n / Math.max(1, r.days / 7)).toFixed(1)}</td></tr>`).join('')}
     </tbody></table></div>
     ${errs.length ? `<p class="mut" style="font-size:11px">Skipped: ${errs.map(e => `${e.tf} (${esc(e.err)})`).join(', ')}</p>` : ''}
-    <p class="mut" style="font-size:11px">◂ = better TR on that timeframe. Period per timeframe = the candles loaded (${ok.map(r => r.tr === 1 ? `${r.tf} ${Math.round(r.days)} days` : '').filter(Boolean).join(' · ')}). No spread or commission included. Past results don't promise future results.</p>
+    <p class="mut" style="font-size:11px">◂ = better VRS on that timeframe. Period per timeframe = the candles loaded (${ok.map(r => r.tr === 1 ? `${r.tf} ${Math.round(r.days)} days` : '').filter(Boolean).join(' · ')}). No spread or commission included. Past results don't promise future results.</p>
     ${btTrades()}`;
 }
 function btTrades() {
   const r = BT.rows.find(x => !x.err && x.tf + x.tr === BT.sel); if (!r) return '<p class="mut" style="font-size:11.5px">Click a row to see its trades.</p>';
   const t = BT.target === 'best' ? btBest(r.trades).t : +BT.target, list = [...r.trades].reverse().slice(0, 300);
   const q = tm => { const z = tzParts(tm); return `${z.d} ${MON[z.mo - 1]} ${pad2(z.h)}:${pad2(z.mi)}` };
-  return `<h4 class="btsub">${r.tf} · TR${r.tr} · ${r.trades.length} trades (newest first) · result at ${t}R</h4><div class="btscroll" style="max-height:260px"><table class="bttbl"><thead><tr><th>Entry time</th><th>Side</th><th>Entry</th><th>Stop</th><th>Best reached</th><th>Result</th><th></th></tr></thead><tbody>
+  return `<h4 class="btsub">${r.tf} · VA${r.tr} · ${r.trades.length} trades (newest first) · result at ${t}R</h4><div class="btscroll" style="max-height:260px"><table class="bttbl"><thead><tr><th>Entry time</th><th>Side</th><th>Entry</th><th>Stop</th><th>Best reached</th><th>Result</th><th></th></tr></thead><tbody>
     ${list.map(s => { const res = s.maxR >= t ? `<b class="up">+${t}R</b>` : s.out === 'sl' ? '<b class="dn">−1R</b>' : '<span class="mut">open</span>'; return `<tr><td>${q(s.time)}</td><td><b class="${s.dir < 0 ? 'dn' : 'up'}">${s.dir < 0 ? 'SELL' : 'BUY'}</b></td><td>${fx(s.entry)}</td><td>${fx(s.sl)}</td><td>${s.maxR.toFixed(1)}R${s.out === 'sl' ? ' then stop' : ''}</td><td>${res}</td><td><button class="btn sm ghost" onclick="btGoto('${r.tf}',${s.brkTime})">Chart ↗</button></td></tr>` }).join('')}
   </tbody></table></div>`;
 }
@@ -1128,18 +1209,18 @@ const indName = o => { const T = ITYPES[o.type]; return `${T.name} ${T.p.filter(
 const OVERLAYS = { pdhl: 'Previous day high / low', asia: 'Asia range (01–09 CET)', bidask: 'Bid / ask lines', wm: 'Watermark' }; // "Trade markers" (P/L dots of closed deals) removed on request
 
 /* =====================================================================
-   TR1 / TR2 SIGNALS  (consolidation -> body-close break -> zone -> retest)
-   TR1 = the first consolidation broken in a new direction (change of character, CHOCH)
-   TR2 = the next consolidation broken in the SAME direction (break of structure, BOS)
+   VA1 / VA2 SIGNALS  (consolidation -> body-close break -> zone -> retest)
+   VA1 = the first consolidation broken in a new direction (change of character, CHOCH)
+   VA2 = the next consolidation broken in the SAME direction (break of structure, BOS)
    Zone = the breaking candle from its body close to its full wick, extended right until price comes back.
    Retest of the zone = valid signal. Entry = body close of the breaking candle, SL beyond the consolidation, TP open (R levels).
    ===================================================================== */
-/* exit plan + filter of a TR system (the same choices the Backtest Lab tests). The auto-trade bot follows them for the trades it opens:
+/* exit plan + filter of a VRS system (the same choices the Backtest Lab tests). The auto-trade bot follows them for the trades it opens:
    tpMode 'R' = TP at tp × R · 'zone' = TP at the nearest unused opposite zone (on tpTf, '' = the trade's own timeframe) at least zMin R away, else zFb R
    'sig' = no TP, close when tpTf breaks the other way · 'none' = no TP (use with trail) · beR = stop to breakeven at this R · trail = stop behind each new BOS
    partR / partPct = partial close · filt = only take signals in the direction of the last break on this timeframe */
-const TR_DEF = { tpMode: 'R', tpTf: '', beR: 0, trail: false, partR: 0, partPct: 50, filt: '', zMin: 1, zFb: 3, ...JUL_DEF }; // + the system (mode 'tr' | 'julius') and its TR1 Julius checklist settings
-const TRC = Object.assign({ hist: 'minimal', collapsed: true, on: false, only: false, show: 'both', minBars: 5, rangeAtr: 1.6, slBuf: 0.1, away: true, rr: true, rHit: 'hide', tp: 0, maxAge: 200 }, TR_DEF, store.get('trCfg', {})); // rHit: R levels a trade already reached: 'hide' or 'tag' (a ✓ where it was reached)
+const TR_DEF = { tpMode: 'R', tpTf: '', beR: 0, trail: false, partR: 0, partPct: 50, filt: '', zMin: 1, zFb: 3, ...JUL_DEF }; // + the system (mode 'tr' | 'julius') and its VA1 Julius checklist settings
+const TRC = Object.assign({ hist: 'minimal', collapsed: true, on: false, only: false, show: 'both', minBars: 5, rangeAtr: 1.6, slBuf: 0.1, away: true, rr: true, rHit: 'hide', tp: 0, maxAge: 200 }, TR_DEF, { tpMode: 'none', trail: true }, store.get('trCfg', {})); // standard exit: no TP, trail the stop (old saved systems keep their own exit) // rHit: R levels a trade already reached: 'hide' or 'tag' (a ✓ where it was reached)
 const trTpR = q => (q.tpMode || 'R') === 'R' ? +q.tp || 0 : 0; // fixed-R take profit of a system (0 = none)
 const trExitDesc = q => { const m = q.tpMode || 'R', on = q.tpTf ? ' ' + q.tpTf : ''; return (m === 'R' ? (+q.tp > 0 ? 'TP ' + q.tp + 'R' : 'TP open') : m === 'zone' ? 'TP at opposite zone' + on : m === 'sig' ? 'exit on opposite signal' + on : 'no TP') + (+q.beR ? ` · BE at ${q.beR}R` : '') + (q.trail ? ' · trail behind BOS' : '') + (+q.partR ? ` · ${q.partPct || 50}% off at ${q.partR}R` : '') + (q.filt ? ` · only with ${q.filt} structure` : '') };
 const trX = c => ({ tpMode: c.tpMode || 'R', tpTf: c.tpTf || '', tp: +c.tp || 0, beR: +c.beR || 0, trail: !!c.trail, partR: +c.partR || 0, partPct: +c.partPct || 50, filt: c.filt || '', zMin: c.zMin ?? 1, zFb: c.zFb ?? 3 });
@@ -1149,9 +1230,17 @@ function trZoneTp(z, setups, q) {
   for (const s of setups) { if (s.dir === z.dir || !(s.state === 'away' || s.state === 'wait')) continue; if (z.dir > 0) { if (s.zl >= z.entry + md && !(s.zl >= best)) best = s.zl } else if (s.zh <= z.entry - md && !(s.zh <= best)) best = s.zh }
   return best === best ? best : z.entry + z.dir * (q.zFb ?? 3) * risk;
 }
-const saveTRC = () => store.set('trCfg', TRC);
+// split: VRS shown / collapsed are per chart. The second chart keeps its own (split_trUi) and never changes the main chart's
+let TR_MAIN_ON = TRC.on;
+if (EMBED) Object.assign(TRC, store.get('split_trUi', {}));
+const saveTRC = () => {
+  if (!EMBED) { TR_MAIN_ON = TRC.on; return store.set('trCfg', TRC) }
+  const base = store.get('trCfg', {});
+  store.set('trCfg', { ...TRC, on: base.on ?? TR_MAIN_ON, collapsed: base.collapsed ?? TRC.collapsed }); // system settings stay shared
+  store.set('split_trUi', { on: TRC.on, collapsed: TRC.collapsed });
+};
 const trOnly = () => TRC.on && TRC.only;
-/* the TR1 / TR2 rules on any candle array: trScan() and trAtrA() live in gp-shared.js (section 7), so the live chart,
+/* the VA1 / VA2 rules on any candle array: trScan() and trAtrA() live in gp-shared.js (section 7), so the live chart,
    the auto-trade bot, this quick backtest and the full Backtest Lab (lab.html) all run exactly the same code */
 const TR = {
   key: '', res: null, seen: null, seenKey: '', panelHtml: '',
@@ -1169,6 +1258,9 @@ const TR = {
     const lb = C[n - 1], key = [S.symbol, S.tf, n, C[0].time, lb.time, lb.high, lb.low, lb.close, JSON.stringify(TRC)].join('|');
     if (key === this.key) return this.res; this.key = key;
     const r = trEngine(C, TRC, { closed: n - 1, from: Math.max(1, n - 3000), id: S.symbol + S.tf, point: S.point, search: true }); // the last candle is still forming: a break needs a CLOSED body
+    // a candle that came back into the zone (the limit fills) and closed beyond the stop is a real −1R trade: show it as a stopped trade,
+    // not as a dead setup (it used to vanish the moment that candle closed)
+    for (const s of r.setups) if (s.state === 'invalid' && s.fillKill && s.end >= 0) Object.assign(s, { state: 'valid', trig: s.end, out: 'sl', maxR: 0, path: [], risk: Math.abs(s.entry - s.sl) || 1e-9, lost: true });
     return this.res = { ...r, nextTr: d => d === r.lastDir ? r.count + 1 : 1 };
   },
   // called every frame: recompute when the candles change, redraw, update the panel, announce new signals
@@ -1178,9 +1270,9 @@ const TR = {
     if (!r && this.panelHtml) { this.panelHtml = ''; $('#trPanel').innerHTML = ''; $('#trPanel').classList.remove('on') }
   },
   announce(r) {
-    if (!r) return; const k = S.symbol + S.tf, valid = r.setups.filter(s => s.state === 'valid' && this.shown(s));
+    if (!r) return; const k = S.symbol + S.tf, valid = r.setups.filter(s => s.state === 'valid' && !s.lost && this.shown(s));
     if (this.seenKey !== k) { this.seenKey = k; this.seen = new Set(valid.map(s => s.id)); return } // first load: no pop-ups for old signals
-    for (const s of valid) if (!this.seen.has(s.id)) { this.seen.add(s.id); if (s.trig >= S.candles.length - 3) toast(`${s.dir < 0 ? '▼ SELL' : '▲ BUY'} TR${s.tr}${s.jul ? ' Julius' : ''} valid on ${S.symbol} ${S.tf}: price retested the ${s.jul ? 'POI' : 'zone'} · entry ${fx(s.entry)} · SL ${fx(s.sl)}${s.jul?.half ? ' · HALF RISK (POI high in the range)' : ''}`, 'ok', 9000) }
+    for (const s of valid) if (!this.seen.has(s.id)) { this.seen.add(s.id); if (s.trig >= S.candles.length - 3) toast(`${s.dir < 0 ? '▼ SELL' : '▲ BUY'} VA${s.tr}${s.jul ? ' Julius' : ''} valid on ${S.symbol} ${S.tf}: price retested the ${s.jul ? 'POI' : 'zone'} · entry ${fx(s.entry)} · SL ${fx(s.sl)}${s.jul?.half ? ' · HALF RISK (POI high in the range)' : ''}`, 'ok', 9000) }
   },
   svg(X, Y, W, H) {
     const r = this.res; if (!TRC.on || !r || !S.candles.length) return '';
@@ -1193,7 +1285,7 @@ const TR = {
     const lastValid = [...all].reverse().find(z => z.state === 'valid');
     const focus = new Set(all.filter(z => z.state === 'away' || z.state === 'wait'));
     if (lastValid && (lastValid.out === 'open' || lastValid.end > n - 60)) focus.add(lastValid);
-    // TR1 Julius: the newest setup that misses a check while its POI is still open is drawn too (faded, dashed, "NO TRADE")
+    // VA1 Julius: the newest setup that misses a check while its POI is still open is drawn too (faded, dashed, "NO TRADE")
     const gh = TRC.mode === 'julius' ? [...all].reverse().find(z => z.state === 'filtered' && z.ghost === 'wait' && z.brk > n - 400) : null; if (gh) focus.add(gh);
     // where a triggered trade ended: the stop candle, the candle that reached the system's fixed TP, or −1 = STILL RUNNING
     const tpR0 = trTpR(TRC), tradeEnd = z => { if (z.out === 'sl') return z.end; if (tpR0 > 0 && z.path) { const i = z.path.findIndex(v => v >= tpR0); if (i >= 0) return z.trig + 1 + i } return z.trig + 600 <= n - 1 ? z.trig + 600 : -1 };
@@ -1210,12 +1302,12 @@ const TR = {
       const col = z.dir < 0 ? PAL['--sell'] : PAL['--buy'], x0 = xb(z.box.from) - bw, x1 = xb(z.box.to) + bw, xbk = xb(z.brk);
       const endX = z.state === 'valid' ? xb(tradeEnd(z) === -1 ? n - 1 : z.end > 0 ? z.end : z.trig) : xb(z.end > 0 ? z.end : n - 1);
       if (Math.max(x1, endX) < -40 || x0 > W + 40) continue;
-      const yh = Y(z.box.hi), yl = Y(z.box.lo), yb = z.dir < 0 ? yl : yh, yzt = Y(z.zh), yzb = Y(z.zl), name = `TR${z.tr}${z.jul ? ' Julius' : ''} ${z.dir < 0 ? 'SELL' : 'BUY'}`;
+      const yh = Y(z.box.hi), yl = Y(z.box.lo), yb = z.dir < 0 ? yl : yh, yzt = Y(z.zh), yzb = Y(z.zl), name = `VA${z.tr}${z.jul ? ' Julius' : ''} ${z.dir < 0 ? 'SELL' : 'BUY'}`;
       if (!isF) { // ---- history: small and quiet
         const op = dead ? (lt ? .45 : .3) : (lt ? .8 : .55);
         s += `<g opacity="${op}"><rect x="${x0}" y="${yh}" width="${x1 - x0}" height="${yl - yh}" fill="none" stroke="${edge}" stroke-opacity="${lt ? .35 : 1}" stroke-width="1" stroke-dasharray="3 3" rx="2"/>`
           + `<line x1="${x0}" y1="${yb}" x2="${xbk + bw}" y2="${yb}" stroke="${col}" stroke-width="1"/>`
-          + `<text x="${x0 + 2}" y="${yh - 3}" fill="${lt ? txt : mut}" fill-opacity="${lt ? .6 : 1}" font-size="8.5" font-weight="800" letter-spacing=".3">TR${z.tr}</text></g>`;
+          + `<text x="${x0 + 2}" y="${yh - 3}" fill="${lt ? txt : mut}" fill-opacity="${lt ? .6 : 1}" font-size="8.5" font-weight="800" letter-spacing=".3">VA${z.tr}</text></g>`;
         if (z.state === 'valid') {
           const xt = xb(z.trig), q = C[z.trig], ye = Y(z.entry), win = z.maxR >= (trTpR(TRC) || 1), yw = z.dir < 0 ? Y(q.high) - 4 : Y(q.low) + 4;
           const tp = trTpR(TRC), res = tp ? (z.maxR >= tp ? `+${tp}R` : z.out === 'sl' ? '−1R' : 'open') : z.out === 'sl' ? (win ? `+${z.maxR.toFixed(1)}R` : '−1R') : `+${z.maxR.toFixed(1)}R`; // with a TP: the real result at that TP
@@ -1228,11 +1320,13 @@ const TR = {
       }
       // ---- in focus: the full picture
       s += `<rect x="${x0}" y="${yh}" width="${x1 - x0}" height="${yl - yh}" fill="${txt}" fill-opacity="${dark ? .045 : .04}" stroke="${edge}" stroke-opacity="${lt ? .45 : .8}" stroke-width="1" stroke-dasharray="4 3" rx="2"/>`;
-      { const lt = `TR${z.tr} RANGE`, w = lt.length * 5.6 + 12; s += `<rect x="${x0}" y="${yh - 15}" width="${w}" height="13" rx="3" fill="${dark ? '#1b2024' : '#fff'}" fill-opacity=".9" stroke="${edge}" stroke-opacity="${lt ? .35 : .7}" stroke-width="1"/><text x="${x0 + w / 2}" y="${yh - 5.5}" fill="${mut}" font-size="9" font-weight="800" text-anchor="middle" letter-spacing=".4">${lt}</text>` } // the setup: quiet grey outline. Only the ENTRY gets a solid coloured tag.
+      { const lt = `VA${z.tr}`, w = lt.length * 5.6 + 12; s += `<rect x="${x0}" y="${yh - 15}" width="${w}" height="13" rx="3" fill="${dark ? '#1b2024' : '#fff'}" fill-opacity=".9" stroke="${edge}" stroke-opacity="${lt ? .35 : .7}" stroke-width="1"/><text x="${x0 + w / 2}" y="${yh - 5.5}" fill="${mut}" font-size="9" font-weight="800" text-anchor="middle" letter-spacing=".4">${lt}</text>` } // the setup: quiet grey outline. Only the ENTRY gets a solid coloured tag.
       s += `<line x1="${x0}" y1="${yb}" x2="${xbk + bw}" y2="${yb}" stroke="${col}" stroke-width="1.2"/><text x="${(x0 + xbk) / 2}" y="${yb + (z.dir < 0 ? 11 : -4)}" fill="${col}" font-size="9" font-weight="700" text-anchor="middle" opacity=".9">${z.tr === 1 ? 'CHOCH' : 'BOS'} ${z.dir < 0 ? '↓' : '↑'}</text>`;
       // the zone only stays while it is unused: once price has reacted to it (the retest), it is removed
       if (live) s += `<rect x="${xbk - bw}" y="${yzt}" width="${Math.max(2, W - xbk + bw)}" height="${Math.max(1.5, yzb - yzt)}" fill="${col}" fill-opacity="${lt ? .14 : .18}" stroke="${col}" stroke-opacity="${lt ? .8 : .6}" stroke-width="1"/>`;
       if (live) s += `<text x="${W - 6}" y="${(yzt + yzb) / 2 + 3.5}" fill="${col}" font-size="9.5" font-weight="800" text-anchor="end" opacity=".9">${name} ${z.jul ? 'POI' : 'ZONE'}</text>`;
+      // after the retest the zone stays (softer) for as long as the trade runs, so you still see where it came from
+      if (z.state === 'valid') { const te0 = tradeEnd(z), xz = te0 === -1 ? W : xb(te0) + bw; s += `<rect x="${xbk - bw}" y="${yzt}" width="${Math.max(2, xz - xbk + bw)}" height="${Math.max(1.5, yzb - yzt)}" fill="${col}" fill-opacity="${te0 === -1 ? (lt ? .09 : .11) : .05}" stroke="${col}" stroke-opacity="${te0 === -1 ? .4 : .2}" stroke-width="1"/>` }
       if (live && z.jul) { const yen = Y(z.entry); s += `<line x1="${xbk - bw}" y1="${yen}" x2="${W}" y2="${yen}" stroke="${col}" stroke-opacity=".75" stroke-width="1" stroke-dasharray="5 3"/>` } // the limit price inside the POI
       if (isG) { // found, but a required check is missing: only an outline, greyed, with the reason
         const miss = z.jul.miss.map(c => ({ sess: 'session', bias: 'bias', poi: 'POI', disc: z.dir > 0 ? 'discount' : 'premium', high: 'POI position', int: 'stop', sweep: 'sweep', poc: 'POC' })[c.k] || c.k).join(' + ');
@@ -1262,7 +1356,7 @@ const TR = {
         // R levels: one already reached stops AT the candle that reached it (a small "1R ✓" milestone); only levels still ahead run on to now
         if (TRC.rr) for (const R of [1, 2, 3].filter(v => v !== tpR)) {
           const yr = Y(z.entry + z.dir * risk * R), ki = z.path ? z.path.findIndex(v => v >= R) : -1, kc = ki >= 0 ? z.trig + 1 + ki : -1, hit = kc >= 0 && kc <= (te >= 0 ? te : n - 1), xr = hit ? xb(kc) : xe;
-          if (hit && TRC.rHit !== 'tag') continue; // already reached: gone (TR settings → "Reached R levels" shows them as ✓ tags)
+          if (hit && TRC.rHit !== 'tag') continue; // already reached: gone (VRS settings → "Reached R levels" shows them as ✓ tags)
           s += `<line x1="${xs}" y1="${yr}" x2="${xr}" y2="${yr}" stroke="${col}" stroke-opacity="${hit ? .32 : (lt ? .62 : .55) - R * .1}" stroke-width="1" stroke-dasharray="1.5 3.5"/>`;
           // the "1R ✓" tag sits LEFT of the candle that reached it, on the side price came from (above the line for a buy, below for a sell):
           // price was not there yet, so no candles cover it; a small pill in the chart colour keeps it readable anyway
@@ -1271,7 +1365,7 @@ const TR = {
           else tags.push({ y: yr, x: xe + 6, t: `${R}R`, c: col, o: (running ? .8 : .5) - R * .08 });
         }
         s += `</g>`;
-        tags.push({ y: ye, x: xe + 6, k: 'e', pill: `${arrow} TR${z.tr}  ${head}`, sub, c: col, solid: running, o: running ? 1 : .7 });
+        tags.push({ y: ye, x: xe + 6, k: 'e', pill: `${arrow} VA${z.tr}  ${head}`, sub, c: col, solid: running, o: running ? 1 : .7 });
         tags.push({ y: ys, x: xe + 6, t: `SL ${fx(z.sl)}`, c: PAL['--sell'], o: running ? .85 : .5 });
       }
     }
@@ -1311,17 +1405,17 @@ const TR = {
     const recent = [...r.setups].reverse().find(s => s.state === 'valid' && this.shown(s) && s.out === 'open' && s.trig >= n - 15);
     if (recent) {
       const d = recent.dir < 0 ? 'SELL' : 'BUY', risk = Math.abs(recent.entry - recent.sl);
-      h += `<div class="trc go ${recent.dir < 0 ? 's' : 'b'}"><b>${recent.dir < 0 ? '▼' : '▲'} VALID ${d} · TR${recent.tr}</b><small>${n - 1 - recent.trig ? n - 1 - recent.trig + ' bars ago' : 'this candle'} · price retested the zone</small>
+      h += `<div class="trc go ${recent.dir < 0 ? 's' : 'b'}"><b>${recent.dir < 0 ? '▼' : '▲'} VALID ${d} · VA${recent.tr}</b><small>${n - 1 - recent.trig ? n - 1 - recent.trig + ' bars ago' : 'this candle'} · price retested the zone</small>
         <div class="trk"><span>Entry<b>${fx(recent.entry)}</b></span><span>SL<b>${fx(recent.sl)}</b></span><span>Risk<b>${pt(risk)}</b></span><span>Now<b>${recent.maxR >= 0 ? '+' : ''}${recent.maxR.toFixed(1)}R max</b></span></div>
         <button class="btn sm" onclick="TR.ticket('${recent.id}')">→ Fill order ticket</button></div>`;
     }
     const more = (recent ? 1 : 0) + (live ? 1 : 0) > 1, JM = TRC.mode === 'julius';
-    // TR1 Julius: the newest setup that was FOUND but misses a required check, while its POI is still open (shown, never traded)
+    // VA1 Julius: the newest setup that was FOUND but misses a required check, while its POI is still open (shown, never traded)
     const ghost = JM && [...r.setups].reverse().find(s => s.state === 'filtered' && s.ghost === 'wait' && this.shown(s) && s.brk >= n - 400 && (!live || s.brk > live.brk));
     if (live && !recent) {
       const d = live.dir < 0 ? 'SELL' : 'BUY', near = live.jul ? live.entry : live.dir < 0 ? live.zl : live.zh, dist = live.dir < 0 ? near - px : px - near, almost = live.state === 'wait' && dist <= r.atr * .6;
-      const J = live.jul; // TR1 Julius: every required check is ✓, only the entry is left
-      h += `<div class="trc ${almost ? 'almost' : ''} ${live.dir < 0 ? 's' : 'b'}"><b>${almost ? '⚡ ALMOST ' : '⏳ '}${d} · TR${live.tr}${J ? ' Julius' : ''}</b><small>${J ? `✓ all ${J.checks.filter(c => c.req).length} required checks · only the entry is left${J.half ? ' · <span class="half">half risk</span>' : ''}` : almost ? 'price is close to the zone' : 'setup building'}</small><ul>
+      const J = live.jul; // VA1 Julius: every required check is ✓, only the entry is left
+      h += `<div class="trc ${almost ? 'almost' : ''} ${live.dir < 0 ? 's' : 'b'}"><b>${almost ? '⚡ ALMOST ' : '⏳ '}${d} · VA${live.tr}${J ? ' Julius' : ''}</b><small>${J ? `✓ all ${J.checks.filter(c => c.req).length} required checks · only the entry is left${J.half ? ' · <span class="half">half risk</span>' : ''}` : almost ? 'price is close to the zone' : 'setup building'}</small><ul>
         ${ck(true, `Consolidation ${fx(live.box.lo)} – ${fx(live.box.hi)} <em>${live.box.to - live.box.from + 1} bars</em>`)}
         ${J ? ck(true, `Body close ${live.dir < 0 ? 'below' : 'above'} it (${live.tr === 1 ? 'CHOCH' : 'BOS'} ${live.dir < 0 ? '↓' : '↑'})`) + this.julRows(live)
           : ck(true, `Body close ${live.dir < 0 ? 'below' : 'above'} it (${live.tr === 1 ? 'CHOCH' : 'BOS'}) at ${fx(live.entry)}`) + (TRC.away ? ck(live.state === 'wait', 'Price leaves the zone') : '')}
@@ -1329,39 +1423,39 @@ const TR = {
         <div class="trr">${J ? 'Limit' : 'Entry'} ${fx(live.entry)} · SL ${fx(live.sl)} (${pt(live.entry - live.sl)}) · ${esc(trExitDesc(TRC))}</div>
         ${this.placed.has(live.id) ? '<div class="trdone">✓ Limit order placed in the zone</div>' : live.state !== 'wait' ? '<div class="trdone" style="color:var(--mut)">⚡ One-click limit appears once price has left the zone</div>' : `<div class="trbtns"><button class="btn sm ${live.dir < 0 ? 'sell' : 'buy'}" onclick="TR.limit('${live.id}')">⚡ Set ${d} limit @ ${fx(live.entry)}</button><button class="btn sm ghost" onclick="TR.ticket('${live.id}')" title="Only fill the order ticket">Ticket</button></div>`}</div>`;
     }
-    if (more) { const d = live.dir < 0 ? 'SELL' : 'BUY', near = live.jul ? live.entry : live.dir < 0 ? live.zl : live.zh, dist = live.dir < 0 ? near - px : px - near; h += `<div class="trc slim ${live.dir < 0 ? 's' : 'b'}"><b>⏳ Next: ${d} TR${live.tr}</b><small>${live.state === 'away' ? 'waiting for price to leave the zone' : dist > 0 ? pt(dist) + ' from the zone' : 'touching the zone'}</small>${this.placed.has(live.id) ? '<div class="trdone">✓ Limit placed</div>' : live.state !== 'wait' ? '' : `<button class="btn sm ${live.dir < 0 ? 'sell' : 'buy'}" style="margin-top:5px;width:100%" onclick="TR.limit('${live.id}')">⚡ Set ${d} limit @ ${fx(live.entry)}</button>`}</div>` }
+    if (more) { const d = live.dir < 0 ? 'SELL' : 'BUY', near = live.jul ? live.entry : live.dir < 0 ? live.zl : live.zh, dist = live.dir < 0 ? near - px : px - near; h += `<div class="trc slim ${live.dir < 0 ? 's' : 'b'}"><b>⏳ Next: ${d} VA${live.tr}</b><small>${live.state === 'away' ? 'waiting for price to leave the zone' : dist > 0 ? pt(dist) + ' from the zone' : 'touching the zone'}</small>${this.placed.has(live.id) ? '<div class="trdone">✓ Limit placed</div>' : live.state !== 'wait' ? '' : `<button class="btn sm ${live.dir < 0 ? 'sell' : 'buy'}" style="margin-top:5px;width:100%" onclick="TR.limit('${live.id}')">⚡ Set ${d} limit @ ${fx(live.entry)}</button>`}</div>` }
     if (ghost && !recent) { // found, but a required check is missing: show it with what is ✓ and what is ✗ (and why), never as a trade
       const g = ghost, d = g.dir < 0 ? 'SELL' : 'BUY', dist = g.dir < 0 ? g.entry - px : px - g.entry, nReq = g.jul.checks.filter(c => c.req).length, m = g.jul.miss.length;
-      h += `<div class="trc ghost ${g.dir < 0 ? 's' : 'b'}"><b>⚠ ${d} · TR${g.tr} Julius found · NO TRADE</b><small>${m} of ${nReq} required check${nReq === 1 ? '' : 's'} missing · ${n - 1 - g.brk} bars ago · POI ${dist > 0 ? pt(dist) + ' away' : 'touched'}</small><ul>
+      h += `<div class="trc ghost ${g.dir < 0 ? 's' : 'b'}"><b>⚠ ${d} · VA${g.tr} Julius found · NO TRADE</b><small>${m} of ${nReq} required check${nReq === 1 ? '' : 's'} missing · ${n - 1 - g.brk} bars ago · POI ${dist > 0 ? pt(dist) + ' away' : 'touched'}</small><ul>
         ${ck(true, `Range ${fx(g.box.lo)} – ${fx(g.box.hi)} broken ${g.dir < 0 ? 'down' : 'up'} <em>${g.tr === 1 ? 'CHOCH' : 'BOS'} ${g.dir < 0 ? '↓' : '↑'}</em>`)}${this.julRows(g, true)}</ul>
         <div class="trmiss">One element missing = no trade (checked at the break, so this one stays a no-trade).${live ? '' : ' Looking for the next setup ↓'}</div></div>`;
     }
     if (JM && !live && r.search) h += this.julSearch(r, r.search);
     // a no-trade setup that is already over (POI used, cancelled or expired): one line on why it was skipped
     const skip = JM && !live && !recent && !ghost && [...r.setups].reverse().find(s => s.state === 'filtered' && this.shown(s) && s.brk >= n - 40);
-    if (skip) h += `<div class="trc slim ${skip.dir < 0 ? 's' : 'b'}"><b>✗ ${skip.dir < 0 ? 'SELL' : 'BUY'} TR${skip.tr} Julius skipped</b><small>${n - 1 - skip.brk} bars ago · one element missing = no trade</small><ul>${skip.jul.miss.map(c => `<li class="no"><i>✗</i><span>${esc(c.t)}<small>${esc(c.need || '')}</small></span></li>`).join('')}</ul></div>`;
+    if (skip) h += `<div class="trc slim ${skip.dir < 0 ? 's' : 'b'}"><b>✗ ${skip.dir < 0 ? 'SELL' : 'BUY'} VA${skip.tr} Julius skipped</b><small>${n - 1 - skip.brk} bars ago · one element missing = no trade</small><ul>${skip.jul.miss.map(c => `<li class="no"><i>✗</i><span>${esc(c.t)}<small>${esc(c.need || '')}</small></span></li>`).join('')}</ul></div>`;
     if (r.forming && !live && !recent && !JM) {
       const f = r.forming;
       h += `<div class="trc"><b>⏳ Range forming</b><small>${f.to - f.from + 1} bars · ${fx(f.lo)} – ${fx(f.hi)}</small><ul>
-        ${ck(true, 'Consolidation')}${ck(false, `Body close above ${fx(f.hi)} → <span class="bt">BUY TR${r.nextTr(1)}</span>`)}${ck(false, `Body close below ${fx(f.lo)} → <span class="st">SELL TR${r.nextTr(-1)}</span>`)}</ul></div>`;
+        ${ck(true, 'Consolidation')}${ck(false, `Body close above ${fx(f.hi)} → <span class="bt">BUY VA${r.nextTr(1)}</span>`)}${ck(false, `Body close below ${fx(f.lo)} → <span class="st">SELL VA${r.nextTr(-1)}</span>`)}</ul></div>`;
     }
-    if (!h) h = `<div class="trc"><b>TR signals on</b><small>No range or zone right now · waiting for a consolidation</small></div>`;
+    if (!h) h = `<div class="trc"><b>VRS signals on</b><small>No range or zone right now · waiting for a consolidation</small></div>`;
     // collapsed: one line in the header (still shows what we wait for)
     let mini = 'waiting for a range', mc = '';
-    if (recent) { mini = `${recent.dir < 0 ? '▼' : '▲'} VALID ${recent.dir < 0 ? 'SELL' : 'BUY'} TR${recent.tr} @ ${fx(recent.entry)}`; mc = recent.dir < 0 ? 'st' : 'bt' }
-    else if (live) { const near = live.jul ? live.entry : live.dir < 0 ? live.zl : live.zh, dist = live.dir < 0 ? near - px : px - near, almost = live.state === 'wait' && dist <= r.atr * .6; mini = `${almost ? '⚡' : '⏳'} ${live.dir < 0 ? 'SELL' : 'BUY'} TR${live.tr} · ${live.state === 'away' ? 'wait for price to leave' : dist > 0 ? pt(dist) + ' to zone' : 'touching'}`; mc = (live.dir < 0 ? 'st' : 'bt') + (almost ? ' pulse' : '') }
+    if (recent) { mini = `${recent.dir < 0 ? '▼' : '▲'} VALID ${recent.dir < 0 ? 'SELL' : 'BUY'} VA${recent.tr} @ ${fx(recent.entry)}`; mc = recent.dir < 0 ? 'st' : 'bt' }
+    else if (live) { const near = live.jul ? live.entry : live.dir < 0 ? live.zl : live.zh, dist = live.dir < 0 ? near - px : px - near, almost = live.state === 'wait' && dist <= r.atr * .6; mini = `${almost ? '⚡' : '⏳'} ${live.dir < 0 ? 'SELL' : 'BUY'} VA${live.tr} · ${live.state === 'away' ? 'wait for price to leave' : dist > 0 ? pt(dist) + ' to zone' : 'touching'}`; mc = (live.dir < 0 ? 'st' : 'bt') + (almost ? ' pulse' : '') }
     else if (ghost) { const k = { sess: 'session', bias: 'bias', poi: 'no POI', disc: ghost.dir > 0 ? 'not in discount' : 'not in premium', high: 'POI too close', int: 'stop', sweep: 'no sweep', poc: 'no POC' }; mini = `⚠ ${ghost.dir < 0 ? 'SELL' : 'BUY'} found · no trade: ${ghost.jul.miss.map(c => k[c.k] || c.k).join(', ')}` }
     else if (JM && r.search) { const q = r.search; mini = `🔎 ${q.bias ? 'looking for a ' + (q.bias < 0 ? 'SELL' : 'BUY') : 'no ' + q.biasTf + ' bias yet'}${q.forming ? ` · range ${fx(q.forming.lo)} – ${fx(q.forming.hi)}` : ''}${q.sessOk ? '' : ' · ' + q.sess}`; mc = q.bias < 0 ? 'st' : q.bias > 0 ? 'bt' : '' }
     else if (r.forming) mini = `⏳ range ${fx(r.forming.lo)} – ${fx(r.forming.hi)}`;
     const col = !!TRC.collapsed;
-    h = `<div class="trh" title="Drag to move"><i class="grip">⋮⋮</i><button class="sysb" onclick="openTRSystems(this)" title="My TR systems: switch or save">${esc(trActive()?.name || (TRC.mode === 'julius' ? 'TR1 Julius' : 'TR1 / TR2'))} ▾</button><span>${col ? `<b class="${mc}">${mini}</b>` : ''}</span>${col && live && live.state === 'wait' && !recent && !this.placed.has(live.id) ? `<button class="lim ${live.dir < 0 ? 'st' : 'bt'}" onclick="TR.limit('${live.id}')" title="Set the ${live.dir < 0 ? 'sell' : 'buy'} limit in the zone now (${fx(live.entry)}, SL ${fx(live.sl)})">⚡ Limit</button>` : ''}${col ? TRAuto.hot() : ''}<button class="autob ${TRA.on ? 'on' : ''}" onclick="openAuto()" title="${TRA.on ? 'Auto-trade is ON' : 'Auto-trade: take every signal of this system'}">🤖</button><button onclick="openBacktest()" title="Backtest TR1 / TR2 on every timeframe">📊</button><button onclick="TR.collapse()" title="${col ? 'Expand' : 'Collapse'}">${col ? '▾' : '▴'}</button><button onclick="openTRSettings()" title="TR settings">⚙</button><button onclick="TR.toggle()" title="Hide TR signals">✕</button></div>` + (col ? '' : h);
-    if ((TRA.on || Object.keys(TRM).length) && !col) h = h.replace('</div>', '</div>' + TRAuto.line()); // right under the header (collapsed: only the green 🤖 in the header)
+    h = `<div class="trh" title="Drag to move"><i class="grip">⋮⋮</i><button class="sysb" onclick="openTRSystems(this)" title="My VRS systems: switch or save">${esc(trActive()?.name || (TRC.mode === 'julius' ? 'VA1 Julius' : 'VA1 / VA2'))} ▾</button><span>${col ? `<b class="${mc}">${mini}</b>` : ''}</span>${col && live && live.state === 'wait' && !recent && !this.placed.has(live.id) ? `<button class="lim ${live.dir < 0 ? 'st' : 'bt'}" onclick="TR.limit('${live.id}')" title="Set the ${live.dir < 0 ? 'sell' : 'buy'} limit in the zone now (${fx(live.entry)}, SL ${fx(live.sl)})">⚡ Limit</button>` : ''}${col && !EMBED ? TRAuto.hot() : ''}<button class="autob ${TRA.on && !EMBED ? 'on' : ''}" onclick="openAuto()" title="${TRA.on ? 'Auto-trade is ON' : 'Auto-trade: take every signal of this system'}">🤖</button><button onclick="openBacktest()" title="Backtest VA1 / VA2 on every timeframe">📊</button><button onclick="TR.collapse()" title="${col ? 'Expand' : 'Collapse'}">${col ? '▾' : '▴'}</button><button onclick="openTRSettings()" title="TR settings">⚙</button><button onclick="TR.toggle()" title="Hide VRS signals">✕</button></div>` + (col ? '' : h);
+    if ((TRA.on || Object.keys(TRM).length) && !col && !EMBED) h = h.replace('</div>', '</div>' + TRAuto.line()); // the second (split) chart doesn't repeat it // right under the header (collapsed: only the green 🤖 in the header)
     el.classList.toggle('col', col);
     this.place();
     // while the mouse is on the panel it does not redraw (a redraw between press and release would swallow the click)
     if (h !== this.panelHtml) { if (!this.force && el.matches(':hover') && el.classList.contains('on')) { this.held = h; return } this.force = false; this.held = ''; this.panelHtml = h; el.innerHTML = h; el.classList.add('on') }
   },
-  // TR1 Julius checklist of one setup: every required check (✓, or ✗ with what was missing), the optional extras on one line
+  // VA1 Julius checklist of one setup: every required check (✓, or ✗ with what was missing), the optional extras on one line
   // compact (a setup that is a no-trade anyway): the ✗ items in full, everything that was ✓ on one line
   julRows(z, compact) {
     const req = z.jul.checks.filter(c => c.req), opt = z.jul.checks.filter(c => !c.req), d = z.dir;
@@ -1372,7 +1466,7 @@ const TR = {
       : req.map(c => !c.ok ? no(c) : c.warn ? warn(c) : `<li class="ok"><i>✓</i>${esc(c.t)}</li>`).join('');
     return rows + (opt.length ? `<li class="op"><i>+</i><span>Optional: ${opt.map(c => `<b class="${c.ok ? 'y' : ''}">${c.ok ? '✓' : '·'} ${esc(on(c))}</b>`).join('')}</span></li>` : '');
   },
-  // TR1 Julius, nothing waiting: what it is looking for right now, step by step (✓ ready · ✗ blocks it now · ○ still to come)
+  // VA1 Julius, nothing waiting: what it is looking for right now, step by step (✓ ready · ✗ blocks it now · ○ still to come)
   julSearch(r, q) {
     const d = q.bias, B = q.biasTf, f = q.forming, side = d > 0 ? 'BUY' : 'SELL', arrow = d > 0 ? '↑' : '↓', rows = [];
     const row = (st, t, em = '', sub = '') => `<li class="${st > 0 ? 'ok' : st < 0 ? 'no' : ''}"><i>${st > 0 ? '✓' : st < 0 ? '✗' : ''}</i>${sub ? `<span>${t}<small>${sub}</small></span>` : t}${em ? `<em>${em}</em>` : ''}</li>`;
@@ -1383,7 +1477,7 @@ const TR = {
     add(f ? 1 : 0, f ? `Consolidation ${fx(f.lo)} – ${fx(f.hi)}` : 'A consolidation', f ? `${f.to - f.from + 1} bars` : '', f ? '' : `at least ${TRC.minBars} candles, no taller than ${TRC.rangeAtr}× ATR`);
     if (d) {
       const trn = r.nextTr(d);
-      if (trn !== 1 && !TRC.jTr2) add(-1, `A break ${d > 0 ? 'up' : 'down'} now = BOS (TR${trn})`, '', `Julius trades the CHOCH (TR1): first a break ${d > 0 ? 'down' : 'up'}, then ${d > 0 ? 'up' : 'down'} · or ⚙ “Also TR2”`);
+      if (trn !== 1 && !TRC.jTr2) add(-1, `A break ${d > 0 ? 'up' : 'down'} now = BOS (VA${trn})`, '', `Julius trades the CHOCH (VA1): first a break ${d > 0 ? 'down' : 'up'}, then ${d > 0 ? 'up' : 'down'} · or ⚙ “Also VA2”`);
       else add(0, f ? `Body close ${d > 0 ? 'above' : 'below'} ${fx(d > 0 ? f.hi : f.lo)}` : `Then a body close ${d > 0 ? 'above' : 'below'} the range`, `${trn === 1 ? 'CHOCH' : 'BOS'} ${arrow}`);
       const ob = q.ob[d], fb = q.fib[d], inZ = ob && fb ? (d > 0 ? ob.hi <= fb.eq : ob.lo >= fb.eq) : null;
       add(ob ? 1 : 0, ob ? `${q.poiName} ${fx(ob.lo)} – ${fx(ob.hi)}` : TRC.jPoi === 'ob' ? `${q.poiName}: the last ${d > 0 ? 'down' : 'up'} candle in the range` : TRC.jPoi === 'fvg' ? 'FVG (imbalance) on the break' : '0.764 fib of the break leg', 'POI', ob ? 'the POI if it breaks now' : '');
@@ -1393,14 +1487,16 @@ const TR = {
       add(0, `Retest of the POI → ${d > 0 ? 'buy' : 'sell'} limit`, TRC.jSl === 'range' ? 'stop beyond range' : `stop ${TRC.jSlPips} pips`);
     } else add(0, 'Then: a CHOCH in the bias direction, a POI in the discount / premium, the retest');
     const extra = [!TRC.jNeedSweep && 'liquidity sweep', !TRC.jNeedPoc && 'POC in the POI', TRC.jPoi !== 'fvg' && 'FVG on the break'].filter(Boolean);
-    return `<div class="trc look ${d < 0 ? 's' : d > 0 ? 'b' : ''}"><b>🔎 ${d ? `Looking for a ${side}` : `Waiting for a clear ${B} bias`}</b><small>TR1 Julius · ${ok} of ${rows.length} steps ✓ · it trades only when every step is ✓</small><ul>${rows.join('')}</ul>${extra.length ? `<div class="trmiss">Bonus when found (not required): ${extra.join(' · ')}</div>` : ''}</div>`;
+    return `<div class="trc look ${d < 0 ? 's' : d > 0 ? 'b' : ''}"><b>🔎 ${d ? `Looking for a ${side}` : `Waiting for a clear ${B} bias`}</b><small>VA1 Julius · ${ok} of ${rows.length} steps ✓ · it trades only when every step is ✓</small><ul>${rows.join('')}</ul>${extra.length ? `<div class="trmiss">Bonus when found (not required): ${extra.join(' · ')}</div>` : ''}</div>`;
   },
   collapse() { TRC.collapsed = !TRC.collapsed; saveTRC(); this.force = true; this.panelHtml = ''; this.panel(this.res) }, // your own click: redraw now, even with the mouse on the panel
   // where the panel sits: your dragged spot (kept inside the chart), else top right next to the price axis
   place() {
     const el = $('#trPanel'), box = el?.parentElement; if (!el || !box) return;
     if (TRC.pos) {
-      const x = Math.max(0, Math.min(box.clientWidth - el.offsetWidth - priceScaleW(), TRC.pos.x)), y = Math.max(0, Math.min(box.clientHeight - el.offsetHeight - 28, TRC.pos.y));
+      if (TRC.pos.r == null && el.offsetWidth) { TRC.pos.r = TRC.pos.x + el.offsetWidth; saveTRC() } // older saves: convert to the right edge once
+      const want = TRC.pos.r - el.offsetWidth; // anchored on its right edge
+      const x = Math.max(0, Math.min(box.clientWidth - el.offsetWidth - priceScaleW(), want)), y = Math.max(0, Math.min(box.clientHeight - el.offsetHeight - 28, TRC.pos.y));
       el.style.left = x + 'px'; el.style.top = y + 'px'; el.style.right = 'auto';
     } else { el.style.left = 'auto'; el.style.top = ''; el.style.right = (priceScaleW() + 10) + 'px' }
   },
@@ -1423,24 +1519,105 @@ const TR = {
     $('#ticket').classList.add('open'); toast(`Ticket filled: ${buy ? 'BUY' : 'SELL'} ${T.mode.toUpperCase()} @ ${fx(z.entry)} · SL ${fx(z.sl)} · ${T.tp ? 'TP ' + fx(T.tp) : 'TP open'} (${trExitDesc(TRC)})${z.jul?.half ? ' · ⚠ STS: use HALF risk (POI high in the range)' : ''}`, z.jul?.half ? 'warn' : 'ok'); return true;
   },
   toggle(k = 'on') { TRC[k] = !TRC[k]; saveTRC(); this.key = ''; this.seenKey = ''; Indicators.rebuild(); Levels.key = '#'; Levels.sync(); Markers.update(); Overlay.dirty = true; this.tick(); if (popEl) openIndicators(popEl._a || $('#indBtn')) },
-  // switch the system: 'tr' = TR1 / TR2 · 'julius' = TR1 Julius (TR1 + the STS checklist). Clicking the one that is on turns it off.
+  // switch the system: 'tr' = VA1 / VA2 · 'julius' = VA1 Julius (VA1 + the STS checklist). Clicking the one that is on turns it off.
   // The first switch to Julius also sets the STS trade management: stop to breakeven at 1R, 75% off at 3R, runner to the next opposite zone.
   useMode(m) {
     if (TRC.on && (TRC.mode || 'tr') === m) return this.toggle();
-    if (m === 'julius' && !TRC.julSet) Object.assign(TRC, { beR: 1, partR: 3, partPct: 75, tpMode: 'zone', tpTf: '', julSet: true });
+    if (m === 'julius' && !TRC.julSet) Object.assign(TRC, { beR: 1, partR: 3, partPct: 75, tpMode: 'none', trail: true, tpTf: '', julSet: true }); // standard exit: no TP, trailing stop
     TRC.mode = m; TRC.on = false; this.toggle();
-    toast(m === 'julius' ? 'TR1 Julius on: only TR1 setups that pass the STS checklist (session, bias, POI in the discount / premium). Breakeven at 1R, 75% off at 3R. Settings: ⚙' : 'TR1 / TR2 on', 'ok', 7000);
+    toast(m === 'julius' ? 'VA1 Julius on: only VA1 setups that pass the STS checklist (session, bias, POI in the discount / premium). Breakeven at 1R, 75% off at 3R. Settings: ⚙' : 'VA1 / VA2 on', 'ok', 7000);
   },
 };
-/* ---------- TR AUTO-TRADE: takes every signal of the chosen system, on the timeframes YOU pick ----------
+/* ---------- SPLIT: a second chart next to the main one (same page in embed mode: drawings, indicators, VRS all work) ---------- */
+function toggleSplit(on = !store.get('split', false), boot) {
+  if (EMBED) return;
+  store.set('split', on);
+  const box = $('#charts'); let f = $('#split2');
+  if (on && !f) {
+    if (!localStorage.getItem(SP + 'split_symbol')) store.set('split_symbol', (watch || []).find(s => s !== S.symbol) || (S.symbol === 'EURUSD' ? 'XAUUSD' : 'EURUSD'));
+    const sp = document.createElement('div'); sp.className = 'splitter'; sp.id = 'splitBar'; sp.title = 'Drag to resize · double-click: 50 / 50'; box.appendChild(sp);
+    f = document.createElement('iframe'); f.id = 'split2'; f.title = 'Second chart';
+    f.src = 'terminal.html?embed=1' + (CFG.demo ? '&demo=1' : ''); box.appendChild(f);
+    const sel = document.createElement('div'); sel.id = 'splitSel'; box.appendChild(sel);
+    splitDrag(sp); box.classList.add('on'); box.classList.toggle('rside', SPLIT.side === 'R'); splitSize(store.get('splitPct', 50)); splitSel(false);
+  } else if (!on && f) { f.remove(); $('#splitBar')?.remove(); $('#splitSel')?.remove(); $('#chartwrap').style.flex = ''; box.classList.remove('on', 'rside') }
+  $('#splitBtn')?.classList.toggle('on', on);
+  setTimeout(() => dispatchEvent(new Event('resize')), 60); // the main chart got narrower / wider: redraw drawings and zones
+  if (!boot) toast(on ? 'Split on: click a chart to select it. The bar at the top and the trade panel follow the selected chart' : 'Split off', 'ok');
+}
+// put the selection frame on this page's chart (= the selected one). It never travels across the screen:
+// after a click it is placed on the new chart at once and fades in (0.14 s); on resize / drag it just follows
+function splitSel(fade) {
+  const s = $('#splitSel'), box = $('#charts'), c = $('#chartwrap'); if (!s || !box) return;
+  const b = box.getBoundingClientRect(), r = c.getBoundingClientRect();
+  if (fade) s.classList.add('snap');                 // hidden, no transition
+  s.style.transform = `translate(${r.left - b.left}px,${r.top - b.top}px)`; s.style.width = r.width + 'px'; s.style.height = r.height + 'px';
+  if (fade) { s.offsetWidth; s.classList.remove('snap') } // fade in where it now is
+}
+addEventListener('resize', () => { if (!EMBED && !SPLIT.busy) splitSel(false) });
+if (!EMBED && store.get('split', false)) setTimeout(() => toggleSplit(true, true), 600); // was on last time
+addEventListener('message', e => { const f = $('#split2'); if (!EMBED && f && e.source === f.contentWindow && e.data?.vrsSplit === 'select') splitActivate(e.data) });
+// the divider between the two charts: drag to make one bigger (20–80 %), double-click for 50 / 50 again
+function splitSize(pct) { pct = Math.min(80, Math.max(20, +pct || 50)); const mine = SPLIT.side === 'R' ? 100 - pct : pct; $('#chartwrap').style.flex = `0 0 calc(${mine}% - 3.5px)`; return pct }
+// the SELECTED chart is always this page's own chart (it has the trade panel, order lines and click-to-pick).
+// Clicking the other chart swaps the two charts' symbols + timeframes and their sides, so nothing moves on screen.
+const SPLIT = { side: store.get('splitSide', 'L'), busy: false };
+function splitActivate(other) {
+  const w = $('#split2')?.contentWindow; if (!w || SPLIT.busy || !other?.sym) return;
+  SPLIT.busy = true; setTimeout(() => SPLIT.busy = false, 600);
+  // the two charts trade places: each hands over what it shows (candles, zoom, VRS on / off), so nothing reloads or jumps
+  // same page origin: both charts change in ONE step (one screen update, no in-between frame); else by message
+  const snap = splitSnap(); let direct = false;
+  try { if (typeof w.splitTake === 'function') { w.splitTake(snap); direct = true } } catch {}
+  if (!direct) w.postMessage({ vrsSplit: 'set', ...snap }, '*');
+  SPLIT.side = SPLIT.side === 'L' ? 'R' : 'L'; store.set('splitSide', SPLIT.side);
+  $('#charts').classList.toggle('rside', SPLIT.side === 'R'); splitSize(store.get('splitPct', 50));
+  splitTake(other);
+  dispatchEvent(new Event('resize')); splitSel(true);                      // the frame appears on the chart you clicked (quick fade, no sliding)
+}
+function splitDrag(sp) {
+  const box = $('#charts'), vert = () => getComputedStyle(box).flexDirection === 'column';
+  let pct = store.get('splitPct', 50);
+  sp.addEventListener('pointerdown', e => {
+    e.preventDefault(); sp.setPointerCapture(e.pointerId); sp.classList.add('drag'); box.classList.add('dragging');
+    const move = ev => { const r = box.getBoundingClientRect(); pct = splitSize(vert() ? (ev.clientY - r.top) / r.height * 100 : (ev.clientX - r.left) / r.width * 100); dispatchEvent(new Event('resize')) }; // % of the left (top) chart
+    const up = () => { sp.removeEventListener('pointermove', move); sp.classList.remove('drag'); box.classList.remove('dragging'); store.set('splitPct', Math.round(pct)); dispatchEvent(new Event('resize')) };
+    sp.addEventListener('pointermove', move); sp.addEventListener('pointerup', up, { once: true }); sp.addEventListener('pointercancel', up, { once: true });
+  });
+  sp.addEventListener('dblclick', () => { pct = splitSize(50); store.set('splitPct', 50); dispatchEvent(new Event('resize')) });
+}
+// split: indicators, VRS and overlays are shared by both charts. When one changes them, the other follows right away
+addEventListener('storage', e => {
+  if (!e.key || !e.key.startsWith(SP)) return;
+  const k = e.key.slice(SP.length);
+  try {
+    if (k === 'cfg') { // light / dark / midnight and chart colours: only those (never the account, bridge or demo settings)
+      const n = store.get('cfg', {}), cols = JSON.stringify(n.chartColors || {}) !== JSON.stringify(CFG.chartColors || {});
+      if ((n.theme && n.theme !== CFG.theme) || cols) { CFG.theme = n.theme || CFG.theme; CFG.chartColors = n.chartColors || {}; applyTheme(); Chart.applyTheme(); try { renderTab(true); renderWatch() } catch {} }
+    }
+    else if (k === 'inds') { INDS = store.get('inds', INDS); Indicators.rebuild(); applyChartButtons() }
+    else if (k === 'ind2') {
+      indOn = Object.assign(indOn, store.get('ind2', {})); Markers.update(); Levels.sync();
+      Chart.s.applyOptions({ priceLineVisible: !!indOn.bidask, lastValueVisible: !indOn.bidask }); try { Chart.wm?.applyOptions(Chart.wmOpts()) } catch {} syncLines(); Overlay.dirty = true;
+    } else if (k === 'trCfg') {
+      const n = store.get('trCfg', {}), mainOn = n.on; delete n.on; delete n.collapsed;       // collapse is per chart
+      Object.assign(TRC, n);
+      if (EMBED && mainOn !== undefined) TR_MAIN_ON = mainOn;                                    // VRS on / off is per chart (it travels with the chart when you switch)
+      TR.key = ''; TR.seenKey = ''; Indicators.rebuild(); Levels.key = '#'; Levels.sync(); Markers.update(); Overlay.dirty = true;
+      TR.force = true; TR.panelHtml = ''; TR.tick?.();
+    }
+  } catch (err) { console.error(err) }
+});
+/* ---------- VRS AUTO-TRADE: takes every signal of the chosen system, on the timeframes YOU pick ----------
    Works in the background, independent of the chart: every picked timeframe loads its OWN candles (checked: right symbol,
    right spacing, seen twice before acting) and is scanned with the system settings frozen when you pressed ON.
    A setup that only waits for the retest gets a limit in the zone (risk % sizing, system SL / TP); when that setup is
    cancelled, the order is removed. Locked to one account + symbol. Real money only when explicitly allowed.
    Respects the daily loss lock, max open orders, max trades per day, one order per direction per timeframe.
    Runs while this terminal page is open (PC or VPS). */
-const TRA = Object.assign({ on: false, live: false, risk: .5, maxOpen: 2, maxDay: 5, since: 0, takeCurrent: false, login: 0, sym: '', tfs: [], cfg: null, sys: '' }, store.get('trAuto', {}));
+const TRA = Object.assign({ on: false, live: false, risk: .5, maxOpen: 2, maxDay: 5, since: 0, takeCurrent: false, login: 0, sym: '', syms: [], tfs: [], cfg: null, sys: '' }, store.get('trAuto', {}));
 if (!TRA.tfs?.length && TRA.tf) TRA.tfs = [TRA.tf]; delete TRA.tf;
+if (!TRA.syms?.length && TRA.sym) TRA.syms = [TRA.sym];      // older versions traded one symbol
 let TRW = store.get('trAutoWork', {});            // setup id -> { ticket, login, symbol, tf, side, price, sl, tp, lots, t, x (exit plan) }
 let TRM = store.get('trAutoMgd', {});             // position ticket -> a trade the bot opened and now manages { id, tf, sym, login, side, open, sl0, risk, t0, x, scfg, digits, at }
 let TRL = store.get('trAutoLog', []);             // [{ t, text, k }]
@@ -1449,37 +1626,55 @@ const traLog = (text, k = '') => { TRL.push({ t: Date.now(), text, k }); TRL = T
 const traToday = () => TRL.filter(x => x.k === 'placed' && new Date(x.t).toDateString() === new Date().toDateString()).length;
 const traReal = () => { const a = S.accounts.find(x => x.login === S.login); return !!a && !a.is_demo && !a.paper && !CFG.demo };
 const TFS_AUTO = ['M1', 'M3', 'M5', 'M15', 'M30', 'H1', 'H4', 'D1'];
-const pos = () => (S.allPositions || S.positions || []).filter(q => q.symbol === TRA.sym);
+const pos = sym => (S.allPositions || S.positions || []).filter(q => q.symbol === sym);
+// one symbol's live quote + contract spec: the chart's own numbers for the chart symbol, else /api/live (refreshed every few seconds)
+const TRSPEC = {};
+function chartSpec() { return { sym: S.symbol, bid: S.bid, ask: S.ask, digits: S.digits, point: S.point, tickValue: S.tickValue, tickSize: S.tickSize, contract: S.contract, volMin: S.volMin, volStep: S.volStep, volMax: S.volMax, at: Date.now() } }
+async function traSpec(sym) {
+  if (sym === S.symbol && S.bid && TRA.login === S.login) return TRSPEC[sym] = chartSpec();
+  const c = TRSPEC[sym]; if (c && Date.now() - c.at < 3000) return c;
+  try {
+    const r = await api(`/api/live?login=${TRA.login}&symbol=${enc(sym)}&timeframe=M1`);
+    if (!r?.bid) return null;
+    return TRSPEC[sym] = { sym, bid: r.bid, ask: r.ask, digits: r.digits ?? 2, point: r.point || .01, tickValue: r.tick_value || 0, tickSize: r.tick_size || 0, contract: r.contract || 0,
+      volMin: r.volume_min || .01, volStep: r.volume_step || .01, volMax: Math.min(r.volume_max || 1, 1), at: Date.now() };
+  } catch { return null }
+}
+const fxp = (sp, v) => v ? Number(v).toFixed(sp?.digits ?? S.digits) : '—';   // a price in that symbol's digits
+const spMid = sp => sp.bid && sp.ask ? (sp.bid + sp.ask) / 2 : sp.bid;
 // value of a 1.0 price move for 1 lot, checked two ways; if they disagree a lot, take the SAFER (bigger) one -> smaller lots
-function traPerUnit() {
-  const byTick = S.tickValue && S.tickSize ? S.tickValue / S.tickSize : 0, byContract = S.contract || 0;
+function traPerUnit(sp = chartSpec()) {
+  const byTick = sp.tickValue && sp.tickSize ? sp.tickValue / sp.tickSize : 0, byContract = sp.contract || 0;
   if (!byTick) return byContract;
-  if (byContract && (byTick < byContract / 3 || byTick > byContract * 3)) { traLog(`Price value check: broker says ${byTick.toFixed(2)} per 1.00 per lot, contract says ${byContract}: using the safer ${Math.max(byTick, byContract)}`, 'err'); return Math.max(byTick, byContract) }
+  if (byContract && (byTick < byContract / 3 || byTick > byContract * 3)) { traLog(`${sp.sym} price value check: broker says ${byTick.toFixed(2)} per 1.00 per lot, contract says ${byContract}: using the safer ${Math.max(byTick, byContract)}`, 'err'); return Math.max(byTick, byContract) }
   return byTick;
 }
-function traSize(dist, mult = 1) { // lots for TRA.risk % (× mult: 0.5 = half risk), rounded DOWN, never above the risk, plus the money at risk
-  const bal = Math.min(S.account?.balance || 0, S.account?.equity || Infinity), pu = traPerUnit(), want = bal * TRA.risk * mult / 100;
+function traSize(dist, mult = 1, sp = chartSpec()) { // lots for TRA.risk % (× mult: 0.5 = half risk), rounded DOWN, never above the risk, plus the money at risk
+  const bal = Math.min(S.account?.balance || 0, S.account?.equity || Infinity), pu = traPerUnit(sp), want = bal * TRA.risk * mult / 100;
   if (!bal || !pu || !dist) return { ok: false, why: 'no balance / price data yet' };
-  const st = S.volStep || .01, lots = +(Math.floor(want / (dist * pu) / st + 1e-9) * st).toFixed(decs(st));
-  if (lots < (S.volMin || .01)) return { ok: false, why: `the smallest lot would risk ${(S.volMin * dist * pu / bal * 100).toFixed(1)}% (more than ${+(TRA.risk * mult).toFixed(2)}%)` };
-  const l2 = Math.min(lots, S.volMax || lots), risk = l2 * dist * pu;
+  const st = sp.volStep || .01, lots = +(Math.floor(want / (dist * pu) / st + 1e-9) * st).toFixed(decs(st));
+  if (lots < (sp.volMin || .01)) return { ok: false, why: `the smallest lot would risk ${((sp.volMin || .01) * dist * pu / bal * 100).toFixed(1)}% (more than ${+(TRA.risk * mult).toFixed(2)}%)` };
+  const l2 = Math.min(lots, sp.volMax || lots), risk = l2 * dist * pu;
   if (risk > want * 1.05) return { ok: false, why: 'risk check failed' };
   return { ok: true, lots: l2, risk, bal };
 }
-function traOpenRisk() { // money at risk now on this symbol: open trades + pending orders (with a stop), plus 1R for any trade without a stop
-  const pu = traPerUnit(), bal = S.account?.balance || 0;
-  const one = (p, sl, v) => sl ? Math.abs(p - sl) * v * pu : bal * TRA.risk / 100;
-  return pos().reduce((a, q) => a + one(q.price_open, q.sl, q.volume), 0) + (S.allPending || S.pending || []).filter(o => o.symbol === TRA.sym).reduce((a, o) => a + one(o.price_open ?? o.price, o.sl, o.volume_current ?? o.volume), 0);
+function traOpenRisk() { // money at risk now on ALL auto symbols: open trades + pending orders (with a stop), plus 1R for any trade without a stop
+  const bal = S.account?.balance || 0; let tot = 0;
+  for (const sym of TRA.syms) {
+    const sp = TRSPEC[sym]; if (!sp) continue; const pu = traPerUnit(sp);
+    const one = (p, sl, v) => sl ? Math.abs(p - sl) * v * pu : bal * TRA.risk / 100;
+    tot += pos(sym).reduce((a, q) => a + one(q.price_open, q.sl, q.volume), 0) + (S.allPending || S.pending || []).filter(o => o.symbol === sym).reduce((a, o) => a + one(o.price_open ?? o.price, o.sl, o.volume_current ?? o.volume), 0);
+  }
+  return tot;
 }
 const TRAuto = {
   busy: false, status: '', st: {},                // st[tf] = { good, at, status }
   why() { // '' = allowed to act now, else the reason everything waits
     if (!TRA.on) return 'off';
-    if (!this.leader) return 'running in another open terminal window (only one copy trades)';
+    if (!this.leader) return 'running in another open terminal window or tab (only one copy trades)';
     if (!S.connected) return 'not connected';
     if (S.login !== TRA.login) return `switch back to account ${TRA.login}`;
-    if (S.symbol !== TRA.sym) return `switch the chart back to ${TRA.sym} (any timeframe)`;
-    if (!S.bid || !S.account) return 'waiting for prices…';
+    if (!S.account) return 'waiting for the account…';
     if (traReal() && !TRA.live) return 'real-money account (not allowed in auto settings)';
     if (Guard.reason()) return 'daily loss limit reached';
     return '';
@@ -1492,14 +1687,14 @@ const TRAuto = {
     return Math.abs(d[d.length >> 1] - TF_SEC[tf]) <= TF_SEC[tf] * .1 ? C : null;
   },
   cache: {}, scanErr: '',
-  // candles + TR structure of one timeframe with the frozen system settings (or a managed trade's own), cached for a few seconds:
+  // candles + VRS structure of one timeframe with the frozen system settings (or a managed trade's own), cached for a few seconds:
   // the trading loop, the higher-timeframe filter, zone take profits and the trade manager all share it
   async scan(login, sym, tf, fresh, scfg) {
     const k = [login, sym, tf, scfg ? JSON.stringify(scfg) : 'bot'].join('|'), c = this.cache[k];
     if (!fresh && c && Date.now() - c.at < this.every(tf)) return c;
     let C; try { C = await this.candlesFor(login, sym, tf); this.scanErr = '' } catch (e) { this.scanErr = e.message; return null }
     if (!C) return null;
-    const r = trEngine(C, { ...TRC, ...TR_DEF, ...(scfg || TRA.cfg || {}) }, { closed: C.length - 1, from: Math.max(1, C.length - 1000), id: sym + tf, point: sym === S.symbol ? S.point : 0 });
+    const r = trEngine(C, { ...TRC, ...TR_DEF, ...(scfg || TRA.cfg || {}) }, { closed: C.length - 1, from: Math.max(1, C.length - 1000), id: sym + tf, point: TRSPEC[sym]?.point || (sym === S.symbol ? S.point : 0) });
     return this.cache[k] = { C, r, at: Date.now(), sec: TF_SEC[tf] };
   },
   mgWhy() { // '' = allowed to manage the open trades it opened (also when auto is OFF or the chart shows another symbol: exits must keep working)
@@ -1516,86 +1711,96 @@ const TRAuto = {
     if (why && mg) return;
     this.busy = true;
     try {
-      if (!why) for (const tf of TRA.tfs) {
-        const st = this.st[tf] ||= { good: 0, at: 0, status: 'starting' };
+      if (!why) for (const sym of TRA.syms) for (const tf of TRA.tfs) {                  // every symbol × every timeframe, each on its own candles
+        const st = this.st[sym + '|' + tf] ||= { good: 0, at: 0, status: 'starting' };
         if (Date.now() - st.at < this.every(tf)) continue; st.at = Date.now();
-        const sc = await this.scan(TRA.login, TRA.sym, tf, true);
-        if (S.login !== TRA.login || S.symbol !== TRA.sym || !TRA.on) break;              // something changed while loading
+        const sp = await traSpec(sym); if (!sp) { st.status = `no quote for ${sym}`; st.good = 0; continue }
+        const sc = await this.scan(TRA.login, sym, tf, true);
+        if (S.login !== TRA.login || !TRA.on || !TRA.syms.includes(sym)) break;           // something changed while loading
         if (!sc) { st.status = this.scanErr ? 'no candles: ' + this.scanErr : 'candles look wrong, skipped'; st.good = 0; continue }
         if (++st.good < 2) { st.status = 'warming up'; continue }                        // act only after two good loads
         const cfg = { ...TRC, ...TR_DEF, ...(TRA.cfg || {}) };                           // a system frozen before exit plans existed = fixed R, no extras
-        st.status = 'watching'; await this.act(tf, sc.C, sc.r, cfg, st); this.phase(tf, sc.r, cfg, st);
+        st.status = 'watching'; await this.act(sym, tf, sc.C, sc.r, cfg, st, sp); this.phase(sym, tf, sc.r, cfg, st, sp);
       }
       if (!mg) await this.manage();
     } finally { this.busy = false; saveTRA(); TR.panelHtml = '' }
   },
-  async act(tf, C, r, cfg, st) {
-    const n = C.length, shown = s => cfg.show === 'all' || (cfg.show === 'both' ? s.tr <= 2 : cfg.show === 'tr1' ? s.tr === 1 : s.tr === 2);
-    const pend = (S.allPending || S.pending || []).filter(o => o.symbol === TRA.sym), mine = Object.entries(TRW).filter(([, w]) => w.login === TRA.login && w.symbol === TRA.sym && w.tf === tf);
+  async act(sym, tf, C, r, cfg, st, sp) {
+    const n = C.length, shown = s => cfg.show === 'all' || (cfg.show === 'both' ? s.tr <= 2 : cfg.show === 'tr1' ? s.tr === 1 : s.tr === 2), fx = v => fxp(sp, v), L = `${sym} ${tf}`;
+    const pend = (S.allPending || S.pending || []).filter(o => o.symbol === sym), mine = Object.entries(TRW).filter(([, w]) => w.login === TRA.login && w.symbol === sym && w.tf === tf);
     // 1. orders of THIS timeframe: filled -> the bot manages the trade from now on · setup gone -> remove the order · filter turned -> remove the order
     for (const [id, w] of mine) {
       const s = r.setups.find(x => x.id === id), still = pend.some(o => o.ticket === w.ticket), p = still ? null : this.findPos(w);
       if (p) { await this.adopt(id, w, p); continue }
-      if (s && s.state === 'valid') { if (!still && Date.now() - w.t > 20000) { delete TRW[id]; traLog(`${tf} order #${w.ticket} filled and already closed (or removed by hand)`, 'info') } continue } // a buy limit fills on the ask: it may still be waiting
+      if (s && s.state === 'valid') { if (!still && Date.now() - w.t > 20000) { delete TRW[id]; traLog(`${L} order #${w.ticket} filled and already closed (or removed by hand)`, 'info') } continue } // a buy limit fills on the ask: it may still be waiting
       if (!s || ['invalid', 'expired', 'cancelled'].includes(s.state)) {
-        if (still) { try { await api('/api/cancel', { login: TRA.login, ticket: w.ticket }); traLog(`Removed ${w.side.toUpperCase()} LIMIT ${fx(w.price)} (${tf}): setup ${s ? s.state : 'gone'}`, 'cancel'); toast(`🤖 Auto removed the ${tf} ${w.side} limit ${fx(w.price)} (setup ${s ? s.state : 'gone'})`, 'warn') } catch (e) { traLog(`Could not remove #${w.ticket}: ${e.message}`, 'err'); continue } }
+        if (still) { try { await api('/api/cancel', { login: TRA.login, ticket: w.ticket }); traLog(`Removed ${w.side.toUpperCase()} LIMIT ${fx(w.price)} (${L}): setup ${s ? s.state : 'gone'}`, 'cancel'); toast(`🤖 Auto removed the ${L} ${w.side} limit ${fx(w.price)} (setup ${s ? s.state : 'gone'})`, 'warn') } catch (e) { traLog(`Could not remove #${w.ticket}: ${e.message}`, 'err'); continue } }
         delete TRW[id]; continue;
       }
-      if (!still) { if (Date.now() - w.t > 20000) { delete TRW[id]; traLog(`${tf} order #${w.ticket} is gone (filled or removed by hand)`, 'info') } continue }
+      if (!still) { if (Date.now() - w.t > 20000) { delete TRW[id]; traLog(`${L} order #${w.ticket} is gone (filled or removed by hand)`, 'info') } continue }
       const f = w.x?.filt;
-      if (f && f !== tf) { const fz = await this.scan(TRA.login, TRA.sym, f); if (fz && fz.r.lastDir && fz.r.lastDir !== s.dir) {
-        try { await api('/api/cancel', { login: TRA.login, ticket: w.ticket }); traLog(`Removed ${w.side.toUpperCase()} LIMIT ${fx(w.price)} (${tf}): the ${f} structure turned the other way`, 'cancel'); toast(`🤖 Auto removed the ${tf} ${w.side} limit ${fx(w.price)}: ${f} structure turned`, 'warn') } catch (e) { traLog(`Could not remove #${w.ticket}: ${e.message}`, 'err'); continue }
+      if (f && f !== tf) { const fz = await this.scan(TRA.login, sym, f); if (fz && fz.r.lastDir && fz.r.lastDir !== s.dir) {
+        try { await api('/api/cancel', { login: TRA.login, ticket: w.ticket }); traLog(`Removed ${w.side.toUpperCase()} LIMIT ${fx(w.price)} (${L}): the ${f} structure turned the other way`, 'cancel'); toast(`🤖 Auto removed the ${L} ${w.side} limit ${fx(w.price)}: ${f} structure turned`, 'warn') } catch (e) { traLog(`Could not remove #${w.ticket}: ${e.message}`, 'err'); continue }
         delete TRW[id] } }
     }
     // 2. setups of this timeframe that only wait for the retest: place the limit
     const since = TRA.takeCurrent ? 0 : TRA.since;
-    const ready = r.setups.filter(s => s.state === 'wait' && shown(s) && !TRW[s.id] && !TR.placed.has(s.id) && s.brk > n - 1 - cfg.maxAge && C[s.brk].time >= since);
+    // also a setup whose retest started on the candle that is forming NOW: on M1 the next candle often touches the zone within
+    // seconds of the break closing, before a 5 s scan could place the limit. Those used to be skipped (and the zone was gone).
+    const late = s => s.state === 'valid' && s.trig >= n - 1 && s.out === 'open';
+    const ready = r.setups.filter(s => (s.state === 'wait' || late(s)) && shown(s) && !TRW[s.id] && !TR.placed.has(s.id) && s.brk > n - 1 - cfg.maxAge && C[s.brk].time >= since);
     for (const s of ready) {
       const open = Object.values(TRW).filter(w => w.login === TRA.login).length;
       if (open >= TRA.maxOpen) { st.status = `max ${TRA.maxOpen} open auto orders`; break }
       if (traToday() >= TRA.maxDay) { st.status = `max ${TRA.maxDay} trades today`; break }
-      const buy = s.dir > 0, side = buy ? 'buy' : 'sell', price = +fx(s.entry), sl = +fx(s.sl), dist = Math.abs(price - sl);
-      if (buy ? price >= S.ask : price <= S.bid) continue;                                                     // already past the entry
-      if (Object.values(TRW).some(w => w.login === TRA.login && w.symbol === TRA.sym && w.tf === tf && w.side === side)) { st.status = `one ${side} order already working`; continue }
-      if (pend.some(o => Math.abs((o.price_open ?? o.price) - price) <= S.point * 5)) { TR.placed.add(s.id); continue } // an order is already there
-      if (Math.abs(price - mid()) > r.atr * 8) { TR.placed.add(s.id); continue }                              // far-away zone: not a fresh setup
+      const buy = s.dir > 0, side = buy ? 'buy' : 'sell', sl = +fx(s.sl); let price = +fx(s.entry), mkt = false;
+      if (buy ? price >= sp.ask : price <= sp.bid) {                                                             // price is at / past the entry
+        if (!late(s)) continue;
+        const m = buy ? sp.ask : sp.bid, d0 = Math.abs(price - sl);
+        if ((buy ? m <= sl : m >= sl) || Math.abs(m - price) > d0 * .25) { TR.placed.add(s.id); continue }      // too far in already: skip it
+        price = +fx(m); mkt = true;                                                                              // still in the zone: enter now at market
+      }
+      const dist = Math.abs(price - sl);
+      if (Object.values(TRW).some(w => w.login === TRA.login && w.symbol === sym && w.tf === tf && w.side === side)) { st.status = `one ${side} order already working`; continue }
+      if (pend.some(o => Math.abs((o.price_open ?? o.price) - price) <= sp.point * 5)) { TR.placed.add(s.id); continue } // an order is already there
+      if (Math.abs(price - spMid(sp)) > r.atr * 8) { TR.placed.add(s.id); continue }                              // far-away zone: not a fresh setup
       const x = trX(cfg);
       if (x.filt && x.filt !== tf) { // only with the higher-timeframe structure: its last break must go the same way (not marked as placed: it may turn later)
-        const fz = await this.scan(TRA.login, TRA.sym, x.filt); if (!fz) { st.status = `waiting for ${x.filt} candles (filter)`; continue }
+        const fz = await this.scan(TRA.login, sym, x.filt); if (!fz) { st.status = `waiting for ${x.filt} candles (filter)`; continue }
         if (fz.r.lastDir !== s.dir) { st.status = `${side} skipped: the ${x.filt} structure points the other way`; continue }
       }
       let tp = 0; // take profit from the system's exit plan
       if (x.tpMode === 'R' && x.tp > 0) tp = +fx(s.entry + s.dir * dist * x.tp);
-      else if (x.tpMode === 'zone') { const zs = x.tpTf && x.tpTf !== tf ? await this.scan(TRA.login, TRA.sym, x.tpTf) : { r }; if (!zs) { st.status = `waiting for ${x.tpTf} candles (take profit)`; continue } tp = +fx(trZoneTp(s, zs.r.setups, x)) }
-      const half = !!s.jul?.half, sz = traSize(dist, half ? .5 : 1); if (!sz.ok) { st.status = sz.why; TR.placed.add(s.id); traLog(`Skipped ${tf} ${side} ${fx(price)}: ${sz.why}`, 'err'); continue }
+      else if (x.tpMode === 'zone') { const zs = x.tpTf && x.tpTf !== tf ? await this.scan(TRA.login, sym, x.tpTf) : { r }; if (!zs) { st.status = `waiting for ${x.tpTf} candles (take profit)`; continue } tp = +fx(trZoneTp(s, zs.r.setups, x)) }
+      const half = !!s.jul?.half, sz = traSize(dist, half ? .5 : 1, sp); if (!sz.ok) { st.status = sz.why; TR.placed.add(s.id); traLog(`Skipped ${L} ${side} ${fx(price)}: ${sz.why}`, 'err'); continue }
       const lots = sz.lots;
       const openRisk = traOpenRisk(); if (openRisk + sz.risk > sz.bal * TRA.risk * TRA.maxOpen / 100 * 1.05) { st.status = `total open risk would pass ${(TRA.risk * TRA.maxOpen).toFixed(1)}%`; continue }
-      if (pos().some(q => Math.abs(q.price_open - price) <= Math.max(S.point * 5, dist * .1))) { TR.placed.add(s.id); continue } // already in a trade at this zone
+      if (pos(sym).some(q => Math.abs(q.price_open - price) <= Math.max(sp.point * 5, dist * .1))) { TR.placed.add(s.id); continue } // already in a trade at this zone
       { const all = new Set([...store.get('trPlaced', []), ...TR.placed]); if (all.has(s.id)) { TR.placed = all; continue } TR.placed = all }  // another window already took it
       TR.placed.add(s.id); store.set('trPlaced', [...TR.placed].slice(-300));                                   // mark first: never twice, even if the answer is slow
       try {
-        const res = await api('/api/pending', { login: TRA.login, symbol: TRA.sym, side, kind: 'limit', volume: lots, price, sl, tp });
-        let ticket = res?.ticket; await poll?.(); if (!ticket) ticket = (S.allPending || S.pending || []).find(o => o.symbol === TRA.sym && Math.abs((o.price_open ?? o.price) - price) < S.point * 2)?.ticket || 0;
-        TRW[s.id] = { ticket, login: TRA.login, symbol: TRA.sym, tf, side, price, sl, tp, lots, t: Date.now(), x };
+        const res = mkt ? await api('/api/order', { login: TRA.login, symbol: sym, side, volume: lots, sl, tp }) : await api('/api/pending', { login: TRA.login, symbol: sym, side, kind: 'limit', volume: lots, price, sl, tp });
+        let ticket = res?.ticket; await poll?.(); if (!ticket) ticket = (S.allPending || S.pending || []).find(o => o.symbol === sym && Math.abs((o.price_open ?? o.price) - price) < sp.point * 2)?.ticket || 0;
+        TRW[s.id] = { ticket, login: TRA.login, symbol: sym, tf, side, price, sl, tp, lots, t: Date.now(), x, digits: sp.digits, point: sp.point };
         const rk = `risk ${CUR()}${num(sz.risk)} (${(sz.risk / sz.bal * 100).toFixed(2)}%${half ? ', half risk: POI high in the range' : ''})`;
-        traLog(`Placed ${side.toUpperCase()} LIMIT ${lots} @ ${fx(price)} · SL ${fx(sl)}${tp ? ' · TP ' + fx(tp) : ''} · ${rk} (${tf} TR${s.tr}${s.jul ? ' Julius' : ''} · ${trExitDesc(x)})`, 'placed');
-        toast(`🤖 Auto ${tf}: ${side.toUpperCase()} LIMIT ${lots} @ ${fx(price)} · SL ${fx(sl)} · ${rk}`, 'ok', 8000); beep?.(1046);
-      } catch (e) { traLog(`Could not place ${tf} ${side} limit ${fx(price)}: ${e.message}`, 'err'); toast('🤖 Auto: ' + e.message, 'err') }
+        traLog(`${mkt ? 'Entered' : 'Placed'} ${side.toUpperCase()}${mkt ? ' (market, retest already started)' : ' LIMIT'} ${lots} @ ${fx(price)} · SL ${fx(sl)}${tp ? ' · TP ' + fx(tp) : ''} · ${rk} (${L} VA${s.tr}${s.jul ? ' Julius' : ''} · ${trExitDesc(x)})`, 'placed');
+        toast(`🤖 Auto ${L}: ${side.toUpperCase()}${mkt ? '' : ' LIMIT'} ${lots} @ ${fx(price)} · SL ${fx(sl)} · ${rk}`, 'ok', 8000); beep?.(1046);
+      } catch (e) { traLog(`Could not place ${L} ${side} limit ${fx(price)}: ${e.message}`, 'err'); toast('🤖 Auto: ' + e.message, 'err') }
     }
   },
   // the position that came from one of its limit orders (MT5 keeps the order ticket as the position ticket; else same side, price and lots)
   findPos(w) {
     const P = (S.allPositions || S.positions || []).filter(q => q.symbol === w.symbol);
-    return P.find(q => q.ticket === w.ticket) || P.find(q => !TRM[q.ticket] && (q.type === 'BUY') === (w.side === 'buy') && Math.abs(q.volume - w.lots) < 1e-6 && Math.abs(q.price_open - w.price) <= Math.max(S.point * 10, Math.abs(w.price - w.sl) * .15));
+    return P.find(q => q.ticket === w.ticket) || P.find(q => !TRM[q.ticket] && (q.type === 'BUY') === (w.side === 'buy') && Math.abs(q.volume - w.lots) < 1e-6 && Math.abs(q.price_open - w.price) <= Math.max((w.point || S.point) * 10, Math.abs(w.price - w.sl) * .15));
   },
   async adopt(id, w, p) { // a limit filled: from now on the bot manages this trade with the exit plan it was placed with
     delete TRW[id];
     const scfg = trPick({ ...TRC, ...TR_DEF, ...(TRA.cfg || {}) }), x = w.x || trX(scfg), dir = w.side === 'buy' ? 1 : -1;
-    const m = TRM[p.ticket] = { id, tf: w.tf, sym: w.symbol, login: w.login, side: w.side, open: p.price_open, sl0: w.sl, risk: Math.abs(w.price - w.sl), t0: p.time_epoch || Math.floor(S.srvTime + (Date.now() - S.srvAt) / 1000), x, scfg, digits: S.digits, at: Date.now() };
-    traLog(`Filled: ${w.side.toUpperCase()} ${w.lots} @ ${fx(p.price_open)} (${w.tf}) · managing: ${trExitDesc(x)}`, 'filled'); beep?.(880);
+    const m = TRM[p.ticket] = { id, tf: w.tf, sym: w.symbol, login: w.login, side: w.side, open: p.price_open, sl0: w.sl, risk: Math.abs(w.price - w.sl), t0: p.time_epoch || Math.floor(S.srvTime + (Date.now() - S.srvAt) / 1000), x, scfg, digits: w.digits ?? (w.symbol === S.symbol ? S.digits : TRSPEC[w.symbol]?.digits ?? S.digits), at: Date.now() };
+    traLog(`Filled: ${w.symbol} ${w.side.toUpperCase()} ${w.lots} @ ${fxp({ digits: m.digits }, p.price_open)} (${w.tf}) · managing: ${trExitDesc(x)}`, 'filled'); beep?.(880);
     if (x.tpMode === 'zone') { // zones change: set the take profit to the opposite zone that exists NOW, at the fill
       const sc = await this.scan(w.login, w.symbol, x.tpTf || w.tf, false, scfg);
-      if (sc) { const tp = +trZoneTp({ dir, entry: w.price, sl: w.sl }, sc.r.setups, x).toFixed(m.digits); if (Math.abs(tp - (p.tp || 0)) > S.point * 3) {
+      if (sc) { const tp = +trZoneTp({ dir, entry: w.price, sl: w.sl }, sc.r.setups, x).toFixed(m.digits); if (Math.abs(tp - (p.tp || 0)) > (w.point || S.point) * 3) {
         try { await api('/api/modify', { login: w.login, ticket: p.ticket, sl: p.sl || w.sl, tp }); traLog(`#${p.ticket}: take profit set to the ${x.tpTf || w.tf} opposite zone at ${tp}`, 'manage') } catch (e) { traLog(`#${p.ticket}: could not set the zone take profit: ${e.message}`, 'err') } } }
     }
     saveTRA();
@@ -1624,62 +1829,80 @@ const TRAuto = {
     }
   },
   // idle → range (consolidation forming) → zone (break done, waiting) → almost (price near the zone) → order (limit working)
-  phase(tf, r, cfg, st) {
-    const shown = s => cfg.show === 'all' || (cfg.show === 'both' ? s.tr <= 2 : cfg.show === 'tr1' ? s.tr === 1 : s.tr === 2), px = mid();
+  phase(sym, tf, r, cfg, st, sp) {
+    const shown = s => cfg.show === 'all' || (cfg.show === 'both' ? s.tr <= 2 : cfg.show === 'tr1' ? s.tr === 1 : s.tr === 2), px = spMid(sp), fx = v => fxp(sp, v);
     const live = r.setups.filter(s => (s.state === 'wait' || s.state === 'away') && shown(s)).pop();
-    const order = Object.values(TRW).find(w => w.tf === tf && w.login === TRA.login && w.symbol === TRA.sym);
+    const order = Object.values(TRW).find(w => w.tf === tf && w.login === TRA.login && w.symbol === sym);
     const dist = live ? (live.dir < 0 ? live.zl - px : px - live.zh) : 0;
     st.side = (order?.side || (live ? (live.dir < 0 ? 'sell' : 'buy') : '')); st.dist = Math.max(0, dist);
     st.phase = order ? 'order' : live ? (live.state === 'wait' && dist <= r.atr * .6 ? 'almost' : 'zone') : r.forming ? 'range' : 'idle';
-    st.tip = order ? `${tf}: ${order.side} limit working @ ${fx(order.price)}` : live ? `${tf}: TR${live.tr} ${st.side} zone ${fx(live.zl)}–${fx(live.zh)} · ${live.state === 'away' ? 'waiting for price to leave it' : fx(st.dist) + ' away'}` : r.forming ? `${tf}: range forming ${fx(r.forming.lo)}–${fx(r.forming.hi)}` : `${tf}: nothing yet`;
+    st.dx = fx(st.dist); const L = `${sym} ${tf}`;
+    st.tip = order ? `${L}: ${order.side} limit working @ ${fx(order.price)}` : live ? `${L}: VA${live.tr} ${st.side} zone ${fx(live.zl)}–${fx(live.zh)} · ${live.state === 'away' ? 'waiting for price to leave it' : fx(st.dist) + ' away'}` : r.forming ? `${L}: range forming ${fx(r.forming.lo)}–${fx(r.forming.hi)}` : `${L}: nothing yet`;
   },
-  chip(tf, mini) { // one small timeframe tag, coloured by how close it is
-    const s = this.st[tf] || {}, ph = this.why() ? 'idle' : s.phase || 'idle', arrow = s.side === 'sell' ? '▼' : s.side === 'buy' ? '▲' : '';
-    const txt = ph === 'almost' ? `${tf} ${arrow} ${fx(s.dist)}` : ph === 'order' ? `${tf} ${arrow}●` : ph === 'zone' && !mini ? `${tf} ${arrow}` : tf;
-    return `<i class="ph-${ph} ${s.side || ''}" title="${esc(s.tip || s.status || tf)}">${txt}</i>`;
+  chip(sym, tf, mini) { // one small symbol + timeframe tag, coloured by how close it is
+    const s = this.st[sym + '|' + tf] || {}, ph = this.why() ? 'idle' : s.phase || 'idle', arrow = s.side === 'sell' ? '▼' : s.side === 'buy' ? '▲' : '';
+    const pre = TRA.syms.length > 1 && mini ? sym + ' ' : '';
+    const txt = ph === 'almost' ? `${pre}${tf} ${arrow} ${s.dx || ''}` : ph === 'order' ? `${pre}${tf} ${arrow}●` : ph === 'zone' && !mini ? `${tf} ${arrow}` : pre + tf;
+    return `<i class="ph-${ph} ${s.side || ''}" title="${esc(s.tip || s.status || sym + ' ' + tf)}">${txt}</i>`;
   },
-  hot() { // collapsed header: only the timeframes that are close (almost) or have an order working
+  hot() { // collapsed header: only the symbol + timeframes that are close (almost) or have an order working
     if (!TRA.on || this.why()) return '';
-    const h = TRA.tfs.filter(tf => ['almost', 'order'].includes(this.st[tf]?.phase)); return h.length ? `<span class="tahot">${h.map(tf => this.chip(tf, true)).join('')}</span>` : '';
+    const h = TRA.syms.flatMap(sym => TRA.tfs.filter(tf => ['almost', 'order'].includes(this.st[sym + '|' + tf]?.phase)).map(tf => [sym, tf]));
+    return h.length ? `<span class="tahot">${h.map(([sym, tf]) => this.chip(sym, tf, true)).join('')}</span>` : '';
   },
-  line() { // the auto block in the TR panel
+  line() { // the auto block in the VRS panel
     const mg = Object.values(TRM).filter(x => x.login === S.login).length, mgTxt = mg ? ` · managing ${mg} trade${mg === 1 ? '' : 's'}` : '';
     if (!TRA.on) return mg ? `<div class="trauto wait"><b>🤖 AUTO OFF</b><span>Still managing ${mg} open trade${mg === 1 ? '' : 's'} it opened (stops / exits)</span><button class="btn sm ghost" onclick="openAuto()">Settings / log</button></div>` : '';
     const w = Object.values(TRW).filter(x => x.login === TRA.login), why = this.why();
-    const tfs = TRA.tfs.map(tf => this.chip(tf)).join('');
-    return `<div class="trauto ${why ? 'wait' : 'run'}"><b>🤖 AUTO ${why ? 'PAUSED' : 'ON'}</b><span>${esc(TRA.sys || 'saved settings')} · ${TRA.sym} · ${TRA.risk}% risk</span><div class="tatfs">${tfs}</div><span>${why ? '⏸ ' + esc(why) : `${w.length} order${w.length === 1 ? '' : 's'} working${mgTxt} · ${traToday()}/${TRA.maxDay} today`}</span><button class="btn sm ghost" onclick="openAuto()">Settings / log</button></div>`;
+    const tfs = TRA.syms.map(sym => `${TRA.syms.length > 1 ? `<b class="tasym">${esc(sym)}</b>` : ''}${TRA.tfs.map(tf => this.chip(sym, tf)).join('')}`).join('');
+    return `<div class="trauto ${why ? 'wait' : 'run'}"><b>🤖 AUTO ${why ? 'PAUSED' : 'ON'}</b><span>${esc(TRA.sys || 'saved settings')} · ${esc(TRA.syms.join(', '))} · ${TRA.risk}% risk</span><div class="tatfs">${tfs}</div><span>${why ? '⏸ ' + esc(why) : `${w.length} order${w.length === 1 ? '' : 's'} working${mgTxt} · ${traToday()}/${TRA.maxDay} today`}</span>${!this.leader && !EMBED ? '<button class="btn sm acc" onclick="botHere()">▶ Run it here</button>' : ''}<button class="btn sm ghost" onclick="openAuto()">Settings / log</button></div>`;
   },
 };
 // only ONE open copy of the terminal runs the bot (two tabs, or the website's built-in terminal + this one, would each place the same trades)
 TRAuto.leader = false;
-(function claimBot() {
-  if (navigator.locks?.request) navigator.locks.request('goldmine-auto-bot', () => { TRAuto.leader = true; TR.panelHtml = ''; return new Promise(() => {}) }); // held until this page closes
+// demo terminals (also the one the website shows in a frame) have their own lock: they never block your real terminal
+const BOT_LOCK = 'vrs-auto-bot' + (CFG.demo ? '-demo' : '');
+function claimBot(steal) {
+  if (EMBED) return;                                                    // the second (split) chart never runs the bot
+  if (!navigator.locks?.request) return;
+  navigator.locks.request(BOT_LOCK, steal ? { steal: true } : {}, () => { TRAuto.leader = true; TR.panelHtml = ''; return new Promise(() => {}) }) // held until this page closes
+    .catch(() => { TRAuto.leader = false; TR.panelHtml = '' });          // another copy took it over with "Run it here"
+}
+function botHere() { claimBot(true); TRAuto.leader = true; TR.force = true; TR.panelHtml = ''; toast('🤖 Auto-trade now runs in this window', 'ok') }
+(function () {
+  if (EMBED) return;
+  if (navigator.locks?.request) claimBot();
   else { // fallback: a heartbeat in local storage
     const me = Math.random().toString(36).slice(2), beat = () => { const h = store.get('botBeat', null); if (!h || h.id === me || Date.now() - h.t > 8000) { store.set('botBeat', { id: me, t: Date.now() }); TRAuto.leader = true } else TRAuto.leader = false };
     beat(); setInterval(beat, 3000);
   }
 })();
 setInterval(() => TRAuto.loop().catch(e => console.error(e)), 2500);
-let AUTO_TFS = null; // picker draft
+let AUTO_TFS = null, AUTO_SYMS = null; // picker drafts
 function openAuto() {
   closePopover(); const real = traReal(), sys = trActive()?.name || '';
   AUTO_TFS = TRA.on && TRA.tfs.length ? [...TRA.tfs] : [S.tf];
+  AUTO_SYMS = TRA.on && TRA.syms.length ? [...TRA.syms] : [S.symbol];
+  const symList = [...new Set([...AUTO_SYMS, S.symbol, ...(watch || [])])].filter(Boolean);
   const cfg = { ...TR_DEF, ...(TRA.on && TRA.cfg ? TRA.cfg : trPick(TRC)) }, x = trX(cfg), mg = Object.values(TRM).filter(q => q.login === S.login).length;
   const plan = [x.tpMode === 'R' ? (x.tp > 0 ? `take profit at <b>${x.tp}R</b>` : 'no take profit') : x.tpMode === 'zone' ? `take profit at the <b>nearest opposite zone${x.tpTf ? ' on ' + x.tpTf : ''}</b> (at least ${x.zMin}R away, else ${x.zFb}R; checked again at the fill)` : x.tpMode === 'sig' ? `no fixed target: <b>closes when ${x.tpTf || 'its own timeframe'} breaks the other way</b>` : 'no take profit',
     x.beR ? `stop to <b>breakeven at ${x.beR}R</b>` : '', x.partR ? `<b>${x.partPct}% off at ${x.partR}R</b>` : '', x.trail ? 'stop <b>trailed behind each new BOS</b>' : ''].filter(Boolean).join(' · ');
-  openModal(`<h3>🤖 Auto-trade TR signals</h3><div class="mbody">
+  openModal(`<h3>🤖 Auto-trade VRS signals</h3><div class="mbody">
     <p>Every setup that only waits for the retest gets a <b>limit order in the zone</b> automatically (stop beyond the range). If the setup is cancelled before it fills, the order is removed again.${x.filt ? ` <b>Only signals in the direction of the last ${x.filt} break</b> are taken; if ${x.filt} turns before the fill, the order is removed.` : ''}</p>
     <p>After the fill the bot manages the trade: ${plan}.${x.beR || x.partR || x.trail || x.tpMode === 'sig' ? ' This runs while this terminal is open, also when auto is turned off, until the trade is closed.' : ''}</p>
     ${mg ? `<p class="mut" style="font-size:12px">Managing <b>${mg}</b> open trade${mg === 1 ? '' : 's'} it opened now. <button class="btn sm ghost" onclick="autoRelease()">Stop managing them</button></p>` : ''}
-    <p>System: <b>${esc(TRA.on ? TRA.sys || 'saved settings' : sys || 'current TR settings')}</b> <span class="mut">(${esc(trDesc(cfg))})</span>${TRA.on ? '' : '. Frozen when you press ON: changing the chart settings later does not change what auto trades.'}</p>
-    <label>Timeframes to trade (${esc(S.symbol)}, works whatever timeframe the chart shows)</label>
+    <p>System: <b>${esc(TRA.on ? TRA.sys || 'saved settings' : sys || 'current VRS settings')}</b> <span class="mut">(${esc(trDesc(cfg))})</span>${TRA.on ? '' : '. Frozen when you press ON: changing the chart settings later does not change what auto trades.'}</p>
+    <label>Symbols to trade <span class="mut" style="font-weight:600">(all at the same time, whatever the chart shows)</span></label>
+    <div class="btchips" id="taSyms">${symList.map(s => `<button class="${AUTO_SYMS.includes(s) ? 'on' : ''}" onclick="AUTO_SYMS=AUTO_SYMS.includes('${esc(s)}')?AUTO_SYMS.filter(x=>x!=='${esc(s)}'):[...AUTO_SYMS,'${esc(s)}'];this.classList.toggle('on')">${esc(s)}</button>`).join('')}</div>
+    <p class="mut" style="font-size:11.5px;margin-top:-4px">Add more symbols to your watchlist to see them here. Each symbol is sized with its own contract size and price.</p>
+    <label>Timeframes to trade (for every symbol above)</label>
     <div class="btchips" id="taTfs">${TFS_AUTO.map(t => `<button class="${AUTO_TFS.includes(t) ? 'on' : ''}" onclick="AUTO_TFS=AUTO_TFS.includes('${t}')?AUTO_TFS.filter(x=>x!=='${t}'):[...AUTO_TFS,'${t}'];this.classList.toggle('on')">${t}</button>`).join('')}</div>
     <div class="row2"><label>Risk per trade (% of balance)<input id="taRisk" inputmode="decimal" value="${TRA.risk}"></label>
-      <label>Max open auto orders (all timeframes)<input id="taOpen" inputmode="numeric" value="${TRA.maxOpen}"></label>
+      <label>Max open auto orders (all symbols + timeframes)<input id="taOpen" inputmode="numeric" value="${TRA.maxOpen}"></label>
       <label>Max auto trades per day<input id="taDay" inputmode="numeric" value="${TRA.maxDay}"></label></div>
     <label class="tg"><input type="checkbox" id="taCur" ${TRA.takeCurrent ? 'checked' : ''}><span></span>Also take setups that are already waiting now (otherwise only setups that break after you turn it on)</label>
     <label class="tg"><input type="checkbox" id="taLive" ${TRA.live ? 'checked' : ''}><span></span>Also on real-money accounts (otherwise demo / paper only)</label>
-    <p class="mut" style="font-size:11.5px">On account <b>${S.login}</b>${real ? ' <span class="badge live">REAL MONEY</span>' : ''}. Safety: each timeframe loads and checks its own candles (twice) before acting · one order per direction per timeframe · never twice the same setup or price · pauses if you change account or symbol. Runs only while this terminal is open (PC or VPS).</p>
+    <p class="mut" style="font-size:11.5px">On account <b>${S.login}</b>${real ? ' <span class="badge live">REAL MONEY</span>' : ''}. Safety: each timeframe loads and checks its own candles (twice) before acting · one order per direction per timeframe · never twice the same setup or price · pauses if you switch account (the chart may show any symbol). Total open risk over all symbols is capped at risk × max open orders. Runs only while this terminal is open (PC or VPS).</p>
     ${CFG.maxDailyLoss ? `<p class="mut" style="font-size:12px">Your daily loss lock (−${CFG.maxDailyLoss}%) also stops auto-trading for the day.</p>` : '<p class="dn" style="font-size:12px">Tip: set a daily loss limit in Settings, so auto-trading also stops on a bad day.</p>'}
     ${TRL.length ? `<label>Recent auto actions</label><div class="talog">${[...TRL].reverse().slice(0, 20).map(x => `<div class="${x.k}"><small>${new Date(x.t).toLocaleString([], { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</small>${esc(x.text)}</div>`).join('')}</div>` : ''}
     <p class="mut" style="font-size:11.5px">Backtest results are no promise. Start on a demo or paper account and watch it for a while.</p>
@@ -1688,13 +1911,14 @@ function openAuto() {
 async function autoOn() {
   const v = id => $('#' + id), num = (id, d, lo, hi) => { const x = parseFloat(String(v(id).value).replace(',', '.')); return isFinite(x) ? Math.min(hi, Math.max(lo, x)) : d };
   const tfs = TFS_AUTO.filter(t => (AUTO_TFS || []).includes(t)); if (!tfs.length) return toast('Pick at least one timeframe.', 'err');
+  const syms = [...new Set(AUTO_SYMS || [])]; if (!syms.length) return toast('Pick at least one symbol.', 'err');
   const cfg = { risk: num('taRisk', .5, .05, 5), maxOpen: Math.round(num('taOpen', 2, 1, 20)), maxDay: Math.round(num('taDay', 5, 1, 50)), live: v('taLive').checked, takeCurrent: v('taCur').checked, tfs };
-  if (traReal() && cfg.live && !(await confirmBox('Auto-trade with REAL money?', `<p>Orders will be placed on <b>account ${S.login}</b> (${tfs.join(', ')}) without asking you, with <b>${cfg.risk}% risk</b> each, up to ${cfg.maxOpen} at a time and ${cfg.maxDay} per day.</p><p class="dn" style="margin-top:8px"><b>Real money. You can lose it.</b></p>`, 'Yes, auto-trade real money', 'danger'))) return openAuto();
-  const fresh = !TRA.on || TRA.sym !== S.symbol || TRA.login !== S.login;
+  if (traReal() && cfg.live && !(await confirmBox('Auto-trade with REAL money?', `<p>Orders will be placed on <b>account ${S.login}</b> (${syms.join(', ')} · ${tfs.join(', ')}) without asking you, with <b>${cfg.risk}% risk</b> each, up to ${cfg.maxOpen} at a time and ${cfg.maxDay} per day.</p><p class="dn" style="margin-top:8px"><b>Real money. You can lose it.</b></p>`, 'Yes, auto-trade real money', 'danger'))) return openAuto();
+  const fresh = !TRA.on || TRA.login !== S.login || syms.some(s => !TRA.syms.includes(s));
   if (fresh) Object.assign(TRA, { since: Math.floor(Date.now() / 1000), cfg: trPick(TRC), sys: trActive()?.name || '' }); // new run: freeze the system, only new setups
-  Object.assign(TRA, cfg, { on: true, login: S.login, sym: S.symbol }); TRAuto.st = {}; saveTRA();
-  traLog(`Auto ${fresh ? 'ON' : 'updated'}: ${TRA.sys || 'saved settings'} · ${TRA.sym} ${tfs.join(' ')} · ${TRA.risk}% risk`, 'info'); resolveModal(null);
-  toast(`🤖 Auto-trade ON: ${TRA.sym} ${tfs.join(', ')}${traReal() && !TRA.live ? ' (paused: real-money account not allowed)' : ''}`, 'ok', 7000);
+  Object.assign(TRA, cfg, { on: true, login: S.login, syms, sym: syms[0] }); TRAuto.st = {}; saveTRA();
+  traLog(`Auto ${fresh ? 'ON' : 'updated'}: ${TRA.sys || 'saved settings'} · ${syms.join(', ')} · ${tfs.join(' ')} · ${TRA.risk}% risk`, 'info'); resolveModal(null);
+  toast(`🤖 Auto-trade ON: ${syms.join(', ')} · ${tfs.join(', ')}${traReal() && !TRA.live ? ' (paused: real-money account not allowed)' : ''}`, 'ok', 7000);
   TR.force = true; TR.panelHtml = ''; TR.panel(TR.res);
 }
 function autoOff() { const mg = Object.keys(TRM).length; TRA.on = false; saveTRA(); traLog('Auto OFF', 'info'); resolveModal(null); toast(`🤖 Auto-trade OFF: no new orders. Orders it already placed stay open (see Orders).${mg ? ` It keeps managing the ${mg} open trade${mg === 1 ? '' : 's'} it opened until closed (Settings → Stop managing).` : ''}`, 'warn', 9000); TR.force = true; TR.panelHtml = ''; TR.panel(TR.res) }
@@ -1703,15 +1927,15 @@ function openTRSettings() {
   closePopover();
   const sel = (id, opts, cur) => `<select id="${id}">${opts.map(([v, l]) => `<option value="${v}" ${String(cur) === String(v) ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
   const jul = TRC.mode === 'julius';
-  openModal(`<h3>TR signals</h3><div class="mbody">
+  openModal(`<h3>VRS signals</h3><div class="mbody">
     <label>My saved systems</label>${trSysList()}
     <div><button class="btn sm" onclick="saveTRSettings(true)">☆ Save current as…</button></div><hr style="border:0;border-top:1px solid var(--line);margin:2px 0">
-    <div class="row2"><label>System${sel('trMode', [['tr', 'TR1 / TR2'], ['julius', 'TR1 Julius (STS checklist)']], jul ? 'julius' : 'tr')}</label></div>
+    <div class="row2"><label>System${sel('trMode', [['tr', 'VA1 / VA2'], ['julius', 'VA1 Julius (STS checklist)']], jul ? 'julius' : 'tr')}</label></div>
     <p class="trm-tr" ${jul ? 'hidden' : ''}>A <b>consolidation</b> is a tight range (at least the minimum candles, no wider than the range size × ATR). A candle whose <b>body closes</b> outside it is the break:
-      the first break in a new direction is <b>TR1</b> (CHOCH), the next one in the same direction is <b>TR2</b> (BOS). The <b>zone</b> is that candle from its body close to its full wick, extended right.
+      the first break in a new direction is <b>VA1</b> (CHOCH), the next one in the same direction is <b>VA2</b> (BOS). The <b>zone</b> is that candle from its body close to its full wick, extended right.
       When price comes back into the zone the signal is <b>valid</b>: entry at the body close, stop beyond the consolidation, take profit open (R levels shown).</p>
     <div class="trm-jul" ${jul ? '' : 'hidden'}>
-      <p><b>TR1 Julius</b> = the TR1 break (CHOCH out of a consolidation) plus the STS checklist. <b>One required element missing = no trade</b> (the panel says which one).
+      <p><b>VA1 Julius</b> = the VA1 break (CHOCH out of a consolidation) plus the STS checklist. <b>One required element missing = no trade</b> (the panel says which one).
         Required: the <b>session</b>, a clear <b>bias</b> on the bias timeframe (HH + HL = only buys, LH + LL = only sells) with the CHOCH in that direction,
         a <b>refinement zone (POI)</b> inside the consolidation, and that POI in the <b>discount</b> (buys) or <b>premium</b> (sells): below / above the 50% fib of the last swing.
         Entry = limit at the POI, stop <b>${+TRC.jSlPips || 30} pips</b>. A POI high in the range = half risk. Optional confluence: a liquidity sweep (Asia / London high-low, equal highs-lows, previous swing), the POC of the range in the POI, an FVG on the break.</p>
@@ -1725,10 +1949,10 @@ function openTRSettings() {
       <label class="tg"><input type="checkbox" id="jNeedSweep" ${TRC.jNeedSweep ? 'checked' : ''}><span></span>Require a liquidity sweep before the break</label>
       <label class="tg"><input type="checkbox" id="jNeedPoc" ${TRC.jNeedPoc ? 'checked' : ''}><span></span>Require the POC of the range inside the POI</label>
       <label class="tg"><input type="checkbox" id="jNeedInt" ${TRC.jNeedInt ? 'checked' : ''}><span></span>Require the stop beyond the internal low / high of the range</label>
-      <label class="tg"><input type="checkbox" id="jTr2" ${TRC.jTr2 ? 'checked' : ''}><span></span>Also TR2 (BOS) setups with the same checklist (STS: re-entries only on lower-timeframe setups)</label>
+      <label class="tg"><input type="checkbox" id="jTr2" ${TRC.jTr2 ? 'checked' : ''}><span></span>Also VA2 (BOS) setups with the same checklist (STS: re-entries only on lower-timeframe setups)</label>
       <p class="mut" style="font-size:11.5px;margin:0">STS management: stop to breakeven at 1R, 75% off at 3R, runner to the next liquidity / opposite zone. Set it below (Breakeven, Partial close, Take profit “At the opposite zone”).</p>
     </div>
-    <div class="row2"><label>Show${sel('trShow', [['both', 'TR1 + TR2'], ['tr1', 'Only TR1'], ['tr2', 'Only TR2'], ['all', 'TR1, TR2, TR3…']], TRC.show)}</label>
+    <div class="row2"><label>Show${sel('trShow', [['both', 'VA1 + VA2'], ['tr1', 'Only VA1'], ['tr2', 'Only VA2'], ['all', 'VA1, VA2, VA3…']], TRC.show)}</label>
       <label>Older signals${sel('trHist', [['minimal', 'Small (arrow + result)'], ['full', 'Small + failed zones'], ['none', 'Hide']], TRC.hist || 'minimal')}</label>
       <label>Min. candles in a range<input id="trMin" inputmode="numeric" value="${TRC.minBars}"></label></div>
     <div class="row2"><label>Range size (× ATR 14)<input id="trRange" inputmode="decimal" value="${TRC.rangeAtr}"></label>
@@ -1736,48 +1960,50 @@ function openTRSettings() {
       <label>Take profit (R, 0 = open)<input id="trTp" inputmode="decimal" value="${TRC.tp || 0}"></label>
       <label>Max candles to wait for the retest<input id="trAge" inputmode="numeric" value="${TRC.maxAge}"></label></div>
     <hr style="border:0;border-top:1px solid var(--line);margin:2px 0"><label>Exit plan & filter <span class="mut" style="font-weight:600">(the 🤖 auto-trade bot follows this for the trades it opens · test it first in the 🧪 Backtest Lab)</span></label>
-    <div class="row2"><label>Take profit${sel('trTpMode', [['R', 'Fixed R (the TP field above)'], ['zone', 'At the opposite zone'], ['sig', 'Close on an opposite signal'], ['none', 'None (trailing stop only)']], TRC.tpMode || 'R')}</label>
+    <div class="row2"><label>Take profit${sel('trTpMode', [['R', 'Fixed R (the TP field above)'], ['zone', 'At the opposite zone'], ['sig', 'Close on an opposite signal'], ['none', 'None (trailing stop only)']], TRC.tpMode || 'none')}</label>
       <label>…zone / signal on${sel('trTpTf', [['', 'The trade\'s own timeframe'], ...['M5', 'M15', 'M30', 'H1', 'H4', 'D1'].map(t => [t, t])], TRC.tpTf || '')}</label>
       <label>Breakeven${sel('trBe', [['0', 'Off'], ['1', 'Stop to entry at 1R'], ['1.5', 'Stop to entry at 1.5R'], ['2', 'Stop to entry at 2R']], String(+TRC.beR || 0))}</label></div>
-    <div class="row2"><label>Partial close${sel('trPart', [['0', 'Off'], ['1', '50% at 1R'], ['2', '50% at 2R'], ['3', '75% at 3R (STS)']], String(+TRC.partR || 0))}</label>
+    <div class="row2"><label>Partial close${sel('trPart', [['0', 'Off'], ['1|50', '50% at 1R'], ['1|75', '75% at 1R'], ['1|90', '90% at 1R (small runner)'], ['2|50', '50% at 2R'], ['2|75', '75% at 2R'], ['3|75', '75% at 3R (STS)']], +TRC.partR ? ${+TRC.partR}| : '0')}</label>
       <label>Only trade with the structure of${sel('trFilt', [['', 'Off: every signal'], ...['M15', 'M30', 'H1', 'H4', 'D1'].map(t => [t, t + ' (its last break goes the same way)'])], TRC.filt || '')}</label></div>
     <label class="tg"><input type="checkbox" id="trTrail" ${TRC.trail ? 'checked' : ''}><span></span>Trail the stop behind each new BOS (every new break in your direction moves the stop to that range's stop)</label>
     <label class="tg trm-tr" ${jul ? 'hidden' : ''}><input type="checkbox" id="trAway" ${TRC.away ? 'checked' : ''}><span></span>Price must first leave the zone before a retest counts</label>
     <label class="tg"><input type="checkbox" id="trRR" ${TRC.rr ? 'checked' : ''}><span></span>Show 1R / 2R / 3R levels after a signal</label>
     <div class="row2"><label>Reached R levels${sel('trRHit', [['hide', 'Hide them once reached'], ['tag', 'Show a ✓ where they were reached']], TRC.rHit || 'hide')}</label></div>
-    <label class="tg"><input type="checkbox" id="trOnly" ${TRC.only ? 'checked' : ''}><span></span>Only TR on the chart (hide my other indicators and overlays)</label>
+    <label class="tg"><input type="checkbox" id="trOnly" ${TRC.only ? 'checked' : ''}><span></span>Only VRS on the chart (hide my other indicators and overlays)</label>
   </div><div class="mact"><button class="btn ghost" data-m="no">Cancel</button><button class="btn acc" onclick="saveTRSettings()">Save</button></div>`);
   // switching the system shows its own settings; the first switch to Julius fills in the STS trade management
-  $('#trMode').onchange = e => { const j = e.target.value === 'julius'; document.querySelectorAll('.trm-jul').forEach(x => x.hidden = !j); document.querySelectorAll('.trm-tr').forEach(x => x.hidden = j); if (j && TRC.mode !== 'julius') { $('#trBe').value = '1'; $('#trPart').value = '3'; $('#trTpMode').value = 'zone' } };
+  $('#trMode').onchange = e => { const j = e.target.value === 'julius'; document.querySelectorAll('.trm-jul').forEach(x => x.hidden = !j); document.querySelectorAll('.trm-tr').forEach(x => x.hidden = j); if (j && TRC.mode !== 'julius') { $('#trBe').value = '1'; $('#trPart').value = '3|75'; $('#trTpMode').value = 'none'; $('#trTrail').checked = true } };
+  // "None (trailing stop only)" means the stop trails: tick the trail box with it
+  $('#trTpMode').onchange = e => { if (e.target.value === 'none') $('#trTrail').checked = true };
 }
-// drag the TR panel by its header; double-click the header to put it back top right
+// drag the VRS panel by its header; double-click the header to put it back top right
 document.addEventListener('pointerdown', e => {
   const hd = e.target.closest('#trPanel .trh'); if (!hd || e.target.closest('button')) return;
   const el = $('#trPanel'), box = el.parentElement.getBoundingClientRect(), r = el.getBoundingClientRect(), dx = e.clientX - r.left, dy = e.clientY - r.top;
   e.preventDefault(); el.classList.add('drag');
-  const mv = ev => { TRC.pos = { x: ev.clientX - box.left - dx, y: ev.clientY - box.top - dy }; TR.place() };
+  const mv = ev => { const x = ev.clientX - box.left - dx; TRC.pos = { x, y: ev.clientY - box.top - dy, r: x + $('#trPanel').offsetWidth }; TR.place() }; // r = right edge: folding / unfolding keeps it in place
   const up = () => { el.classList.remove('drag'); removeEventListener('pointermove', mv); removeEventListener('pointerup', up); saveTRC() };
   addEventListener('pointermove', mv); addEventListener('pointerup', up);
 });
 document.addEventListener('dblclick', e => { if (e.target.closest('#trPanel .trh') && !e.target.closest('button')) { TRC.pos = null; saveTRC(); TR.place() } });
 addEventListener('resize', () => TR.place());
 document.addEventListener('mouseleave', e => { if (e.target?.id === 'trPanel' && TR.held) { const h = TR.held; TR.held = ''; TR.panelHtml = h; e.target.innerHTML = h } }, true);
-/* ---------- saved TR systems: name a set of settings (+ its timeframe) and switch between them in one click ---------- */
+/* ---------- saved VRS systems: name a set of settings (+ its timeframe) and switch between them in one click ---------- */
 let TRP = store.get('trPresets', []);
 const TR_KEYS = ['minBars', 'rangeAtr', 'slBuf', 'away', 'tp', 'show', 'maxAge', ...Object.keys(TR_DEF)];
 const trPick = cfg => Object.fromEntries(TR_KEYS.map(k => [k, cfg[k] ?? TR_DEF[k]]));
 const trSame = (a, b) => TR_KEYS.every(k => String(a[k] ?? TR_DEF[k]) === String(b[k] ?? TR_DEF[k])); // systems saved before the exit plan existed = fixed R, no extras
-const trDesc = (q, tf) => q.mode === 'julius' ? `${tf ? tf + ' · ' : ''}TR1 Julius${q.jTr2 ? ' + TR2' : ''} · ${({ ln: 'London+NY', lo: 'London', ny: 'NY', all: 'any session' })[q.jSess] || 'London+NY'} · ${q.jBiasTf || 'H1'} bias · ${({ ob: 'OB', fvg: 'FVG', fib: '0.764 fib' })[q.jPoi] || 'OB'} POI · SL ${q.jSl === 'range' ? 'beyond range' : (q.jSlPips || 30) + ' pips'}${q.jNeedSweep ? ' · sweep' : ''}${q.jNeedPoc ? ' · POC' : ''} · ${trExitDesc(q)}`
-  : `${tf ? tf + ' · ' : ''}${({ both: 'TR1+2', tr1: 'TR1', tr2: 'TR2', all: 'all TR' })[q.show] || q.show} · ${q.minBars} candles · range ${q.rangeAtr}× · stop buf. ${q.slBuf}× · ${trExitDesc(q)}${q.away ? '' : ' · no leave rule'}`;
+const trDesc = (q, tf) => q.mode === 'julius' ? `${tf ? tf + ' · ' : ''}VA1 Julius${q.jTr2 ? ' + VA2' : ''} · ${({ ln: 'London+NY', lo: 'London', ny: 'NY', all: 'any session' })[q.jSess] || 'London+NY'} · ${q.jBiasTf || 'H1'} bias · ${({ ob: 'OB', fvg: 'FVG', fib: '0.764 fib' })[q.jPoi] || 'OB'} POI · SL ${q.jSl === 'range' ? 'beyond range' : (q.jSlPips || 30) + ' pips'}${q.jNeedSweep ? ' · sweep' : ''}${q.jNeedPoc ? ' · POC' : ''} · ${trExitDesc(q)}`
+  : `${tf ? tf + ' · ' : ''}${({ both: 'VA1+2', tr1: 'VA1', tr2: 'VA2', all: 'all TR' })[q.show] || q.show} · ${q.minBars} candles · range ${q.rangeAtr}× · stop buf. ${q.slBuf}× · ${trExitDesc(q)}${q.away ? '' : ' · no leave rule'}`;
 const trActive = () => TRP.find(x => trSame(x.cfg, TRC) && (!x.tf || x.tf === S.tf)) || TRP.find(x => trSame(x.cfg, TRC));
 async function trSaveAs(cfg = trPick(TRC), tf = S.tf, after) {
-  const cur = trActive(), v = await formBox('Save this TR system', [{ id: 'name', label: 'Name', value: cur?.name || '', text: true, ph: 'e.g. Gold M5 scalp, H1 swing TR2' }, { id: 'tf', label: 'Timeframe', type: 'select', value: tf, options: [['', 'Any (keep the chart timeframe)'], ...['M1', 'M3', 'M5', 'M15', 'M30', 'H1', 'H4', 'D1'].map(t => [t, t])] }], 'Save system', esc(trDesc(cfg, tf)));
+  const cur = trActive(), v = await formBox('Save this VRS system', [{ id: 'name', label: 'Name', value: cur?.name || '', text: true, ph: 'e.g. Gold M5 scalp, H1 swing VA2' }, { id: 'tf', label: 'Timeframe', type: 'select', value: tf, options: [['', 'Any (keep the chart timeframe)'], ...['M1', 'M3', 'M5', 'M15', 'M30', 'H1', 'H4', 'D1'].map(t => [t, t])] }], 'Save system', esc(trDesc(cfg, tf)));
   if (!v || !v.name) { after?.(); return }
   const name = v.name.slice(0, 40), old = TRP.find(x => x.name.toLowerCase() === name.toLowerCase());
   if (old) Object.assign(old, { cfg: { ...cfg }, tf: v.tf, saved: Date.now() }); else TRP.push({ id: Date.now().toString(36), name, cfg: { ...cfg }, tf: v.tf, saved: Date.now() });
   store.set('trPresets', TRP); toast(`Saved “${name}”${old ? ' (updated)' : ''}`, 'ok'); TR.force = true; TR.panelHtml = ''; TR.panel(TR.res); after?.();
 }
-// the Backtest Lab (lab.html, another tab) can save TR systems and breakeven / partial automation: pick them up right away
+// the Backtest Lab (lab.html, another tab) can save VRS systems and breakeven / partial automation: pick them up right away
 addEventListener('storage', e => {
   if (e.key === SP + 'trPresets') { TRP = store.get('trPresets', []); TR.force = true; TR.panelHtml = ''; TR.panel(TR.res) }
   if (e.key === SP + 'auto') { AUTO = store.get('auto', {}); syncLines() }
@@ -1791,12 +2017,12 @@ function trUse(id) {
 function trDel(id) { const x = TRP.find(q => q.id === id); if (!x || !confirm(`Delete the system “${x.name}”?`)) return; TRP = TRP.filter(q => q.id !== id); store.set('trPresets', TRP); TR.force = true; TR.panelHtml = ''; TR.panel(TR.res); if (modalOpen() && $('#trSys')) $('#trSys').outerHTML = trSysList(); else if (popEl) openTRSystems(popEl._a) }
 const trSysList = () => `<div id="trSys" class="trsys">${TRP.length ? TRP.map(x => { const on = trActive()?.id === x.id; return `<div class="${on ? 'on' : ''}"><button class="nm" onclick="trUse('${x.id}')"><b>${on ? '✓ ' : ''}${esc(x.name)}</b><small>${esc(trDesc(x.cfg, x.tf))}</small></button><button class="ib" onclick="trDel('${x.id}')" title="Delete">🗑</button></div>` }).join('') : '<p class="mut" style="font-size:12px;margin:0">No saved systems yet. Set it up the way you like, then “Save current as…”, or press ☆ Save on a backtest result.</p>'}</div>`;
 function openTRSystems(a) {
-  popover(a, `<h6>My TR systems · click to switch</h6>${trSysList()}<hr><button class="it" onclick="closePopover();trSaveAs()">☆ Save current settings as…</button><button class="it" onclick="openTRSettings()">⚙ Edit settings</button>`, 'trpop');
+  popover(a, `<h6>My VRS systems · click to switch</h6>${trSysList()}<hr><button class="it" onclick="closePopover();trSaveAs()">☆ Save current settings as…</button><button class="it" onclick="openTRSettings()">⚙ Edit settings</button>`, 'trpop');
 }
 function saveTRSettings(andName) {
   const v = id => $('#' + id), num = (id, d, lo, hi) => { const x = parseFloat(String(v(id).value).replace(',', '.')); return isFinite(x) ? Math.min(hi, Math.max(lo, x)) : d };
-  const partR = +v('trPart').value || 0;
-  Object.assign(TRC, { rHit: v('trRHit').value, tpMode: v('trTpMode').value, tpTf: v('trTpTf').value, beR: +v('trBe').value || 0, partR, partPct: partR === 3 ? 75 : 50, filt: v('trFilt').value, trail: v('trTrail').checked });
+  const [pR, pP] = String(v('trPart').value).split('|'), partR = +pR || 0;
+  Object.assign(TRC, { rHit: v('trRHit').value, tpMode: v('trTpMode').value, tpTf: v('trTpTf').value, beR: +v('trBe').value || 0, partR, partPct: partR ? +pP || 50 : 50, filt: v('trFilt').value, trail: v('trTrail').checked });
   Object.assign(TRC, { mode: v('trMode').value === 'julius' ? 'julius' : 'tr', jSess: v('jSess').value, jBiasTf: v('jBiasTf').value, jPoi: v('jPoi').value, jSl: v('jSl').value, jSlPips: num('jSlPips', 30, 1, 1000), jHigh: v('jHigh').value, jSwing: Math.round(num('jSwing', 3, 2, 8)),
     jNeedSweep: v('jNeedSweep').checked, jNeedPoc: v('jNeedPoc').checked, jNeedInt: v('jNeedInt').checked, jTr2: v('jTr2').checked });
   if (TRC.mode === 'julius') TRC.julSet = true;
@@ -1847,17 +2073,17 @@ const Chart = {
       priceLineVisible: !!indOn.bidask, priceLineColor: css('--bidline'), priceLineStyle: LWC.LineStyle.Dashed, priceLineWidth: 1,
       lastValueVisible: !indOn.bidask }; // bid / ask on: our own stacked ASK / BID / timer tags (Legend.placeCd) replace the last-price tag, so nothing hides the other
   },
-  wmOpts() { const c = css('--wm'); return { horzAlign: 'center', vertAlign: 'center', visible: !!indOn.wm, lines: [{ text: 'GOLDMINE', color: c, fontSize: 44, fontStyle: 'bold' }, { text: 'SYNC', color: c, fontSize: 20, fontStyle: 'bold' }] } },
+  wmOpts() { const c = css('--wm'); return { horzAlign: 'center', vertAlign: 'center', visible: !!indOn.wm, lines: [{ text: 'VRS', color: c, fontSize: 44, fontStyle: 'bold' }, { text: 'VALUE RESEARCH SYSTEMS', color: c, fontSize: 13, fontStyle: 'bold' }] } },
   applyTheme() {
     chartCols.k = null; refreshPal(); this.c.applyOptions(this.opts()); this.s.applyOptions(this.candleOpts());
     try { this.wm?.applyOptions(this.wmOpts()) } catch {}
     Lines.clear(); Levels.key = ''; syncLines(); Levels.sync(); Markers.update(); Overlay.dirty = true;
   },
-  setData() {
+  setData(keepView) {
     this.s.applyOptions({ priceFormat: { type: 'price', precision: S.digits, minMove: S.point } });
     this.s.setData(S.candles);
     this.c.timeScale().applyOptions({ timeVisible: tfs() < 86400 });
-    Indicators.sync(); Markers.update(); Lines.clear(); syncLines(); Levels.key = ''; Levels.sync(); this.fit(); Legend.update(); Overlay.dirty = true;
+    Indicators.sync(); Markers.update(); Lines.clear(); syncLines(); Levels.key = ''; Levels.sync(); if (keepView) this.s.priceScale().applyOptions({ autoScale: true }); else this.fit(); Legend.update(); Overlay.dirty = true;
   },
   fit() { const n = S.candles.length; if (n) this.c.timeScale().setVisibleLogicalRange({ from: n - 130, to: n + 12 }); this.s.priceScale().applyOptions({ autoScale: true }) },
   merge(bars) {
@@ -2535,9 +2761,9 @@ const Drawings = {
     const W = Chart.el.clientWidth - priceScaleW(), H = paneH(), ts = Chart.c.timeScale();
     const X = t => ts.logicalToCoordinate(t2l(t)) ?? -9999, Y = p => Chart.s.priceToCoordinate(p) ?? -9999;
     let out = `<defs><clipPath id="dclip"><rect x="0" y="0" width="${W}" height="${H}"/></clipPath></defs><g clip-path="url(#dclip)" font-family="-apple-system,Segoe UI,sans-serif">`;
-    out += this.system(X, Y, W, H);
+    try { out += this.system(X, Y, W, H) } catch (e) { console.error('VRS drawing', e) }
     D.geo.clear();
-    if (!D.hidden || D.temp) for (const d of [...(D.hidden ? [] : D.list), ...(D.temp ? [D.temp] : [])]) { const r = this.shape(d, X, Y, W, H); out += r.svg; D.geo.set(d.id, r.geo); if (d.id === D.sel || d === D.temp) out += r.geo.hs.map(h => `<circle cx="${h.x}" cy="${h.y}" r="4.5" fill="${CFG.theme === 'light' ? '#fff' : '#1b2024'}" stroke="${d.color}" stroke-width="1.5"/>`).join('') }
+    if (!D.hidden || D.temp) for (const d of [...(D.hidden ? [] : D.list), ...(D.temp ? [D.temp] : [])]) { let r; try { r = this.shape(d, X, Y, W, H) } catch (e) { console.error('drawing', d?.type, e); continue } /* one broken drawing never hides the rest (or the VRS signals) */ out += r.svg; D.geo.set(d.id, r.geo); if (d.id === D.sel || d === D.temp) out += r.geo.hs.map(h => `<circle cx="${h.x}" cy="${h.y}" r="4.5" fill="${CFG.theme === 'light' ? '#fff' : '#1b2024'}" stroke="${d.color}" stroke-width="1.5"/>`).join('') }
     // magnet dot: where the next click / the point being placed will land
     const sp = D.temp ? D.temp.pts[D.temp.pts.length - 1] : D.tool !== 'cursor' ? D.hover : null;
     if (sp) { const sx = X(sp.t), sy = Y(sp.p), col = PAL['--acc']; out += `<circle cx="${sx}" cy="${sy}" r="${D.magnet ? 5 : 3}" fill="none" stroke="${col}" stroke-width="2"/><circle cx="${sx}" cy="${sy}" r="2" fill="${col}"/>${D.magnet ? `<text x="${sx + 8}" y="${sy - 7}" font-size="10.5" font-weight="700" fill="${col}">${fx(sp.p)}</text>` : ''}` }
@@ -2677,8 +2903,10 @@ const Overlay = {
     if (!Chart.s || !S.candles.length) return;
     const ts = Chart.c.timeScale(), vr = ts.getVisibleLogicalRange(), lc = S.candles[S.candles.length - 1].close;
     const sig = [vr?.from, vr?.to, Chart.s.priceToCoordinate(lc), Chart.s.priceToCoordinate(lc * 1.01), Chart.el.clientWidth, Chart.el.clientHeight].join('|');
-    if (sig !== this.sig || this.dirty) { this.sig = sig; this.dirty = false; Drawings.render() }
-    TR.tick(); Labels.render(); Zones.draw(); Legend.placeCd();
+    // each part on its own: one that fails (odd data, an odd symbol name) must never stop the others, e.g. the VRS signals
+    const run = (k, f) => { try { f() } catch (e) { if (!this['e' + k]) { this['e' + k] = 1; console.error(k, e) } } };
+    if (sig !== this.sig || this.dirty) { this.sig = sig; this.dirty = false; run('draw', () => Drawings.render()) }
+    run('tr', () => TR.tick()); run('lab', () => Labels.render()); run('zones', () => Zones.draw()); run('legend', () => Legend.placeCd());
   },
 };
 
@@ -3004,6 +3232,34 @@ function setSymbol(sym) {
   if (innerWidth <= 1100) $('#watch').classList.remove('drawer');
   if (S.connected) loadCandles().then(poll).catch(e => toast(e.message, 'err'));
 }
+// split: what this chart shows right now (candles, zoom / scroll, quote, VRS on / off), handed to the other chart when you switch
+function splitSnap() { return { sym: S.symbol, tf: S.tf, candles: S.candles, digits: S.digits, point: S.point, bid: S.bid, ask: S.ask, positions: S.positions || [], pending: S.pending || [], range: Chart.c?.timeScale().getVisibleLogicalRange() || null, bs: (() => { try { const ts = Chart.c.timeScale(), r = ts.getVisibleLogicalRange(); return r && ts.width() / (r.to - r.from) } catch { return 0 } })(), on: TRC.on, col: TRC.collapsed } }
+// ...and taken over as it is: no reload, no jump (the chart looks exactly like the one that was there)
+function splitTake(d) {
+  if (!d?.sym || !TF_SEC[d.tf]) return;
+  if (d.on !== undefined && (d.on !== TRC.on || d.col !== TRC.collapsed)) { TRC.on = !!d.on; TRC.collapsed = !!d.col; saveTRC(); TR.force = true; TR.panelHtml = '' }
+  if (!d.candles?.length) { setTF(d.tf); setSymbol(d.sym); return }       // nothing loaded there yet: the normal way
+  const symCh = d.sym !== S.symbol;
+  S.symbol = d.sym; store.set('symbol', d.sym); S.tf = d.tf; store.set('tf', d.tf);
+  S.positions = d.positions || []; S.pending = d.pending || [];                          // its open trades / orders: their lines show at once
+  if (symCh) { T.entry = T.entry2 = T.sl = T.tp = 0; T.layers = 1; pickEnd(); Lines.clear() }
+  S.bid = d.bid || 0; S.ask = d.ask || 0;
+  S.candles = d.candles; S.digits = d.digits; S.point = d.point; S.cKey = d.sym + '|' + d.tf + '|' + S.login; moreDone = '';
+  if (D.sym !== d.sym) Drawings.load(d.sym);
+  Chart.setData(!!d.range);
+  if (d.range) { // zoom (bar width) + scroll as options: they survive the size change of the swap (a plain visible range is reset by it)
+    const ts = Chart.c.timeScale(), span = d.range.to - d.range.from;
+    if (d.bs > 0) ts.applyOptions({ barSpacing: d.bs, rightOffset: d.range.to - (d.candles.length - 1) });
+    else if (span > 0 && ts.width()) ts.applyOptions({ barSpacing: ts.width() / span, rightOffset: d.range.to - (d.candles.length - 1) });
+  }
+  renderTF(); renderHeader(); renderWatch(); Ticket.render(); renderPanel(true); renderActs.sig = '';
+  TR.key = ''; Overlay.dirty = true; try { TR.tick() } catch {}
+  // the overlays (signals, drawings, labels) need the chart's NEW price scale, which only exists after its next paint:
+  // drawn earlier they would sit at the old places for a frame (a visible jump). So they wait two frames, hidden.
+  const ov = ['#draw', '#zones', '#tl'].map(q => $(q)).filter(Boolean); ov.forEach(e => e.style.visibility = 'hidden');
+  requestAnimationFrame(() => requestAnimationFrame(() => { Overlay.dirty = true; try { Overlay.frame() } catch {} ov.forEach(e => e.style.visibility = '') }));
+  if (S.connected) poll();
+}
 function setTF(tf) {
   if (!TF_SEC[tf] || tf === S.tf) return;
   S.tf = tf; store.set('tf', tf); renderTF(); closePopover();
@@ -3109,6 +3365,7 @@ function addAlert(price, sym = S.symbol) {
   try { if (window.Notification && Notification.permission === 'default') Notification.requestPermission() } catch {}
 }
 function checkAlerts(sym, px) {
+  if (EMBED) return;                                                    // alerts fire once, from the main chart
   if (!px) return;
   const hit = alerts.filter(a => a.symbol === sym && (a.dir === 'above' ? px >= a.price : px <= a.price));
   if (!hit.length) return;
@@ -3116,7 +3373,7 @@ function checkAlerts(sym, px) {
   for (const a of hit) {
     const msg = `${a.symbol} ${a.dir === 'above' ? 'rose above' : 'fell below'} ${fxs(sym, a.price)}`;
     toast('🔔 ' + msg, 'warn', 9000); beep(988, .25); setTimeout(() => beep(1318, .25), 260);
-    try { if (Notification.permission === 'granted') new Notification('Goldmine alert', { body: msg }) } catch {}
+    try { if (Notification.permission === 'granted') new Notification('VRS alert', { body: msg }) } catch {}
   }
 }
 
@@ -3126,7 +3383,7 @@ function checkAlerts(sym, px) {
 function renderHeader() {
   $('#symName').textContent = S.symbol || '—';
   const path = (S.paths[S.symbol] || '').split('\\'); $('#symDesc').textContent = path.length > 1 ? path[path.length - 2] : '';
-  document.title = S.bid ? `${S.symbol} ${fx(S.bid)} · Goldmine Pro` : 'Goldmine Pro Terminal';
+  document.title = S.bid ? `${S.symbol} ${fx(S.bid)} · VRS` : 'VRS Terminal';
   const a = S.account, acct = S.accounts.find(x => x.login === S.login);
   $('#hBal').textContent = a ? money(a.balance, false) : '—'; $('#hEq').textContent = a ? money(a.equity, false) : '—';
   const pl = $('#hPl'); pl.textContent = a ? money(a.profit) : '—'; pl.className = a ? cls(a.profit) : '';
@@ -3439,12 +3696,12 @@ async function copyToggle() {
   try { copySt = await api('/api/copy/status'); paintCopy() } catch {}
 }
 
-/* ---- TradingView → MT5 autotrade: GoldZone Pro webhook alerts, sized and traded by the bridge ---- */
+/* ---- TradingView → MT5 autotrade: VRS Indicator Pro webhook alerts, sized and traded by the bridge ---- */
 let tvSt = null, tvT = 0;
 const tvHook = () => tvSt ? (tvSt.config.public_url || 'https://YOUR-BRIDGE-LINK').replace(/\/+$/, '') + tvSt.path : '';
 async function tabTvAuto(force) {
   if (!force && tabSig === 'tv') return; tabSig = 'tv'; tools('');
-  if (CFG.demo) { $('#tabBody').innerHTML = empty('TV autotrade runs in your bridge', 'GoldZone Pro on TradingView sends its alert to your bridge; the bridge sizes the lot from your risk, checks your daily limits and places the trade on MT5, then takes the partial and moves the stop to break-even. Connect your bridge to set it up.'); return }
+  if (CFG.demo) { $('#tabBody').innerHTML = empty('TV autotrade runs in your bridge', 'VRS Indicator Pro on TradingView sends its alert to your bridge; the bridge sizes the lot from your risk, checks your daily limits and places the trade on MT5, then takes the partial and moves the stop to break-even. Connect your bridge to set it up.'); return }
   $('#tabBody').innerHTML = empty('Loading…', '');
   try { tvSt = await api('/api/tv/status') } catch (e) { $('#tabBody').innerHTML = empty('TV autotrade unavailable', esc(e.message) + '<br>Update your bridge (app.py) to the newest version.'); return }
   if (tab !== 'tvauto') return;
@@ -3469,8 +3726,8 @@ function paintTv() {
     <p class="mut" style="margin:4px 0">Webhook URL (paste in the TradingView alert → Notifications → Webhook URL). Keep it private: it can place trades.</p>
     <div style="display:flex;gap:6px"><input readonly id="tvUrl" value="${esc(tvHook())}" style="flex:1;font-family:ui-monospace,monospace;font-size:11px"><button class="btn" data-act="tvCopy">Copy</button><button class="btn ghost" data-act="tvNew" title="Makes a new secret: the old URL stops working">New</button></div>
     <ol class="mut" style="margin:8px 0 6px 18px;padding:0;line-height:1.55;font-size:12px">
-      <li>On TradingView, add <b>GoldZone Pro</b> to a gold chart and set <b>Alert format</b> to <b>JSON (bots / webhooks)</b>.</li>
-      <li>Create alert → Condition: GoldZone Pro → <b>Any alert() function call</b>.</li>
+      <li>On TradingView, add <b>VRS Indicator Pro</b> to a gold chart and set <b>Alert format</b> to <b>JSON (bots / webhooks)</b>.</li>
+      <li>Create alert → Condition: VRS Indicator Pro → <b>Any alert() function call</b>.</li>
       <li>Notifications → <b>Webhook URL</b>: paste the URL above. Save.</li>
       <li>Keep this bridge running (or on a VPS) with a public link: <code>cloudflared tunnel --url http://localhost:8765</code>.</li>
       <li>Start on a <b>paper / demo</b> account. Press <b>Test on paper</b> to check the whole chain.</li>
@@ -3491,7 +3748,7 @@ async function tvToggle() {
   if (!tvSt.config.enabled) {
     const acc = S.accounts.find(a => a.login === +$('#tvAcc').value);
     if (!acc) return toast('Choose the account that trades first.', 'err');
-    if (!(await confirmBox('Switch on TV autotrade?', `<p>Every GoldZone Pro alert (grade ${esc($('#tvGrade').value)} or better) will be traded on <b>${esc(acc.name)} · ${acc.login}</b>${acc.paper ? ' (paper)' : ''} with <b>${esc($('#tvRisk').value)}%</b> risk, at most <b>${esc($('#tvMax').value)}</b> trades a day, and the day locks at <b>−${esc($('#tvDd').value)}%</b>.</p>`, 'Switch on'))) return;
+    if (!(await confirmBox('Switch on TV autotrade?', `<p>Every VRS Indicator Pro alert (grade ${esc($('#tvGrade').value)} or better) will be traded on <b>${esc(acc.name)} · ${acc.login}</b>${acc.paper ? ' (paper)' : ''} with <b>${esc($('#tvRisk').value)}%</b> risk, at most <b>${esc($('#tvMax').value)}</b> trades a day, and the day locks at <b>−${esc($('#tvDd').value)}%</b>.</p>`, 'Switch on'))) return;
   }
   return tvSave({ enabled: !tvSt.config.enabled });
 }
@@ -3821,7 +4078,7 @@ function saveSettings() {
   connect();
 }
 function openWelcome() {
-  openModal(`<h3>Welcome to Goldmine Pro</h3><p>A fast, risk-first trading terminal for MetaTrader 5. How do you want to start?</p>
+  openModal(`<h3>Welcome to VRS</h3><p>A fast, risk-first trading terminal for MetaTrader 5. How do you want to start?</p>
     <div class="welcome"><button data-act="startDemo"><i>⚡</i><b>Explore the demo</b><small>Live simulated market, a $10K demo account with 6 months of history. No setup.</small></button>
     <button data-act="startBridge"><i>🔌</i><b>Connect my MT5</b><small>Run start_bridge.bat on your PC, then paste your bridge key.</small></button></div>`);
 }
@@ -3832,9 +4089,9 @@ function showHelp() {
   openModal(`<h3>Keyboard & mouse</h3><div class="kbdlist">${k.map(([a, b]) => `<span class="kbd">${a}</span><span>${b}</span>`).join('')}</div><div class="mact"><button class="btn acc" data-m="no">Got it</button></div>`, true);
 }
 function openIndicators(a) {
-  popover(a, `<h6>Signals</h6><div class="irow"><button class="it ${TRC.on && TRC.mode !== 'julius' ? 'on' : ''}" onclick="TR.useMode('tr')"><span class="sw" style="background:linear-gradient(90deg,var(--buy) 50%,var(--sell) 50%)"></span>TR1 / TR2 buy & sell zones<small>${TRC.on && TRC.mode !== 'julius' ? 'ON' : 'off'}</small></button><button class="ib" onclick="openTRSettings()" title="Settings">⚙</button></div>
-    <div class="irow"><button class="it ${TRC.on && TRC.mode === 'julius' ? 'on' : ''}" onclick="TR.useMode('julius')" title="TR1 with the STS checklist: London / NY, higher-timeframe bias, POI (order block / FVG / 0.764) in the discount or premium, 30 pip stop. One element missing = no trade."><span class="sw" style="background:linear-gradient(90deg,var(--buy) 50%,var(--acc) 50%)"></span>TR1 Julius (STS checklist)<small>${TRC.on && TRC.mode === 'julius' ? 'ON' : 'off'}</small></button><button class="ib" onclick="openTRSettings()" title="Settings">⚙</button></div>
-    ${TRC.on ? `<button class="it ${TRC.only ? 'on' : ''}" onclick="TR.toggle('only')">🎯 Only TR on the chart (hide the rest)<small>${TRC.only ? 'ON' : ''}</small></button>` : ''}<button class="it" onclick="openBacktest()">📊 Backtest TR1 / TR2 per timeframe</button><a class="it" href="${labUrl()}" target="_blank" onclick="closePopover()">🧪 Backtest Lab: exits, breakeven, scaling in ↗</a>
+  popover(a, `<h6>Signals</h6><div class="irow"><button class="it ${TRC.on && TRC.mode !== 'julius' ? 'on' : ''}" onclick="TR.useMode('tr')"><span class="sw" style="background:linear-gradient(90deg,var(--buy) 50%,var(--sell) 50%)"></span>VA1 / VA2 buy & sell zones<small>${TRC.on && TRC.mode !== 'julius' ? 'ON' : 'off'}</small></button><button class="ib" onclick="openTRSettings()" title="Settings">⚙</button></div>
+    <div class="irow"><button class="it ${TRC.on && TRC.mode === 'julius' ? 'on' : ''}" onclick="TR.useMode('julius')" title="VA1 with the STS checklist: London / NY, higher-timeframe bias, POI (order block / FVG / 0.764) in the discount or premium, 30 pip stop. One element missing = no trade."><span class="sw" style="background:linear-gradient(90deg,var(--buy) 50%,var(--acc) 50%)"></span>VA1 Julius (STS checklist)<small>${TRC.on && TRC.mode === 'julius' ? 'ON' : 'off'}</small></button><button class="ib" onclick="openTRSettings()" title="Settings">⚙</button></div>
+    ${TRC.on ? `<button class="it ${TRC.only ? 'on' : ''}" onclick="TR.toggle('only')">🎯 Only VRS on the chart (hide the rest)<small>${TRC.only ? 'ON' : ''}</small></button>` : ''}<button class="it" onclick="openBacktest()">📊 Backtest VA1 / VA2 per timeframe</button><a class="it" href="${labUrl()}" target="_blank" onclick="closePopover()">🧪 Backtest Lab: exits, breakeven, scaling in ↗</a>
     <hr><h6>On this chart · click to hide / show</h6>${INDS.map(o => `<div class="irow"><button class="it ${o.on ? 'on' : ''}" data-ion="${o.id}"><span class="sw" style="background:${o.colors[0]}"></span>${esc(indName(o))}<small>${o.on ? 'ON' : 'off'}</small></button><button class="ib" data-iedit="${o.id}" title="Settings">✎</button><button class="ib" data-idel="${o.id}" title="Remove">🗑</button></div>`).join('') || '<p class="mut" style="padding:6px 10px">None yet.</p>'}
     <hr><h6>Add indicator</h6><div class="igrid">${Object.entries(ITYPES).map(([k, T]) => `<button data-iadd="${k}">+ ${T.name}</button>`).join('')}</div>
     <hr><h6>Overlays</h6>${Object.entries(OVERLAYS).map(([k, n]) => `<button class="it ${indOn[k] ? 'on' : ''}" data-ind="${k}">${n}<small>${indOn[k] ? 'ON' : ''}</small></button>`).join('')}`);
@@ -3991,7 +4248,7 @@ function fold(k) { // collapse / expand the watchlist ('cw') or the trade panel 
 function setTheme(t) { CFG.theme = t; saveCfg(); applyTheme(); Chart.applyTheme(); renderTab(true); renderWatch() }
 function exportCsv() {
   const rows = [['ticket', 'closed', 'symbol', 'side', 'lots', 'close_price', 'profit'], ...S.history.map(d => [d.ticket, d.time, d.symbol, d.type === 'SELL' ? 'BUY' : 'SELL', d.volume, d.price, d.profit])];
-  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([rows.map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n')], { type: 'text/csv' })); a.download = `goldmine-history-${S.login}.csv`; a.click();
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([rows.map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n')], { type: 'text/csv' })); a.download = `vrs-history-${S.login}.csv`; a.click();
 }
 
 /* =====================================================================

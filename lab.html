@@ -129,6 +129,16 @@ details.sum>.in{padding:12px}
 .gscommon span{position:relative;display:flex;justify-content:space-between;gap:8px;padding:4px 8px;border-radius:7px;background:var(--panel2);overflow:hidden;font-size:12.5px}.gscommon span i{position:absolute;inset:0 auto 0 0;background:color-mix(in srgb,var(--acc) 22%,transparent)}.gscommon span em,.gscommon span b{position:relative;font-style:normal}
 .gsalts tr.cur td{background:color-mix(in srgb,var(--acc) 12%,transparent)}.gsalts tr.run td{background:color-mix(in srgb,var(--blue,#3aa0ee) 7%,transparent)}.gsalts td:first-child{min-width:260px}
 .gstbl td{vertical-align:middle}.gstbl td:nth-child(2){min-width:220px}
+
+.edgrid{display:grid;grid-template-columns:minmax(280px,360px) 1fr;gap:14px;align-items:start}@media(max-width:900px){.edgrid{grid-template-columns:1fr}}
+.edctl h6{margin:12px 0 6px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mut)}.edctl h6:first-of-type{margin-top:4px}
+.edf{display:grid;grid-template-columns:1fr 1.1fr;gap:8px;align-items:center;padding:5px 7px;border-radius:8px;font-size:12.5px}.edf select{width:100%}
+.edf.chg{background:color-mix(in srgb,var(--acc) 12%,transparent);box-shadow:inset 3px 0 0 var(--acc)}.edf.chg span{font-weight:800}
+.edwhat{display:flex;flex-direction:column;gap:3px;margin:4px 0 12px}.edwhat b{font-size:18px}.edwhat span{font-size:12.5px;color:var(--mut)}.edwhat .warn{color:var(--orange)}
+.edkpi{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}.edk{padding:9px 11px;border-radius:10px;background:var(--panel2);border:1px solid var(--line)}
+.edk small{display:block;font-size:10.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em;font-weight:700}.edk b{font-size:18px;display:block}.edk em{font-style:normal;font-size:11.5px;font-weight:800}
+.edcurve{margin-top:12px;padding:8px;border-radius:10px;background:var(--panel2);border:1px solid var(--line)}.edleg{display:flex;gap:14px;font-size:11.5px;color:var(--mut);margin-top:4px}.edleg i{display:inline-block;width:18px;height:0;border-top:2px dashed var(--mut);vertical-align:middle;margin-right:5px}.edleg i.n{border-top:3px solid var(--up)}
+.edhero h1{font-size:34px}
 </style>
 <style id="labBrand">
 /* ===== VRS brand look: the landing page's deep navy + gold, in all three themes ===== */
@@ -1679,7 +1689,7 @@ async function gsRun() {
       if (C.length < 300) { gsLog(`<b class="dn">✗ ${tf}</b> only ${C.length} candles`); continue }
       LAB.digits = r.digits ?? LAB.digits; LAB.point = r.point || LAB.point; raw[tf] = C; GS.cnt.candles += C.length; await sleep(0);
     }
-    refreshSaved(); const T = tfs.filter(t => raw[t]); if (!T.length) throw new Error('No candles could be loaded.');
+    refreshSaved(); const T = tfs.filter(t => raw[t]); if (!T.length) throw new Error('No candles could be loaded.'); GS.raw = raw; ED.cache = new Map(); ED.on = false;
     apCosts(); LAB.focus = null;
     const minN = OPT.minTrades, store16 = [], meta = {}, top = [], TOPN = 400;
     const rk = x => GSO.rank === 'avg' ? x.avg : GSO.rank === 'sum' ? x.sum : GSO.rank === 'win' ? x.win : GSO.rank === 'pf' ? x.pf : GSO.rank === 'oos' ? x.oosAvg : x.score;
@@ -1780,19 +1790,20 @@ async function gsRun() {
   finally { LAB.D = keepD; LAB.tfs = keepT; LAB.idxC = keepIdx; LAB.focus = keepFocus; LAB.busy = false; GS.busy = false }
   render();
 }
-async function gsLab(i) { // the full Lab on one result: precise fills, every exit, scaling in, robustness
-  const x = GS.res?.top[i]; if (!x) return;
+async function gsLab(i) { const x = GS.res?.top[i]; if (x) return gsLabX(x, `Best overall #${i + 1}`) }
+async function gsLabX(x, desc) { // the full Lab on one combination: precise fills, every exit, scaling in, robustness
   const tfs = [...new Set([...around(x.tf), ...(x.f !== 'all' ? [x.f.slice(3)] : [])])];
   Object.assign(OPT, { src: 'custom', cfg: cfgPick(x.cfg), tfs }); saveOpt();
-  LAB.focus = { tf: x.tf, g: x.g, dir: x.d, sess: x.s, desc: `Best overall #${i + 1}` }; store.set('labFocus', LAB.focus);
+  LAB.focus = { tf: x.tf, g: x.g, dir: x.d, sess: x.s, desc }; store.set('labFocus', LAB.focus); ED.on = false;
   LAB.tab = 'advice'; await runLab(); if (LAB.D[x.tf]?.pidx[x.key] != null) sel(x.tf, x.g, x.f, x.key, 'exits');
 }
-async function gsSave(i) { // as a VRS system for the terminal and the 🤖 bot
-  const x = GS.res?.top[i]; if (!x) return; const pl = planList(x.tf, GS.res.tfs).find(q => q.key === x.key); if (!pl) return;
+async function gsSave(i) { const x = GS.res?.top[i]; if (x) return gsSaveX(x, `best #${i + 1}`) }
+async function gsSaveX(x, tag) { // as a VRS system for the terminal and the 🤖 bot
+  const pl = planList(x.tf, GS.res.tfs).find(q => q.key === x.key); if (!pl) return;
   const exit = { tpMode: pl.tp.k === 'R' ? 'R' : pl.tp.k === 'none' ? 'none' : pl.tp.k, tpTf: (pl.tp.k === 'zone' || pl.tp.k === 'sig') && pl.tp.z !== x.tf ? pl.tp.z : '', tp: pl.tp.k === 'R' ? pl.tp.r : 0, beR: pl.sm.k === 'be' ? pl.sm.r : 0, trail: pl.sm.k === 'trail', partR: pl.pt.k === 'part' ? pl.pt.r : 0, partPct: pl.pt.k === 'part' ? Math.round(pl.pt.pct * 100) : 50, filt: x.f.startsWith('al:') ? x.f.slice(3) : '', zMin: OPT.zoneMin, zFb: OPT.zoneFb };
   const cfg = { ...x.cfg, ...exit, show: x.g === '1' ? 'tr1' : x.g === '2' ? 'tr2' : x.g === '12' ? 'both' : 'all' };
   const notes = [x.s !== 'all' ? `only trade it in ${GS_SESS.find(s => s[0] === x.s)[1]} hours` : '', x.d !== 'b' ? (x.d === 'l' ? 'buys only' : 'sells only') : ''].filter(Boolean);
-  const v = await formBox('Save as a VRS system', [{ id: 'name', label: 'Name', value: `${LAB.symbol} ${x.tf} ${gLabel(x.g)} best #${i + 1}`.slice(0, 40), text: true }], 'Save system', esc(`${x.tf} · ${gLabel(x.g)} · ${x.plan}${exit.filt ? ' · only with ' + exit.filt + ' structure' : ''}.${notes.length ? ' Not part of a VRS system, so check it yourself: ' + notes.join(', ') + '.' : ''}`));
+  const v = await formBox('Save as a VRS system', [{ id: 'name', label: 'Name', value: `${LAB.symbol} ${x.tf} ${gLabel(x.g)} ${tag}`.slice(0, 40), text: true }], 'Save system', esc(`${x.tf} · ${gLabel(x.g)} · ${x.plan}${exit.filt ? ' · only with ' + exit.filt + ' structure' : ''}.${notes.length ? ' Not part of a VRS system, so check it yourself: ' + notes.join(', ') + '.' : ''}`));
   if (!v || !v.name) return;
   TRP = store.get('trPresets', []); const name = v.name.slice(0, 40), keep = ['minBars', 'rangeAtr', 'slBuf', 'away', 'tp', 'show', 'maxAge', ...Object.keys(exit)], c2 = Object.fromEntries(keep.map(k => [k, cfg[k]])), old = TRP.find(q => q.name.toLowerCase() === name.toLowerCase());
   if (old) Object.assign(old, { cfg: c2, tf: x.tf, saved: Date.now() }); else TRP.push({ id: Date.now().toString(36), name, cfg: c2, tf: x.tf, saved: Date.now() });
@@ -1831,6 +1842,7 @@ function tabGrand() {
     <div class="apcnt">${[['candles', 'candles'], ['settings', 'settings tested'], ['trades', 'trades simulated'], ['combos', 'combinations scored']].map(([k, l]) => `<div><b id="gsC_${k}">${fN(cnt[k])}</b><small>${l}</small></div>`).join('')}</div>
     <div class="aptick" id="gsTick">${busy ? GS.log.slice(0, 7).map(l => `<div>${l}</div>`).join('') : R ? `<div>✓ ${fN(R.settingsN)} settings on ${R.tfs.join(' · ')} · ${fN(R.cnt.combos)} combinations in ${(R.ms / 1000).toFixed(1)} s${R.demo ? ' · demo data' : ''} · ${ago(R.at)}</div>` : '<div class="mut">Pick what to combine and press the button.</div>'}</div>
     ${GS.err ? `<p class="dn" style="margin-top:8px;font-weight:700">${esc(GS.err)}</p>` : ''}</div>`;
+  if (ED.on && R && !busy) return edHtml(R);
   return hero + `<div class="apgrid">${opts}${mc}</div>` + (R && !busy ? gsResults(R) : '');
 }
 function gsResults(R) {
@@ -1843,10 +1855,10 @@ function gsResults(R) {
     <div class="gswhat"><b>${esc(what(best))}</b><span>${esc(best.vlab)}</span><span>Exit: <b>${esc(best.plan)}</b></span></div>
     <div class="gskpi">${[['R / trade', fR(best.avg)], ['Total', fR(best.sum, 1)], ['Trades', fN(best.n)], ['Win rate', fP(best.win)], ['Profit factor', best.pf.toFixed(2)], ['Unseen R / trade', `${fR(best.oosAvg)} <small>(${best.oosN})</small>`], ['Max drawdown', best.dd != null ? '−' + best.dd.toFixed(1) + 'R' : '—'], ['Neighbours OK', best.nb ? Math.round(best.stab * 100) + '%' : '—'], ['Trades / month', best.pm.toFixed(1)]].map(([k, v]) => `<div><small>${k}</small><b>${v}</b></div>`).join('')}</div>
     ${spark(best) ? `<div class="gsspark">${spark(best).replace('width="120" height="30"', 'width="100%" height="60" preserveAspectRatio="none"')}</div>` : ''}
-    <div class="row" style="gap:8px;margin-top:10px"><button class="btn acc" onclick="gsLab(0)">🔬 Open it in the Lab</button><button class="btn" onclick="gsSave(0)">☆ Save as VRS system</button></div></div>`;
+    <div class="row" style="gap:8px;margin-top:10px"><button class="btn acc" onclick="edOpen(0)">🛠 Tweak it: change anything, see what happens</button><button class="btn" onclick="gsLab(0)">🔬 Open it in the Lab</button><button class="btn" onclick="gsSave(0)">☆ Save as VRS system</button></div></div>`;
   const common = `<div class="card"><h5>🧬 What the top 30 have in common</h5><div class="gscommon">${Object.entries(R.common).map(([dim, m]) => { const e = Object.entries(m).sort((a, b) => b[1] - a[1]).slice(0, 3), t = Object.values(m).reduce((a, b) => a + b, 0); return `<div><small>${dim}</small>${e.map(([v, n]) => `<span><i style="width:${Math.round(n / t * 100)}%"></i><em>${esc(v)}</em><b>${Math.round(n / t * 100)}%</b></span>`).join('')}</div>` }).join('')}</div></div>`;
   const rows = R.top.slice(0, 40).map((x, i) => `<tr><td>${i + 1}</td><td><b>${esc(what(x))}</b><small class="mut" style="display:block">${esc(x.vlab)}</small></td><td>${esc(x.plan)}</td><td>${fN(x.n)}</td><td>${fP(x.win)}</td><td>${bR(x.avg)}</td><td>${bR(x.sum, 1)}</td><td>${x.pf.toFixed(2)}</td><td>${bR(x.oosAvg)} <small class="mut">${x.oosN}</small></td><td>${stab(x)}</td><td>${x.dd != null ? '−' + x.dd.toFixed(1) + 'R' : '<span class="mut">—</span>'}</td><td>${spark(x)}</td><td>${x.rob ? '<span class="up">✓</span>' : '<span class="mut">·</span>'}</td>
-    <td style="white-space:nowrap">${x.alts ? `<button class="btn sm" onclick="gsAlt(${i})" title="Same trades, other exits (runner, partials…)">🎯</button> ` : ''}<button class="btn sm" onclick="gsLab(${i})" title="Open in the Lab">🔬</button> <button class="btn sm" onclick="gsSave(${i})" title="Save as VRS system">☆</button></td></tr>`).join('');
+    <td style="white-space:nowrap"><button class="btn sm acc" onclick="edOpen(${i})" title="Tweak: change anything and see what happens">🛠</button> ${x.alts ? `<button class="btn sm" onclick="gsAlt(${i})" title="Same trades, other exits (runner, partials…)">🎯</button> ` : ''}<button class="btn sm" onclick="gsLab(${i})" title="Open in the Lab">🔬</button> <button class="btn sm" onclick="gsSave(${i})" title="Save as VRS system">☆</button></td></tr>`).join('');
   const table = `<div class="card"><h5>🏆 Top ${Math.min(40, R.top.length)} combinations <small>out of ${fN(R.cnt.combos)} · ranked by ${esc((GS_RANK.find(r => r[0] === R.opt.rank) || GS_RANK[0])[1])}</small></h5>
     <div class="tscroll"><table class="tbl gstbl"><thead><tr><th>#</th><th>What</th><th>Exit</th><th>Trades</th><th>Win</th><th>R / trade</th><th>Total</th><th>PF</th><th>Unseen</th><th title="Share of the neighbouring settings (one notch tighter / looser) that also made money">Neighbours</th><th>Max DD</th><th>Equity</th><th title="Passed every check: enough trades, a real edge, positive on unseen data and in most quarters">✓</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
     <p class="note">Drawdown and the equity line are checked exactly for the top 25. The more combinations are tested, the more likely the #1 is luck: trust results that pass every check, stay positive on unseen data and whose neighbours also make money. Backtests describe the past and are no promise.</p></div>`;
@@ -1862,6 +1874,128 @@ function gsAltsHtml(R) {
   return `<div class="card gsalts"><h5>🎯 Same trades, other exits <small>#${i + 1} · ${esc([x.tf, gLabel(x.g)].join(' · '))} · ${fN(x.n)} trades · compared with “${esc(x.plan)}”</small></h5>
     <div class="tscroll"><table class="tbl"><thead><tr><th>Exit</th><th>Trades</th><th>Win</th><th>R / trade</th><th>Total</th><th>PF</th><th>Max DD</th><th>Unseen</th></tr></thead><tbody>${rows}</tbody></table></div>
     <p class="note">🏃 = no fixed target: the stop trails behind every new BOS (break in your direction), optionally after taking 50 / 75 / 90% off at 1R. Same trades, same costs, only the exit changes. A runner usually wins less often but can catch the big moves: compare the total and the drawdown, not only the win rate.</p></div>`;
+}
+/* ---------- 🛠 TWEAK: take one combination and change anything; every number updates at once, next to the original ----------
+   One VRS setting is simulated once with EVERY exit (≈ 1 s); after that, changing the exit, signals, trend filter, session or side
+   is instant. Changing the range settings or the timeframe simulates that one again (kept, so going back is instant). */
+const ED = { on: false, i: 0, base: null, cur: null, cache: new Map(), raw: null, busy: false, res: null, msg: '' };
+const ED_VALS = { mb: [3, 4, 5, 6, 7, 8, 9, 10, 12, 15], ra: [.8, 1, 1.2, 1.3, 1.4, 1.6, 1.8, 2, 2.2, 2.4, 2.8, 3.2], sb: [0, .05, .1, .15, .2, .25, .3, .5], age: [20, 50, 100, 200, 300, 500] };
+async function edOpen(i) {
+  const x = GS.res?.top[i]; if (!x) return;
+  Object.assign(ED, { on: true, i, base: x, res: null, msg: '' });
+  const [tp, sm, pt] = x.key.split('|');
+  ED.cur = { tf: x.tf, g: x.g, f: x.f, s: x.s, d: x.d, mb: x.cfg.minBars, ra: x.cfg.rangeAtr, sb: x.cfg.slBuf, aw: !!x.cfg.away, age: x.cfg.maxAge || 200, tp, sm, pt };
+  render(); scrollTo({ top: 0 }); await edCalc();
+}
+function edBack() { ED.on = false; render() }
+function edReset() { edOpen(ED.i) }
+async function edSet(k, v) {
+  const c = ED.cur;
+  if (k === 'aw') v = v === true || v === 'true'; else if (['mb', 'ra', 'sb', 'age'].includes(k)) v = +v;
+  c[k] = v;
+  if (k === 'tf') { // a filter / target on a timeframe that is not above the new one: back to none
+    if (c.f !== 'all' && !(TF_SEC[c.f.slice(3)] > TF_SEC[v])) c.f = 'all';
+    if (/@./.test(c.tp) && !(TF_SEC[c.tp.split('@')[1]] > TF_SEC[v])) c.tp = c.tp.split('@')[0] + '@';
+  }
+  await edCalc();
+}
+async function edRaw(tfs) { // the candles of the search (kept from the run, else from this browser's saved candles)
+  if (GS.raw && tfs.every(t => GS.raw[t])) return GS.raw;
+  const raw = GS.raw || {};
+  for (const tf of tfs) if (!raw[tf]) { ED.msg = `Loading ${tf} candles…`; render(); const r = await getCandles(tf, OPT.count); const C = (r.candles || []).filter(b => b && isFinite(b.high)); if (C.length > 1) C.pop(); raw[tf] = C; LAB.digits = r.digits ?? LAB.digits; LAB.point = r.point || LAB.point }
+  GS.raw = raw; return raw;
+}
+async function edCalc() {
+  if (ED.busy) return; ED.busy = true; ED.msg = 'Calculating…'; render(); await sleep(30);
+  const keepD = LAB.D, keepT = LAB.tfs;
+  try {
+    const T = GS.res.tfs, c = ED.cur, raw = await edRaw(T); apCosts();
+    const cfg = cfgPick({ ...ED.base.cfg, minBars: c.mb, rangeAtr: c.ra, slBuf: c.sb, away: c.aw, maxAge: c.age }), ck = [c.mb, c.ra, c.sb, +c.aw, c.age].join('|');
+    let E = ED.cache.get(ck); if (!E) { E = { Ds: {}, sim: {} }; for (const t of T) E.Ds[t] = buildTF(t, raw[t], cfg); ED.cache.set(ck, E); if (ED.cache.size > 12) ED.cache.delete(ED.cache.keys().next().value) }
+    const D = E.Ds[c.tf];
+    if (!E.sim[c.tf]) { // every exit on every trade of this timeframe, once
+      LAB.D = E.Ds; LAB.tfs = T;
+      const zs = T.filter(z => TF_SEC[z] >= D.sec), plans = planList(c.tf, T), NP = plans.length, NT = D.trades.length;
+      Object.assign(D, { plans, pidx: Object.fromEntries(plans.map((q, i) => [q.key, i])), R: new Float32Array(NT * NP), X: new Float64Array(NT * NP), E: new Uint8Array(NT * NP) });
+      const sw = Object.fromEntries(zs.map(Z => [Z, { p: 0, act: [] }]));
+      for (let i = 0; i < NT; i++) {
+        const tr = D.trades[i], path = pathOf(tr), ctx = ctxOf(tr, path, zs, sw), pr = simTrade(tr, plans, D, i * NP, ctx);
+        tr.tFill = pr.tFill; tr.uh = new Date((pr.tFill - GP.off) * 1000).getUTCHours(); tr.sess = sessionOf(pr.tFill);
+        for (const Z of zs) if (Z !== c.tf) { const DZ = E.Ds[Z], j = ub(DZ.brkT, pr.tFill) - 1; tr.al[Z] = j >= 0 ? DZ.brkD[j] * tr.dir : 0 }
+      }
+      D.t0 = NT ? D.trades[0].tFill : D.from; D.t1 = NT ? D.trades[NT - 1].tFill : D.to; D.split = D.t0 + (D.t1 - D.t0) * (1 - OPT.oos / 100);
+      E.sim[c.tf] = true;
+    }
+    // the exit: if this combination is the same as a simpler one (e.g. breakeven at or above the target), use that one
+    let key = `${c.tp}|${c.sm}|${c.pt}`, note = '';
+    if (D.pidx[key] == null) { const k2 = `${c.tp}|${c.sm}|p0`, k3 = `${c.tp}|fix|${c.pt}`, k4 = `${c.tp}|trail|${c.pt}`; key = D.pidx[k2] != null ? k2 : D.pidx[k3] != null ? k3 : D.pidx[k4] != null ? k4 : `${c.tp}|fix|p0`; note = c.tp === 'run' && c.sm !== 'trail' ? 'A runner needs the trailing stop: shown with “Trail behind each new BOS”.' : 'This exit gives exactly the same result as a simpler one: shown as that one.' }
+    const idx = []; for (const tr of D.trades) if (inGroup(tr, c.g) && filtOk(tr, c.f) && LAB_SESS[c.s](tr.uh) && (c.d === 'b' || (c.d === 'l' ? tr.dir > 0 : tr.dir < 0))) idx.push(tr.i);
+    const p = D.pidx[key], y = evalC(D, idx, p), NP = D.plans.length; y.rob = robust(y);
+    let eq = 0; const pts = []; for (const i of idx) { const r = D.R[i * NP + p]; if (r === r) pts.push([D.trades[i].tFill, eq += r]) }
+    ED.res = { y, key, plan: planLabel(D.plans[p]), note, curve: pts, cfg, split: D.split };
+    ED.msg = '';
+  } catch (e) { ED.msg = 'Could not calculate: ' + e.message; console.error(e) }
+  finally { LAB.D = keepD; LAB.tfs = keepT; ED.busy = false }
+  render();
+}
+const edX = () => { const c = ED.cur, r = ED.res; return r ? { tf: c.tf, g: c.g, f: c.f, s: c.s, d: c.d, key: r.key, cfg: r.cfg, plan: r.plan } : null };
+function edCurve(base, cur, split) { // the original line (grey) and the tweaked one, on the same scale
+  const L = [base || [], cur || []].filter(a => a.length > 1); if (!L.length) return '<p class="note">Not enough trades for a line.</p>';
+  const all = L.flat(), t0 = Math.min(...all.map(q => q[0])), t1 = Math.max(...all.map(q => q[0])) || t0 + 1, lo = Math.min(0, ...all.map(q => q[1])), hi = Math.max(0, ...all.map(q => q[1])) || 1, W = 1000, H = 220;
+  const X = t => (t - t0) / Math.max(1, t1 - t0) * W, Y = v => H - 6 - (v - lo) / Math.max(1e-9, hi - lo) * (H - 12), path = a => a.map((q, i) => (i ? 'L' : 'M') + X(q[0]).toFixed(1) + ' ' + Y(q[1]).toFixed(1)).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:220px;display:block">
+    <line x1="0" x2="${W}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--line2)" stroke-dasharray="4 4"/>
+    ${split > t0 && split < t1 ? `<line x1="${X(split)}" x2="${X(split)}" y1="0" y2="${H}" stroke="var(--mut)" stroke-dasharray="3 5"/><text x="${X(split) + 6}" y="16" fill="var(--mut)" font-size="13">unseen →</text>` : ''}
+    ${base?.length > 1 ? `<path d="${path(base)}" fill="none" stroke="var(--mut)" stroke-width="2" stroke-dasharray="6 5" vector-effect="non-scaling-stroke"/>` : ''}
+    ${cur?.length > 1 ? `<path d="${path(cur)}" fill="none" stroke="${cur[cur.length - 1][1] >= 0 ? 'var(--up)' : 'var(--dn)'}" stroke-width="2.6" vector-effect="non-scaling-stroke"/>` : ''}</svg>`;
+}
+function edHtml(R) {
+  const b = ED.base, c = ED.cur, r = ED.res, y = r?.y, T = R.tfs, opt = (v, l, cur) => `<option value="${v}" ${String(v) === String(cur) ? 'selected' : ''}>${esc(l)}</option>`;
+  const selF = (k, list, cur) => `<select onchange="edSet('${k}',this.value)" ${ED.busy ? 'disabled' : ''}>${list.map(([v, l]) => opt(v, l, cur)).join('')}</select>`;
+  const vals = (k, cur) => [...new Set([...ED_VALS[k], cur])].sort((a, q) => a - q);
+  const ups = T.filter(z => TF_SEC[z] > TF_SEC[c.tf]);
+  const fld = (l, h, changed) => `<div class="edf ${changed ? 'chg' : ''}"><span>${l}</span>${h}</div>`;
+  const [btp, bsm, bpt] = b.key.split('|');
+  const controls = `<div class="card edctl"><h5>🛠 Change anything</h5>
+    <h6>What to trade</h6>
+    ${fld('Timeframe', selF('tf', T.map(t => [t, t]), c.tf), c.tf !== b.tf)}
+    ${fld('Signals', selF('g', GROUPS, c.g), c.g !== b.g)}
+    ${fld('Trend filter', selF('f', [['all', 'None'], ...ups.flatMap(z => [['al:' + z, `With the ${z} trend`], ['ag:' + z, `Against the ${z} trend`]])], c.f), c.f !== b.f)}
+    ${fld('Session (UTC)', selF('s', GS_SESS, c.s), c.s !== b.s)}
+    ${fld('Side', selF('d', GS_DIR, c.d), c.d !== b.d)}
+    <h6>The range (VRS settings)</h6>
+    ${fld('Min. candles in the range', selF('mb', vals('mb', c.mb).map(v => [v, v]), c.mb), c.mb !== b.cfg.minBars)}
+    ${fld('Range size (× ATR)', selF('ra', vals('ra', c.ra).map(v => [v, v + '×']), c.ra), c.ra !== b.cfg.rangeAtr)}
+    ${fld('Stop buffer (× ATR)', selF('sb', vals('sb', c.sb).map(v => [v, v + '×']), c.sb), c.sb !== b.cfg.slBuf)}
+    ${fld('Price must leave the zone first', selF('aw', [[true, 'Yes'], [false, 'No']], c.aw), c.aw !== !!b.cfg.away)}
+    ${fld('Max wait for the retest', selF('age', vals('age', c.age).map(v => [v, '≤ ' + v + ' candles']), c.age), c.age !== (b.cfg.maxAge || 200))}
+    <h6>The exit</h6>
+    ${fld('Take profit', selF('tp', tpList(c.tf, T).map(q => [q.id, q.l]), c.tp), c.tp !== btp)}
+    ${fld('Stop', selF('sm', SMS.map(q => [q.id, q.l]), c.sm), c.sm !== bsm)}
+    ${fld('Partial close', selF('pt', PTS.map(q => [q.id, q.l]), c.pt), c.pt !== bpt)}
+    <div class="row" style="gap:8px;margin-top:12px"><button class="btn" onclick="edReset()">↺ Back to the original</button></div></div>`;
+  const kp = (l, v, bv, fmt, better = 1, dec = 2, unit = '') => { const has = v != null && isFinite(v), dz = has && bv != null ? v - bv : 0, good = dz * better > 0; return `<div class="edk"><small>${l}</small><b>${has ? fmt(v) : '—'}</b>${has && bv != null && Math.abs(dz) > 1e-9 ? `<em class="${good ? 'up' : 'dn'}">${dz > 0 ? '▲' : '▼'} ${Math.abs(dz).toFixed(dec)}${unit}</em>` : '<em class="mut">=</em>'}</div>` };
+  const res = `<div class="card edres"><h5>📊 Result ${y ? (y.rob ? '<span class="st ok">✓ passed every check</span>' : '<span class="st warn">not every check passed</span>') : ''} ${ED.busy ? '<span class="spin"></span>' : ''}</h5>
+    <div class="edwhat"><b>${esc([c.tf, gLabel(c.g), c.f === 'all' ? '' : (c.f.startsWith('al:') ? 'with ' : 'against ') + c.f.slice(3) + ' trend', c.s === 'all' ? '' : GS_SESS.find(q => q[0] === c.s)[1], c.d === 'b' ? '' : GS_DIR.find(q => q[0] === c.d)[1]].filter(Boolean).join(' · '))}</b>
+      <span>${esc(`range ≥ ${c.mb} · ${c.ra}× ATR · buffer ${c.sb}× · ${c.aw ? 'leave zone first' : 'no leave rule'} · wait ≤ ${c.age}`)}</span><span>Exit: <b>${esc(r?.plan || '…')}</b></span>${r?.note ? `<span class="warn">${esc(r.note)}</span>` : ''}${ED.msg ? `<span class="mut">${esc(ED.msg)}</span>` : ''}</div>
+    ${y ? `<div class="edkpi">
+      ${kp('Trades', y.n, b.n, v => fN(v), 1, 0)}
+      ${kp('Win rate', y.win, b.win, v => fP(v), 1, 1, '%')}
+      ${kp('R / trade', y.avg, b.avg, v => fR(v), 1, 2, 'R')}
+      ${kp('Total', y.sum, b.sum, v => fR(v, 1), 1, 1, 'R')}
+      ${kp('Profit factor', y.pf, b.pf, v => v.toFixed(2), 1, 2)}
+      ${kp('Max drawdown', y.dd, b.dd, v => '−' + v.toFixed(1) + 'R', -1, 1, 'R')}
+      ${kp('Losing streak', y.streak, b.streak, v => v, -1, 0)}
+      ${kp('Unseen R / trade', y.oosAvg, b.oosAvg, v => fR(v), 1, 2, 'R')}
+      ${kp('Trades / month', y.pm, b.pm, v => v.toFixed(1), 1, 1)}
+      ${kp('Total at ' + OPT.risk + '% risk', y.sum * OPT.risk, b.sum * OPT.risk, v => (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(0) + '%', 1, 0, '%')}
+    </div>
+    <div class="edcurve">${edCurve(b.curve, r.curve, r.split)}<div class="edleg"><span><i class="o"></i>original</span><span><i class="n"></i>with your changes</span></div></div>
+    <div class="row" style="gap:8px;margin-top:12px"><button class="btn acc" onclick="gsSaveX(edX(),'tweaked')">☆ Save as VRS system</button><button class="btn" onclick="gsLabX(edX(),'Tweaked from Best overall')">🔬 Open it in the Lab</button></div>` : `<p class="note">${ED.msg || 'Calculating…'}</p>`}
+    <p class="note">Same candles, costs and unseen part as the search. The more you tune, the more likely the result fits the past by luck: a change that only looks good on the first part (unseen worse) is a warning. Backtests describe the past and are no promise.</p></div>`;
+  return `<section class="hero aphero edhero"><div class="eyebrow"><i></i>VRS · Best overall · tweak #${ED.i + 1}</div><h1>What if? <span>Change it and see.</span></h1>
+    <div class="apbar"><button class="btn" onclick="edBack()">← Back to the results</button><span class="note">Grey dashed line and the ▲▼ numbers = the original combination</span></div></section>
+    <div class="edgrid">${controls}${res}</div>`;
 }
 function gsAlt(i) { GS.altI = i; render(); document.querySelector('.gsalts')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }
 async function loadSymbols() {
