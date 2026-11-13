@@ -1,0 +1,26 @@
+{
+ "config": {
+  "enabled": false,
+  "secret": "HSggmQP4JKRUFSsI8XwJyMQi",
+  "login": 0,
+  "risk_pct": 0.5,
+  "max_trades_day": 3,
+  "max_daily_loss_pct": 2.0,
+  "min_grade": "B",
+  "mode": "zone_limit",
+  "partial_r": 1.0,
+  "partial_pct": 50,
+  "be_after_partial": true,
+  "limit_hours": 12,
+  "symbol_map": {},
+  "public_url": ""
+ },
+ "state": {
+  "day": "",
+  "trades": 0,
+  "start_equity": 0,
+  "seen": {},
+  "watch": [],
+  "events": []
+ }
+}
