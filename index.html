@@ -2,25 +2,26 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%230d1528%22%2F%3E%3Crect%20x%3D%223.9%22%20y%3D%2220%22%20width%3D%2224.2%22%20height%3D%223.9%22%20fill%3D%22%23f5b73b%22%20fill-opacity%3D%22.28%22%2F%3E%3Cpath%20d%3D%22M8%209.75%2014.5%2021.4%2024.5%208.25%22%20fill%3D%22none%22%20stroke%3D%22%23f7bd45%22%20stroke-width%3D%223.6%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2214.5%22%20cy%3D%2221.4%22%20r%3D%221.6%22%20fill%3D%22%23fff%22%20stroke%3D%22%230a1020%22%20stroke-width%3D%22.5%22%2F%3E%3C%2Fsvg%3E"><link rel="apple-touch-icon" href="vrs-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>GoldZone · free TradingView gold setups, auto-traded on MT5 by Goldmine</title>
-<meta name="description" content="GoldZone Lite marks every TR1 / TR2 gold setup on TradingView, free. GoldZone Pro grades and backtests them. Goldmine Pro takes them for you on MT5: lots sized from your risk, daily limits enforced, partials and break-even managed. 7 days free.">
+<title>VRS · Value Research Systems · free TradingView indicator, auto-traded on MT5</title>
+<meta name="description" content="VRS Indicator Lite marks every VA1 / VA2 zone on TradingView, free. VRS VIP adds the entry, the stop, R levels and A / B / C grades, and takes the trade for you on MT5: lots sized from your risk, daily limits enforced, partials and break-even managed. 7 days free.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="TradingView shows you the trade. Goldmine takes it for you, safely.">
-<meta property="og:description" content="Free: GoldZone Lite for TradingView + the GoldZone Playbook. Then grades and backtests (GoldZone Pro) and TradingView → MT5 autotrade (Goldmine Pro).">
-<meta property="og:image" content="lp-sys-spot.jpg">
+<meta property="og:title" content="VRS · Every zone, marked on your chart. Free.">
+<meta property="og:description" content="Free: VRS Indicator Lite (the zones) for TradingView + the VRS Playbook. VRS VIP adds the entry, the stop and the grade, and takes the trade for you on MT5.">
+<meta property="og:image" content="vrs-og.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="vrs-og.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0a0d13">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Goldmine Pro","applicationCategory":"FinanceApplication","operatingSystem":"Windows, Web",
-"description":"GoldZone for TradingView (free Lite, paid Pro with grades, backtests and bot alerts) and Goldmine Pro for MetaTrader 5: TradingView → MT5 autotrade sized from your risk, a risk manager with a daily loss limit, an Autopilot backtester, an optional bot and a trading journal.",
-"offers":[{"@type":"Offer","name":"GoldZone Lite","price":"0","priceCurrency":"EUR"},{"@type":"Offer","name":"GoldZone Pro","price":"14","priceCurrency":"EUR"},{"@type":"Offer","name":"Goldmine Pro","price":"29","priceCurrency":"EUR"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"VRS Executor","applicationCategory":"FinanceApplication","operatingSystem":"Windows, Web",
+"description":"VRS Indicator for TradingView (free Lite, paid Pro with grades, backtests and bot alerts) and VRS Executor for MetaTrader 5: TradingView → MT5 autotrade sized from your risk, a risk manager with a daily loss limit, an Autopilot backtester, an optional bot and a trading journal.",
+"offers":[{"@type":"Offer","name":"VRS Indicator Lite","price":"0","priceCurrency":"EUR"},{"@type":"Offer","name":"VRS Indicator Pro","price":"14","priceCurrency":"EUR"},{"@type":"Offer","name":"VRS Executor","price":"29","priceCurrency":"EUR"}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
 {"@type":"Question","name":"Which brokers work?","acceptedAnswer":{"@type":"Answer","text":"Any broker that offers MetaTrader 5. MetaTrader 4 is not supported."}},
 {"@type":"Question","name":"Is my account safe?","acceptedAnswer":{"@type":"Answer","text":"Your MT5 password stays on your own computer and is never sent to us. Nothing is traded unless you click it or switch the optional bot on (demo first, real money needs its own switch)."}},
-{"@type":"Question","name":"Is GoldZone Lite free?","acceptedAnswer":{"@type":"Answer","text":"Yes. GoldZone Lite for TradingView is free forever: leave your email and you get the Pine Script code, four install steps and the GoldZone Playbook."}},
+{"@type":"Question","name":"Is VRS Indicator Lite free?","acceptedAnswer":{"@type":"Answer","text":"Yes. VRS Indicator Lite for TradingView is free forever: leave your email and you get the Pine Script code, four install steps and the VRS Playbook."}},
 {"@type":"Question","name":"What happens after the free trial?","acceptedAnswer":{"@type":"Answer","text":"No card is asked for the trial, so nothing is charged automatically. Pick a plan to keep going."}}]}</script>
 <link rel="stylesheet" href="gp-theme.css?v=20261110v">
-<script src="gp-shared.js?v=20261111a"></script>
+<script src="gp-shared.js?v=20261113a"></script>
 <script>document.documentElement.dataset.theme = 'light' // the website is always light (it has its own dark section); the terminal keeps its own theme</script>
 <style>
 html,body{overflow:auto;height:auto}
@@ -39,6 +40,7 @@ a{color:inherit}
 .nav .wrap{display:flex;align-items:center;gap:6px;height:62px}
 .brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:16px;letter-spacing:-.02em;text-decoration:none;margin-right:14px;white-space:nowrap}
 .brand svg{width:28px;height:28px}
+@media (max-width:520px){.brand span{display:none}}
 .brand span{font-size:9.5px;font-weight:800;color:var(--acc);background:var(--accbg);padding:2px 6px;border-radius:5px;letter-spacing:.08em}
 .nl{height:34px;padding:0 12px;border-radius:9px;display:inline-flex;align-items:center;font-weight:700;font-size:13px;color:var(--mut);text-decoration:none;white-space:nowrap}
 .nl:hover,.nl.on{color:var(--text);background:var(--hover)}
@@ -518,7 +520,7 @@ body.lp2 .nav .btn.acc{background:linear-gradient(135deg,#f7c14f,#e0960c);color:
 .lp-gauge div{height:10px;border-radius:6px;background:#1c2230;overflow:hidden}.lp-gauge i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#f5b73b,#f0454f)}
 .lp-lockmsg{padding:12px 14px;border-radius:10px;background:rgba(240,69,79,.1);border:1px solid rgba(240,69,79,.3);color:#ffc9cc;font-weight:700;font-size:13.5px;line-height:1.5}
 .lp-lockbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-/* the TR system: spot → test → trade → automate */
+/* the VRS system: spot → test → trade → automate */
 .lp-sysw{display:grid;grid-template-columns:minmax(250px,330px) minmax(0,1fr);gap:22px;align-items:start}
 .lp-systabs{display:grid;gap:10px;position:relative}
 .lp-systabs::before{content:'';position:absolute;left:27px;top:28px;bottom:28px;width:2px;background:linear-gradient(#f5b73b,#273042)}
@@ -554,7 +556,7 @@ body.lp2 .nav .btn.acc{background:linear-gradient(135deg,#f7c14f,#e0960c);color:
 @keyframes lpPulseG{50%{box-shadow:0 0 0 7px rgba(245,183,59,.16)}}
 .lp-sysw{align-items:stretch}.lp-systabs{grid-auto-rows:1fr}.lp-systabs button{height:100%} /* the four steps fill the panel's height: top and bottom line up */
 .lp-cta{align-items:center}.lp-cta .lp-btn.lg{height:54px;min-height:54px}
-/* ================= landing C: the GoldZone funnel (lead magnet → bridge → system → proof → offer) ================= */
+/* ================= landing C: the VRS Indicator funnel (lead magnet → bridge → system → proof → offer) ================= */
 .lpc .lp-head h2 span::after{display:none}
 .lpc .lp-head h2 span,.lpc h1 span,.lpc .lpc-h2 span{background:linear-gradient(90deg,#ffd982,#f5b73b 45%,#e0960c);-webkit-background-clip:text;background-clip:text;color:transparent}
 .lpc-hero{position:relative;padding:58px 0 70px}
@@ -573,12 +575,21 @@ body.lp2 .nav .btn.acc{background:linear-gradient(135deg,#f7c14f,#e0960c);color:
 .lpc-vis img{display:block;width:100%;height:auto}
 .lpc-steps4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid #1e2531}
 .lpc-steps4 div{padding:12px 10px;text-align:center;font-size:12px;color:#8a94a8;font-weight:700}.lpc-steps4 div+div{border-left:1px solid #1e2531}.lpc-steps4 b{display:block;color:#f3f5f9;font-size:13px}
-.lpc-q{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-.lpc-qc{display:flex;flex-direction:column;padding:26px;border-radius:20px;border:1px solid #1e2531;background:linear-gradient(180deg,#0f131b,#0c1017)}
-.lpc-qc .n{font-size:13px;font-weight:900;color:#f5b73b;letter-spacing:.08em}
-.lpc-qc h3{font-size:21px;line-height:1.2;font-weight:850;margin:10px 0 10px}
-.lpc-qc p{color:#aab3c3;line-height:1.6;font-size:14.5px;flex:1}
-.lpc-qc .ans{margin-top:18px;padding-top:14px;border-top:1px solid #1e2531;font-size:13px;color:#8a94a8;font-weight:700}.lpc-qc .ans b{color:#f5c25b}
+.lpc-q{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch}
+.lpc-qc{position:relative;display:flex;flex-direction:column;padding:26px 26px 22px;border-radius:22px;border:1px solid #1e2531;background:linear-gradient(180deg,#0f131b,#0b0e14);overflow:hidden;transition:transform .3s,border-color .3s,box-shadow .3s}
+.lpc-qc::before{content:'';position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,#f5b73b,#e0960c 60%,transparent);opacity:.7}
+.lpc-qc:hover{transform:translateY(-4px);border-color:rgba(245,183,59,.4);box-shadow:0 30px 70px -40px rgba(245,183,59,.45)}
+.lpc-qc .qtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.lpc-qc .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:20px;background:rgba(245,183,59,.1);border:1px solid rgba(245,183,59,.25)}
+.lpc-qc .n{font-size:34px;font-weight:900;letter-spacing:-.04em;line-height:1;color:transparent;-webkit-text-stroke:1px rgba(245,183,59,.45)}
+.lpc-qc h3{font-size:20px;line-height:1.25;font-weight:850;margin:0 0 10px}
+.lpc-qc p{color:#aab3c3;line-height:1.6;font-size:14.5px;flex:1;margin-bottom:20px}
+.lpc-qc .ans{position:relative;display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto auto;column-gap:10px;padding:14px 16px;border-radius:14px;background:rgba(245,183,59,.07);border:1px solid rgba(245,183,59,.22);text-decoration:none;transition:background .25s,border-color .25s}
+.lpc-qc .ans:hover{background:rgba(245,183,59,.12);border-color:rgba(245,183,59,.45)}
+.lpc-qc .ans small{grid-column:1;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#8a7d63}
+.lpc-qc .ans b{grid-column:1;font-size:15px;font-weight:850;color:#f5c25b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lpc-qc .ans span{grid-column:1;font-size:12.5px;color:#aab3c3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lpc-qc .ans i{grid-column:2;grid-row:1/4;align-self:center;font-style:normal;font-weight:900;color:#f5b73b;transition:transform .25s}.lpc-qc .ans:hover i{transform:translateX(3px)}
 .lpc-punch{text-align:center;margin-top:30px;font-size:clamp(17px,2vw,21px);color:#d5dbe5}.lpc-punch b{color:#fff}
 .lpc-proof{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:32px;align-items:center}
 .lpc-proof .lpc-vis img{max-height:620px;object-fit:cover;object-position:top}
@@ -609,6 +620,26 @@ body.lp2 .nav .btn.acc{background:linear-gradient(135deg,#f7c14f,#e0960c);color:
 .lpc-bkimg{position:relative;justify-self:center;max-width:330px}.lpc-bkimg img{width:100%;border-radius:8px;transform:rotate(-3deg);box-shadow:0 40px 90px -30px rgba(245,183,59,.45),0 20px 50px -20px rgba(0,0,0,.8)}
 .lpc-bkimg span{position:absolute;right:-12px;bottom:18px;padding:7px 12px;border-radius:999px;background:linear-gradient(135deg,#f9c95a,#e0960c);color:#1a1203;font-weight:900;font-size:12px;box-shadow:0 10px 30px -10px rgba(245,183,59,.8)}
 .lpc-h2{font-size:clamp(26px,3.4vw,40px);line-height:1.1;font-weight:850}
+/* VIP: what's inside + the two ways in */
+.vipin{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:22px}
+.vipin div{padding:18px;border-radius:16px;border:1px solid #1e2531;background:#0e121a}.vipin i{font-style:normal;font-size:20px}.vipin b{display:block;font-size:15px;margin:6px 0 4px;color:#f3f5f9}.vipin p{color:#8a94a8;font-size:13px;line-height:1.5}
+.vipw{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:16px;align-items:stretch}
+.vipc{display:flex;flex-direction:column;gap:12px;padding:26px;border-radius:22px;border:1px solid #2b3445;background:#0e121a;min-width:0}
+.vipc.go{border-color:rgba(245,183,59,.55);background:radial-gradient(500px 220px at 30% 0%,rgba(245,183,59,.13),transparent 70%),#10141c}
+.vipc small{font-size:11.5px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#f5b73b}.vipc h3{font-size:21px;line-height:1.25}
+.vipst{margin:0;padding-left:20px;color:#c9d0dc;font-size:14px;line-height:1.55;display:grid;gap:4px}.vipst b{color:#fff}
+.vipbs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.vipb{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:14px;border:1px solid #2b3445;background:rgba(255,255,255,.03);text-decoration:none;transition:border-color .2s,background .2s}
+.vipb:hover{border-color:#f5b73b;background:rgba(245,183,59,.08)}.vipb b{font-size:15px;color:#f3f5f9}.vipb span{font-size:12px;color:#f5c25b;font-weight:700}
+.vipc.soon{position:relative;border-style:dashed}.vipsoon{position:absolute;top:22px;right:22px;padding:5px 11px;border-radius:999px;background:linear-gradient(135deg,#f9c95a,#e0960c);color:#1a1203;font-size:11.5px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.vipb.off{opacity:.55;cursor:default}.vipb.off:hover{border-color:#2b3445;background:rgba(255,255,255,.03)}.vipb.off span{color:#8a94a8}
+.vipn{color:#8a94a8;font-size:12px;line-height:1.5}
+.vipp{display:flex;align-items:baseline;gap:4px}.vipp b{font-size:42px;font-weight:900;letter-spacing:-.04em}.vipp span{color:#8a94a8;font-weight:700}
+.vipp em{font-style:normal;font-size:11px;font-weight:900;letter-spacing:.08em;color:#1a1203;background:linear-gradient(135deg,#f9c95a,#e0960c);padding:3px 8px;border-radius:6px;margin-left:8px;align-self:center}
+.vipf{color:#c9d0dc;font-size:13px;padding:8px 12px;border-radius:10px;background:rgba(245,183,59,.08);border:1px solid rgba(245,183,59,.25)}
+.vipl{list-style:none;padding:0;margin:0 0 4px;display:grid;gap:8px;flex:1}.vipl li{display:flex;gap:8px;color:#c9d0dc;font-size:14px}.vipl li::before{content:'✓';color:#16c784;font-weight:900}
+@media (max-width:980px){.vipin{grid-template-columns:1fr 1fr}.vipw{grid-template-columns:1fr}}
+@media (max-width:560px){.vipin{grid-template-columns:1fr}.vipbs{grid-template-columns:1fr}.vipc{padding:20px}}
 .lpc-pl2{list-style:none;padding:0;margin:0 0 22px;display:grid;gap:9px}.lpc-pl2 li{display:flex;gap:10px;color:#d5dbe5;font-size:15px}.lpc-pl2 li::before{content:'✓';color:#16c784;font-weight:900}
 @media (max-width:980px){.lpc-bk{grid-template-columns:1fr;gap:30px}.lpc-bkimg{max-width:240px}}
 /* C: bigger, readable step screenshots */
@@ -621,7 +652,14 @@ body.lp2 .nav .btn.acc{background:linear-gradient(135deg,#f7c14f,#e0960c);color:
 .lpc-tl .im{margin:-30px -28px 18px;height:180px;overflow:hidden;border-bottom:1px solid #1e2531;background:#0d1118}.lpc-tl .im img{width:100%;height:100%;object-fit:contain;object-position:center;display:block;padding:8px}
 .lpc-tl>div+div::before{top:166px;z-index:2}
 /* C: everything else inside the terminal */
-.lpc-in{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.lpc-in{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;grid-auto-flow:dense}
+.lpc-in>div>.im{flex:1 0 auto}.lpc-in .w2{grid-column:span 2}.lpc-in .w2 .im{aspect-ratio:16/8}
+.lpc-in .tall{grid-row:span 2}.lpc-in .tall .im{aspect-ratio:auto;flex:1;min-height:440px}
+.lpc-in .phone .im{display:flex;justify-content:center;align-items:center;padding:22px 0;background:radial-gradient(420px 260px at 50% 30%,rgba(245,183,59,.12),transparent 70%),#0b0e14}
+.lpc-in .phone .im img{width:min(80%,310px);height:auto;object-fit:contain;border:7px solid #1f2633;border-radius:30px;box-shadow:0 20px 50px -18px rgba(0,0,0,.75)}
+.lpc-in>div:hover .phone .im img,.lpc-in .phone:hover .im img{transform:translateY(-4px)}
+.lpc-in .im{position:relative}.lpc-in .zm{position:absolute;right:10px;top:10px;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:rgba(10,13,19,.75);color:#cfd6e3;font-size:14px;opacity:0;transition:opacity .2s}.lpc-in>div:hover .zm{opacity:1}
+.lpc-in .tg{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.04em;color:#f5c25b;background:rgba(245,183,59,.1);border:1px solid rgba(245,183,59,.25);border-radius:6px;padding:2px 7px;margin-bottom:8px}
 .lpc-in>div{border-radius:18px;border:1px solid #1e2531;background:#0e121a;overflow:hidden;display:flex;flex-direction:column}
 .lpc-in .im{aspect-ratio:16/10;overflow:hidden;border-bottom:1px solid #1e2531;cursor:zoom-in;background:#0d1118}.lpc-in .im img{width:100%;height:100%;object-fit:cover;object-position:left top;display:block;transition:transform .4s}
 .lpc-in>div:hover .im img{transform:scale(1.04)}
@@ -638,10 +676,10 @@ body.lp2 .nav .btn.acc{background:linear-gradient(135deg,#f7c14f,#e0960c);color:
 .lpc-shield{flex:none;width:76px;height:86px;display:grid;place-items:center;align-content:center;clip-path:polygon(50% 0,100% 14%,100% 55%,50% 100%,0 55%,0 14%);background:linear-gradient(160deg,#1fd394,#0c8a5c);color:#04150e;text-align:center}
 .lpc-shield b{font-size:28px;font-weight:900;line-height:1;letter-spacing:-.03em}.lpc-shield small{font-size:9.5px;font-weight:900;letter-spacing:.12em;margin-top:2px}
 .lpc-guar h3{font-size:18px;margin-bottom:4px}.lpc-guar p{color:#aab3c3;font-size:14px;line-height:1.55}
-@media (max-width:980px){.lpc-in{grid-template-columns:1fr 1fr}.lpc-tl .im{height:200px}}
-@media (max-width:560px){.lpc-in{grid-template-columns:1fr}.lpc-bon{grid-template-columns:1fr}.lpc .lp-si p{display:none}.lpc-guar{flex-direction:column;text-align:center}}
+@media (max-width:980px){.lpc-in{grid-template-columns:1fr 1fr}.lpc-in .tall{grid-row:auto}.lpc-in .tall .im{min-height:380px}.lpc-tl .im{height:200px}}
+@media (max-width:560px){.lpc-in{grid-template-columns:1fr}.lpc-in .w2{grid-column:auto}.lpc-in .w2 .im{aspect-ratio:16/10}.lpc-in .zm{opacity:1}.lpc-bon{grid-template-columns:1fr}.lpc .lp-si p{display:none}.lpc-guar{flex-direction:column;text-align:center}}
 @media (max-width:980px){.lpc-hg,.lpc-proof{grid-template-columns:1fr}.lpc-q{grid-template-columns:1fr}.lpc-tl{grid-template-columns:1fr}.lpc-tl>div+div{border-left:0;border-top:1px solid #1e2531}.lpc-tl>div+div::before{display:none}.lpc-fs{grid-template-columns:1fr 1fr}.lpc-nums{grid-template-columns:1fr 1fr}.lpc-two{grid-template-columns:1fr}}
-/* the ladder: Lite → GoldZone Pro → Goldmine Pro */
+/* the ladder: Lite → VRS Indicator Pro → VRS Executor */
 .lpl{max-width:1000px;margin:0 auto;border-radius:22px;border:1px solid #1e2531;background:linear-gradient(180deg,#0f131b,#0c1017);overflow:hidden}
 .lpl-t{width:100%;border-collapse:collapse;table-layout:fixed}
 .lpl-t th,.lpl-t td{padding:12px 14px;border-bottom:1px solid #161c27;text-align:center;vertical-align:middle}
@@ -1099,8 +1137,8 @@ body.lpb #links,body.lpb .burger,body.lpb #right .btn.acc{display:none!important
 <header class="nav">
   <div class="wrap">
     <a class="brand" href="#home">
-      <svg viewBox="0 0 32 32"><defs><linearGradient id="lgG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffdc91"/><stop offset="1" stop-color="#e0960c"/></linearGradient></defs><path d="M16 2.5 28.5 9.5v13L16 29.5 3.5 22.5v-13z" fill="url(#lgG)"/><path d="M9.5 19.5l4.2-5 3.3 3.2 5.5-6.7" fill="none" stroke="#1a1203" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Goldmine<span>PRO</span>
+      <svg viewBox="0 0 32 32" class="vrs-logo"><defs><linearGradient id="vrsBg00" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#16213b"/><stop offset="1" stop-color="#060a14"/></linearGradient><radialGradient id="vrsGl00" cx=".78" cy=".18" r=".7"><stop offset="0" stop-color="#f5b73b" stop-opacity=".3"/><stop offset="1" stop-color="#f5b73b" stop-opacity="0"/></radialGradient><linearGradient id="vrsAu00" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe7a3"/><stop offset=".45" stop-color="#f7bd45"/><stop offset="1" stop-color="#d4850a"/></linearGradient><linearGradient id="vrsZn00" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f5b73b" stop-opacity="0"/><stop offset=".25" stop-color="#f5b73b" stop-opacity=".32"/><stop offset=".75" stop-color="#f5b73b" stop-opacity=".32"/><stop offset="1" stop-color="#f5b73b" stop-opacity="0"/></linearGradient></defs><rect width="32" height="32" rx="7" fill="url(#vrsBg00)"/><rect width="32" height="32" rx="7" fill="url(#vrsGl00)"/><rect x="3.9" y="20" width="24.2" height="3.9" fill="url(#vrsZn00)"/><path d="M8 9.75 14.5 21.4 24.5 8.25" fill="none" stroke="url(#vrsAu00)" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14.5" cy="21.4" r="1.45" fill="#fff" stroke="#0a1020" stroke-width=".5"/></svg>
+      VRS<span>VALUE RESEARCH SYSTEMS</span>
     </a>
     <nav class="links" id="links"></nav>
     <span class="grow"></span>
@@ -1111,12 +1149,12 @@ body.lpb #links,body.lpb .burger,body.lpb #right .btn.acc{display:none!important
 <main id="view"></main>
 <div id="termWrap">
   <div id="termBar"></div>
-  <iframe id="termFrame" title="Goldmine Pro terminal" allow="clipboard-write"></iframe>
+  <iframe id="termFrame" title="VRS Terminal" allow="clipboard-write"></iframe>
 </div>
 
 <script>
 /* =========================================================================
-   Goldmine Pro · customer web app (subscription front-end)
+   VRS Executor · customer web app (subscription front-end)
    Talks to:  the license server (same origin, /api/...)  and the customer's own bridge (CFG.base, X-Gomez-Key)
    ========================================================================= */
 // ▼▼ When this page is hosted somewhere else than your license server (GitHub Pages, Netlify...), put the server address here.
@@ -1143,8 +1181,8 @@ const LOGO = document.querySelector('.brand svg').outerHTML;
 // never wait forever: a request the browser holds back (e.g. Chrome asking "allow access to devices on your local network"
 // for the test server inside your bridge) or a dead tunnel used to leave the button on "One moment…" for good
 const srvSlow = () => /127\.0\.0\.1|localhost/.test(SRV) && location.protocol === 'https:'
-  ? `No answer from the Goldmine server on your PC (${SRV}). Your browser may be asking to allow access to devices on your local network: click Allow next to the address bar and try again. Or log in at http://127.0.0.1:8765/saas/ (start_bridge.bat must be running).`
-  : `The Goldmine server (${SRV}) did not answer within 20 seconds. Check that it is running and try again.`;
+  ? `No answer from the VRS server on your PC (${SRV}). Your browser may be asking to allow access to devices on your local network: click Allow next to the address bar and try again. Or log in at http://127.0.0.1:8765/saas/ (start_bridge.bat must be running).`
+  : `The VRS server (${SRV}) did not answer within 20 seconds. Check that it is running and try again.`;
 async function srv(path, body, method) {
   const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 20000);
   const opt = { method: method || (body ? 'POST' : 'GET'), headers: {}, signal: ctl.signal };
@@ -1152,9 +1190,9 @@ async function srv(path, body, method) {
   if (body) { opt.headers['Content-Type'] = 'application/json'; opt.body = JSON.stringify(body) }
   let r, j = null;
   try { r = await fetch(SRV + path, opt); try { j = await r.json() } catch {} }
-  catch (e) { throw new Error(e.name === 'AbortError' ? srvSlow() : 'Cannot reach the Goldmine server. Check your internet connection.') }
+  catch (e) { throw new Error(e.name === 'AbortError' ? srvSlow() : 'Cannot reach the VRS server. Check your internet connection.') }
   finally { clearTimeout(timer) }
-  if ((r.status === 404 || r.status === 405) && !j) throw new Error(`This page could not find the Goldmine server (${SRV} only hosts the website). Make sure start_bridge.bat is running on this PC, allow local network access if your browser asks, and reload. Or log in at http://127.0.0.1:8765/saas/.`);
+  if ((r.status === 404 || r.status === 405) && !j) throw new Error(`This page could not find the VRS server (${SRV} only hosts the website). Make sure start_bridge.bat is running on this PC, allow local network access if your browser asks, and reload. Or log in at http://127.0.0.1:8765/saas/.`);
   if (r.status === 401 && A.token && !/auth\//.test(path)) { logout(true); throw new Error('Your session expired. Please log in again.') }
   if (!r.ok) { const d = j?.detail; throw new Error(typeof d === 'string' ? d : Array.isArray(d) ? d.map(x => (x.loc?.slice(-1)[0] || '') + ': ' + x.msg).join(', ') : 'Server error ' + r.status) }
   return j;
@@ -1172,7 +1210,7 @@ async function bridge(path, body) { // direct call to the customer's bridge (nev
 }
 const setMe = j => {
   if (!j?.user) return;
-  A.me = { user: j.user, sub: j.sub, license: j.license, machines: j.machines, payments: j.payments, server: j.server, pubkey: j.pubkey, test_mode: j.test_mode, bridge_key: j.bridge_key, founding: !!j.founding, booking_url: j.booking_url || '', ref: j.ref || {}, addons: j.addons || {}, paused_until: j.paused_until || 0, tradingview: j.tradingview || { user: '', granted: false } };
+  A.me = { user: j.user, sub: j.sub, license: j.license, machines: j.machines, payments: j.payments, server: j.server, pubkey: j.pubkey, test_mode: j.test_mode, bridge_key: j.bridge_key, founding: !!j.founding, booking_url: j.booking_url || '', ref: j.ref || {}, addons: j.addons || {}, paused_until: j.paused_until || 0, tradingview: j.tradingview || { user: '', granted: false }, broker: j.broker || {}, discord_vip: j.discord_vip || '' };
   // the downloaded bridge uses this key: the customer never has to type it.
   // NOT when this page is served by a bridge (your own test setup): there the saved key is YOUR bridge key and must stay.
   // Only fill in an EMPTY key here. A key that is already saved (for example YOUR own bridge key on the same website) is never
@@ -1187,11 +1225,11 @@ const dt = t => t ? new Date(t * 1000).toLocaleDateString('en-GB', { day: '2-dig
 const ago = t => { if (!t) return 'never'; const s = Date.now() / 1000 - t; return s < 120 ? 'just now' : s < 3600 ? Math.round(s / 60) + ' min ago' : s < 86400 ? Math.round(s / 3600) + ' h ago' : Math.round(s / 86400) + ' days ago' };
 const STATUS = { trialing: ['Free trial', 'ok'], active: ['Active', 'ok'], past_due: ['Payment failed', 'warn'], canceled: ['Cancelled', 'warn'], expired: ['Expired', 'bad'], none: ['No plan', 'mute'] };
 const stPill = s => { const [t, c] = STATUS[s.status] || STATUS.none; return `<span class="st ${c}">${t}</span>` };
-const FEAT = { goldzone_pro: 'GoldZone Pro (TradingView)', lab: 'Backtest Lab + Autopilot', autotrade: 'TradingView → MT5 autotrade', terminal: 'Web terminal', journal: 'Trading journal', alerts: 'Price alerts', drawings: 'Drawing tools', layers: 'Layered entries', basket: 'Basket break-even', manage: 'Trade manager', paper: 'Paper accounts', copy: 'Copy trading', priority: 'Priority support' };
+const FEAT = { goldzone_pro: 'VRS Indicator Pro (TradingView)', lab: 'Backtest Lab + Autopilot', autotrade: 'TradingView → MT5 autotrade', terminal: 'Web terminal', journal: 'Trading journal', alerts: 'Price alerts', drawings: 'Drawing tools', layers: 'Layered entries', basket: 'Basket break-even', manage: 'Trade manager', paper: 'Paper accounts', copy: 'Copy trading', priority: 'Priority support' };
 const ALLF = Object.keys(FEAT);
 
 /* ---------------------------------------------------------------- routing */
-const SECTIONS = ['home', 'pricing', 'features', 'faq', 'offer', 'system', 'tv', 'ladder', 'autotrade']; // landing sections a #link can scroll to
+const SECTIONS = ['home', 'tv', 'how', 'vip', 'proof', 'faq', 'pricing', 'features', 'offer', 'system', 'ladder', 'autotrade']; // landing sections a #link can scroll to (the last six are old names, see LP_ALIAS)
 const PUBLIC = [...SECTIONS, 'login', 'signup'];
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; // a refresh starts at the top, not where the phone last was
 function route() {
@@ -1204,7 +1242,7 @@ function route() {
   if (SECTIONS.includes(r)) {
     renderLanding();
     // section links scroll once, then the address goes back to #home: a refresh starts at the top instead of jumping to the prices again
-    if (r !== 'home') { setTimeout(() => document.getElementById(r)?.scrollIntoView({ behavior: 'smooth' }), 30); history.replaceState(null, '', location.pathname + location.search + '#home') }
+    if (r !== 'home') { setTimeout(() => document.getElementById(LP_ALIAS[r] || r)?.scrollIntoView({ behavior: 'smooth' }), 30); history.replaceState(null, '', location.pathname + location.search + '#home') }
     else scrollTo(0, 0);
     return
   }
@@ -1228,7 +1266,7 @@ document.addEventListener('click', e => { const a = e.target.closest('a[href^="#
 function renderNav(r) {
   const L = A.me
     ? [['dashboard', 'Dashboard'], ['setup', 'Setup'], ['billing', 'Billing'], ['challenge', '🏆 Challenge'], ['terminal', 'Open terminal']]
-    : [['tv', 'Free indicator'], ['ladder', 'Compare'], ['autotrade', 'Autotrade'], ['pricing', 'Pricing'], ['challenge', '🏆 Challenge'], ['faq', 'FAQ'], ['login', 'Log in']];
+    : [['tv', 'Free indicator'], ['how', 'How it works'], ['vip', 'VIP'], ['faq', 'FAQ'], ['login', 'Log in']];
   // the owner sees Admin when a token is saved, or always when the site runs on this PC (your own bridge); visitors never see it
   // Admin shows for admin accounts (any device), when a token is saved, or on your own PC; customers never see it
   if (isAdmin() || (A.me && store.get('saasAdmin', ''))) L.push(['admin', 'Admin']); // only the owner sees it
@@ -1241,7 +1279,8 @@ function renderNav(r) {
     : `<a class="nl hide-sm" href="#login">Log in</a><a class="btn acc md" href="#signup">Start free</a>`;
   const tm = A.me?.test_mode ?? A.plans?.test_mode;
   if (!A.plans || (A.plans.offline && !A.me)) return; // keep the "server not running" bar
-  $('#ribbon').className = tm ? 'on' : '';
+  const owner = isAdmin() || /^(127\.0\.0\.1|localhost)$/.test(location.hostname); // only you see the test-mode reminder, never visitors
+  $('#ribbon').className = tm && owner ? 'on' : '';
   $('#ribbon').innerHTML = tm ? '🧪 TEST MODE · payments are simulated, nobody is charged. Add your Stripe keys on the server to take real payments.' : '';
 }
 function closeMenus() { $('#menu')?.classList.remove('on'); $('#links').classList.remove('open') }
@@ -1267,13 +1306,15 @@ function priceCard(k) {
   else if (SUB().interval === 'lifetime' && SUB().plan === k) btn = `<button class="btn lg" disabled>✓ You own ${p.name} Lifetime</button>`;
   else if (cur) btn = `<button class="btn lg" disabled>Your current plan</button>`;
   else btn = `<button class="btn ${k === 'pro' ? 'acc' : ''} lg" data-buy="${k}" data-cta="buy-${k}">${SUB().status === 'active' ? 'Switch to ' + p.name : 'Get ' + p.name}</button>`;
-  return `<div class="plan ${k === 'pro' ? 'best' : ''} ${cur ? 'cur' : ''}">${k === 'pro' ? '<div class="tag">MOST POPULAR</div>' : ''}
+  return `<div class="plan ${k === 'pro' ? 'best' : ''} ${cur ? 'cur' : ''}">${k === 'pro' ? '<div class="tag">VIP</div>' : ''}
     <h4>${p.name}</h4><div class="bl">${p.blurb}</div>
     ${reg ? `<div class="was"><span>Founding price, locked for life · normally ${money2(reg)}/mo</span></div>` : ['starter', 'pro', 'elite'].some(x => P(x) && isFound(x)) ? '<div class="was" aria-hidden="true" style="visibility:hidden"><span>&nbsp;</span></div>' : ''}
     <div class="pr"><b>${money2(price)}</b><span>/ month</span></div>
     <div class="eq">${yr ? `${money2(planPrice(k, 'year'))} billed yearly` : 'billed monthly · cancel anytime'}</div>
     ${btn}<ul>${items}</ul></div>`;
 }
+// billing shows only VIP (pro); an existing customer on an older hidden plan still sees their own plan next to it
+const billPlans = () => ['pro', ...['goldzone', 'starter', 'elite'].filter(k => SUB().plan === k && P(k))].map(priceCard).join('');
 const ivlSeg = () => `<div class="ivl"><div class="seg"><button data-ivl="month" class="${A.interval === 'month' ? 'on' : ''}">Monthly</button><button data-ivl="year" class="${A.interval === 'year' ? 'on' : ''}">Yearly<em>save ${Math.round((1 - planPrice('pro', 'year') / (planPrice('pro', 'month') * 12)) * 100)}%</em></button></div></div>`;
 const minPrice = () => money2(planPrice('pro', 'month') || 29);
 
@@ -1282,17 +1323,17 @@ const minPrice = () => money2(planPrice('pro', 'month') || 29);
    Analytics: every CTA has data-cta="<where>"; hook your pixel into track(). */
 const LPC = { bal: 10000, mkt: 'xau', n: 3 };
 const lpMoney = v => '$' + Math.round(v).toLocaleString('en-US');
-/* the TR system: one setup from chart to account (spot → test → trade → automate). Real screenshots: promo_video/shots-system.cjs + shot-tr.cjs */
+/* the VRS system: one setup from chart to account (spot → test → trade → automate). Real screenshots: promo_video/shots-system.cjs + shot-tr.cjs */
 const LP_SYS = [
-  ['Spot', '📈', 'TR1 / TR2 signals', 'TR1 / TR2 signals on your chart', 'A tight range, a body close out of it (TR1 = change of character, TR2 = break of structure), a zone, the retest. Goldmine marks every step, tells you what it is still waiting for and sets the limit in one click. TR1 Julius adds the STS checklist: session, higher-timeframe bias and a POI in the discount or premium.', ['A live checklist: what is ✓ and what is still missing', 'One-click limit, stop beyond the range, R levels', 'The same rules on TradingView, free'], 'lp-sys-spot.jpg'],
-  ['Test', '🧪', 'The Autopilot backtester', 'The Autopilot tells you what to trade', 'It collects your candles, tests every TR setting with 15 exits after real spread, checks each one on data it has never seen and writes your playbook in points: what to trade, what to skip, built around your hours and your style.', ['Every setting × exit × filter, live in a grid', 'Breakeven, partials, targets: what really pays', 'Runs again by itself every few hours'], 'lp-sys-point.jpg'],
+  ['Spot', '📈', 'The VRS Indicator', 'VA1 / VA2 setups on your chart', 'A tight range, a body close out of it (VA1 = change of character, VA2 = break of structure), a zone, the retest. VRS Executor marks every step, tells you what it is still waiting for and sets the limit in one click. VA1 Julius adds the STS checklist: session, higher-timeframe bias and a POI in the discount or premium.', ['A live checklist: what is ✓ and what is still missing', 'One-click limit, stop beyond the range, R levels', 'The same rules on TradingView, free'], 'lp-sys-spot.jpg'],
+  ['Test', '🧪', 'The Autopilot backtester', 'The Autopilot tells you what to trade', 'It collects your candles, tests every VRS setting with 15 exits after real spread, checks each one on data it has never seen and writes your playbook in points: what to trade, what to skip, built around your hours and your style.', ['Every setting × exit × filter, live in a grid', 'Breakeven, partials, targets: what really pays', 'Runs again by itself every few hours'], 'lp-sys-point.jpg'],
   ['Trade', '🛡', 'The risk manager', 'Every order sized and protected', 'Lots from your risk, layers over a zone, ten positions closed like one, partial take profits and a daily loss limit that locks the buttons before a revenge trade. The part of trading where accounts really die.', ['Risk in money, not in lots', 'Close & keep: bank nine, keep a runner', 'A daily loss limit you can\'t break'], 'lp-sys-trade.jpg'],
   ['Automate', '🤖', 'The auto-trade bot', 'Let the bot take the setups', 'Pick the timeframes and the system from your playbook. The bot places the limit in every new zone, removes it when the setup is cancelled and manages the trade with your exit plan. Demo or paper first: real money needs its own switch.', ['Max orders, trades per day and your daily limit stay in charge', 'Breakeven, partials and targets handled for you', 'Off by default, every action logged'], 'lp-bot.mp4'],
 ];
 let LPS = { i: 0, auto: true, t: 0 };
 function sysHTML() {
   return `<section class="lp-sec lp-sys" id="system"><div class="wrap">
-    <div class="lp-head"><div class="lp-eye">New · the TR system</div><h2>Spot it. Test it. <span>Trade it. Automate it.</span></h2><p>One rule-based setup from chart to account: signals on your chart, a backtester that tells you which ones to take, a risk manager on every order, and a bot that can take them for you.</p></div>
+    <div class="lp-head"><div class="lp-eye">The VRS Strategy · Value Retest</div><h2>Spot it. Test it. <span>Trade it. Automate it.</span></h2><p>One rule-based setup from chart to account: the VRS Indicator on your chart, a backtester that shows which setups held up, a risk manager on every order, and a bot that can take them for you.</p></div>
     <div class="lp-sysw"><div class="lp-systabs">${LP_SYS.map(([k, ic, t], i) => `<button data-sys="${i}" class="${i === LPS.i ? 'on' : ''}"><i>${i + 1}</i><div><em>${k}</em><b>${ic} ${t}</b></div></button>`).join('')}</div>
       <div class="lp-sysp" id="lpSysP"></div></div>
     <div class="lp-cta c"><a class="lp-btn gold lg" href="#signup" data-cta="system-trial">Get the full system · ${A.plans?.trial_days || 7} days free</a><a class="lp-btn ghost lg" href="#tv" data-cta="system-tv">Free: the TradingView indicator ↓</a></div>
@@ -1304,7 +1345,7 @@ function sysPanel(byUser) {
   el.classList.remove('anim'); void el.offsetWidth; el.classList.toggle('vid', img.endsWith('.mp4')); // a recording: full width under the text
   el.innerHTML = `<div><div class="lp-time"><b>${String(LPS.i + 1).padStart(2, '0')}</b><span>${k}</span></div><h3>${h}</h3><p>${d}</p><ul>${li.map(x => `<li>${x}</li>`).join('')}</ul>${LPS.auto ? '<div class="lp-sysbar run"><i></i></div>' : ''}</div>
     ${img.endsWith('.mp4') ? `<div class="lp-shot lp-vid"><video src="${img}" poster="${img.replace('.mp4', '.jpg')}" autoplay muted loop playsinline preload="metadata" aria-label="${esc(h)}: screen recording on a demo account, sped up"></video></div>`
-      : `<div class="lp-shot" data-zoom="${img}"><img src="${img}" alt="${esc(h)}: screenshot of Goldmine Pro" loading="lazy" onerror="this.parentNode.classList.add('noimg')"></div>`}`;
+      : `<div class="lp-shot" data-zoom="${img}"><img src="${img}" alt="${esc(h)}: screenshot of VRS Executor" loading="lazy" onerror="this.parentNode.classList.add('noimg')"></div>`}`;
   el.classList.add('anim');
   $$('[data-sys]').forEach(b => b.classList.toggle('on', +b.dataset.sys === LPS.i));
   clearTimeout(LPS.t); if (LPS.auto && !img.endsWith('.mp4')) LPS.t = setTimeout(() => { if (!$('#lpSysP')) return; LPS.i = (LPS.i + 1) % LP_SYS.length; sysPanel() }, 7000);
@@ -1407,7 +1448,7 @@ function lpScramble(el) {
 
 /* 4 · bridge console: lines type out, then the log loops */
 const LP_LOG = [
-  ['dim', '$ goldmine bridge · connected to MT5 · XAUUSD · demo'],
+  ['dim', '$ vrs executor · connected to MT5 · XAUUSD · demo'],
   ['', 'risk 1.00% of $100,000 · stop $6.00 → 5 layers × 0.33 lot'],
   ['ok', '✓ 5 buy limits placed · total risk −$1,000.00'],
   ['gold', '🎯 partial TP armed · 0.05 lot @ 2,423.00'],
@@ -1502,276 +1543,165 @@ if (!window.lpMicro) {
   });
 }
 
-/* ================================================================ LANDING B: the conversion funnel (A/B test against the main landing)
-   Built on Hormozi's $100M Leads / $100M Offers / $100M Money Models:
-   - one goal per page (the free lead magnet), no menu, CTA after every section
-   - call out the audience, then dream outcome + time + effort in the headline
-   - lead magnet = reveal a problem (your numbers), specific, consumable in 30 seconds
-   - proof by demonstration (live chart, click race), no fake testimonials
-   - right after the lead: make the offer (Grand Slam Offer: value stack, scarcity, urgency, conditional guarantee)
-   - continuity bonus for yearly, downsell to monthly, objections answered before the last CTA
-   B is the main landing. ?lp=a shows the old one, ?lp=split splits visitors 50/50 (remembered per visitor). */
+/* ================================================================ LANDING: two levels, one page (2026-11-13)
+   Free  = VRS Indicator Lite + the VRS Playbook + the public Discord (for an email).
+   VIP   = VRS Indicator Pro + VRS Executor + the VIP Discord. Two ways in: open an account with a partner broker (VIP free)
+           or pay €29/month (any broker or prop account, 7 days free).
+   Five sections: hero (free lead) · how it works · two ways into VIP · proof · FAQ.
+   Analytics: every CTA has data-cta="<where>"; hook your pixel into track(). */
 const LPV = 'c'; // analytics label of the landing page (lead sources: tv-c, tv-exit-c)
-/* ---------------------------------------------------------------- landing C (main): the GoldZone funnel, built on Hormozi's models
-   $100M Leads   · the lead magnet solves ONE narrow problem (seeing the setups) and reveals the next ones (which pay, how big, who takes them)
-   $100M Offers  · value = dream outcome × likelihood ÷ (time × effort): tested on YOUR candles, set up tonight, the bot does the work
-                   + a named Grand Slam stack, conditional guarantee, real scarcity (founding seats) and urgency (closing date)
-   $100M Money Models · attraction (free GoldZone, free trial, monthly challenge) → core (Pro monthly) → upsell / anchor (Lifetime, Yearly
-                   with a continuity bonus) → downsell (3 payments, Starter) → continuity (monthly). The offer is made right after the lead.
-   Every value in the stack: what that piece would cost on its own. Change it to numbers you can defend. */
-// The value stack. Every value: what that piece would cost on its own. Change it to numbers you can defend.
-const C_STACK = () => {
-  const pro = P('pro') || OFFLINE_PLANS.plans.pro, gz = P('goldzone') || OFFLINE_PLANS.plans.goldzone, F = FOUND();
-  return [
-    ['📈', 'GoldZone Pro on TradingView, 12 months', 'The invite-only script: A / B / C grades, the backtest card on your chart, session + higher-timeframe filters, exit plans and alerts for bots.', gz.month * 12, 1],
-    ['🔗', 'TradingView → MT5 autotrade', 'Every GoldZone Pro alert placed on your MT5 account: the lot sized from your risk, your daily limits checked, the partial and break-even done for you.', 348, 1],
-    ['⚡', 'Goldmine Pro terminal, 12 months', 'The risk manager MT5 never gave you: lots from your risk, layers, close & keep, partial take profits, a daily lock, a journal, paper accounts.', pro.month * 12, 1],
-    ['🧪', 'Backtest Lab + Autopilot', 'Every setting × 15 exits tested on your own candles, checked on unseen data, turned into a playbook in points.', 290, 1],
-    ['🤖', 'The auto-trade bot inside MT5', 'No TradingView needed: the bot takes the setups of your system with your exit plan, inside your limits. Demo or paper first.', 228, 1],
-    ['🛠', 'Bonus · We set it up with you', 'A 20-minute call: TradingView, your bridge and MT5 connected, one test alert traded on a paper account. Working at the end of the call, or your first month is free.', 150, F.open],
-    ['📄', 'Bonus · Your Risk Rulebook, done with you', 'Your five rules on one page: lot table, daily stop, layer plan, checklist.', 47, 1],
-    ['💬', 'Bonus · Private Discord + weekly trade review', 'Members\' journals reviewed live every week: what to cut, what to repeat.', 240, 1],
-    ['🏆', 'Bonus · The monthly $10K challenge', 'Same paper account and rules for everyone. Top 3 win Goldmine Pro for 12, 6 or 3 months.', 0, A.plans?.challenge_on !== false],
-    ['🔄', 'Bonus · Every update, forever', 'New tools land in your terminal and on your chart automatically.', 0, 1],
-  ].filter(b => b[4]);
-};
-// The ladder: what each step adds. [feature, Lite, GoldZone Pro, Goldmine Pro]
-const C_LADDER = [
-  ['Ranges, TR1 / TR2 breaks, zones, retests, R levels', 1, 1, 1],
-  ['An alert the moment price retests the zone', 1, 1, 1],
-  ['The GoldZone Playbook (16-page PDF)', 1, 1, 1],
-  ['A / B / C grade on every setup', 0, 1, 1],
-  ['Backtest card on your chart: win rate and R per grade', 0, 1, 1],
-  ['Session + higher-timeframe filters', 0, 1, 1],
-  ['Exit plans: breakeven, partials, trailing stop', 0, 1, 1],
-  ['Alerts for bots (JSON webhooks)', 0, 1, 1],
-  ['Backtest Lab + Autopilot (your CSV or MT5 data)', 0, 1, 1],
-  ['TradingView → MT5 autotrade, sized from your risk', 0, 0, 1],
-  ['MT5 risk manager: lots from risk, layers, daily lock', 0, 0, 1],
-  ['Auto-trade bot, paper accounts, journal, copy trading', 0, 0, 1],
-  ['Setup call + private Discord', 0, 0, 1],
+const BROKERS = () => A.plans?.brokers || OFFLINE_PLANS.brokers;
+const DISCORD = () => A.plans?.discord_public || '';
+const LP_ALIAS = { pricing: 'vip', offer: 'vip', ladder: 'vip', autotrade: 'how', system: 'how', features: 'proof' }; // old #links (emails, videos)
+// what each level contains (the "how it works" + the VIP card read from this)
+const C_VIP = [
+  ['📈', 'VRS Indicator Pro', 'The trade on your chart: entry, stop and 1R / 2R / 3R, an A / B / C grade and a backtest card, with an alert when the trade is on.'],
+  ['🔗', 'TradingView → MT5 autotrade', 'The setups you allow go to your MT5 account: lot sized from your risk, your daily limit checked, partial and break-even done for you.'],
+  ['🛡', 'The VRS Executor terminal', 'Risk manager next to MT5: lots from your risk, layers, close & keep, a daily loss lock, paper accounts, the journal, the bot and the Backtest Lab.'],
+  ['💬', 'The VIP Discord', 'The members-only channels: setup reviews, help with the install, the monthly paper challenge.'],
 ];
 const C_FAQ = [
-  ['Is GoldZone Lite really free?', 'Yes, free forever. Leave your email and you get the TradingView code with four install steps and the Playbook. It marks every TR1 / TR2 setup and alerts you on the retest. Grading, testing and taking the setups is what the paid steps add.'],
-  ['What is the difference between GoldZone Lite, GoldZone Pro and Goldmine Pro?', 'Lite shows you the setups. GoldZone Pro tells you which ones are worth it (grades, a backtest card, filters, exit plans) and can send them to a bot. Goldmine Pro takes them for you on MT5: risk-sized, inside your daily limits, managed to the exit. Goldmine Pro includes GoldZone Pro.'],
-  ['How does TradingView → MT5 autotrade work?', 'You add one alert in TradingView on GoldZone Pro and paste the webhook link from your Goldmine terminal. When a setup comes, TradingView sends it to your Goldmine bridge. The bridge checks your minimum grade, trades per day and daily loss, sizes the lot from your risk %, places the order on MT5 and then takes the partial and moves the stop to break-even. It is off until you switch it on, and you start on a paper account.'],
-  ['Why do I need the bridge? Can\'t TradingView trade by itself?', 'TradingView can only send a message. Something has to turn that message into a safe MT5 order: the right lot for your account, your limits, your exit plan. That is the bridge: a small app next to MT5 on your PC or a VPS. We set it up with you on a call, or your first month is free.'],
-  ['Does it have to run all day?', 'The bridge and MT5 must be running when an alert comes. On your PC that means while it is on; for 24/7 use a small Windows VPS (about €10/month). There is a step-by-step guide, or we set the VPS up for you.'],
-  ['What are TR1 and TR2?', 'A rule-based setup. Price builds a tight range; the first candle that closes out of it in a new direction is TR1 (a change of character), the next one in the same direction is TR2 (a break of structure). The breaking candle leaves a zone, and the retest of that zone is the entry. TR1 Julius adds a checklist: session, higher-timeframe bias and an entry in the discount or premium.'],
-  ['How do I know which setups to take?', 'GoldZone Pro grades every setup A, B or C and shows how each grade did on your chart. The Autopilot goes further: it tests every TR setting with 15 exits on your own candles, keeps 30% of the data unseen, and writes your playbook in points. Backtests describe the past; they are no promise.'],
+  ['Is VRS Indicator Lite really free?', 'Yes, free forever. Leave your email and you get the TradingView indicator with four install steps, the 16-page Playbook and the link to the free Discord. It marks every VA1 / VA2 range, break and zone, and alerts you when a new zone appears. When to enter, where the stop goes and how to manage the trade is in VIP.'],
+  ['What is the difference between Free and VIP?', 'Free shows you the zones. VIP shows you the trade: the entry, the stop, the 1R / 2R / 3R levels, an A / B / C grade and a backtest card on your chart (VRS Indicator Pro), and takes it for you on MT5 (VRS Executor: risk-sized, inside your daily limits, managed to the exit). Plus the VIP Discord.'],
+  ['How does VIP through a partner broker work?', 'Coming soon: we are finalising our broker partnerships. Once they are live: open a new account with one of our partner brokers through the link on this page, sign up here and type your MT5 account number in your dashboard. We check it in the broker\'s partner portal and switch VIP on, usually within 24 hours. VIP stays on while the account is active with that broker. The broker pays us a commission for referring you; check the broker\'s own conditions, fees and regulation before you open an account. We never hold or manage your money.'],
+  ['I already have a broker or trade a prop account.', 'Then pay for VIP: €29 a month, 7 days free first. It works with any broker that has MetaTrader 5, and with prop-firm accounts. An account you opened before, without our link, usually can\'t be moved under our partnership.'],
+  ['How does TradingView → MT5 autotrade work?', 'You add one alert in TradingView on VRS Indicator Pro and paste the webhook link from your VRS Terminal. When a setup comes, TradingView sends it to VRS Executor on your PC or VPS. It checks your minimum grade, trades per day and daily loss, sizes the lot from your risk %, places the order on MT5, then takes the partial and moves the stop to break-even. It is off until you switch it on, and you start on a paper account. TradingView webhooks need a paid TradingView plan.'],
+  ['Does it have to run all day?', 'VRS Executor and MT5 must be running when an alert comes. On your PC that means while it is on; for 24/7 use a small Windows VPS (about €10/month). There is a step-by-step guide.'],
   ['Does the bot make money by itself?', 'No bot does that, and anyone who says so is selling something. Ours takes the setups you chose, with your exit plan, inside your limits (max trades a day, a daily loss lock). It is off by default, starts on demo or paper, and real money needs its own switch.'],
   ['Is it allowed on prop-firm accounts?', 'The terminal is a manual trade-management tool and most firms allow it. Autotrade and the bot are automation, which some firms ban. Check your firm\'s rules before you switch them on.'],
-  ['Which brokers work?', 'Any broker with MetaTrader 5: gold, forex, indices and crypto CFDs. MetaTrader 4 is not supported. GoldZone itself runs on any TradingView chart.'],
-  ['I have a Mac.', 'GoldZone works on any TradingView. The bridge needs Windows: run it on a small Windows VPS and use the terminal from your Mac or phone.'],
+  ['I have a Mac.', 'VRS Indicator works on any TradingView. VRS Executor needs Windows: run it on a small Windows VPS and use the terminal from your Mac or phone.'],
+  ['What is the VRS Strategy (VA1 / VA2)?', 'The Value Retest Strategy: a rule-based setup. Price builds a tight range; the first candle that closes out of it in a new direction is VA1 (a change of character); the next one in the same direction is VA2 (a break of structure). The breaking candle leaves a zone: that is what Lite draws. VIP adds the trade on top of it: the entry, the stop and how to manage it.'],
   ['Is this a signal service or advice?', 'No. It is software: the indicator marks setups by fixed rules, the backtests show how they did in the past, you decide what to trade. Trading leveraged products carries a high risk of losing money.'],
 ];
+function brokerBtns(where) {
+  return BROKERS().map(b => b.url
+    ? `<a class="vipb" href="${esc(b.url)}" target="_blank" rel="sponsored noopener" data-cta="${where}-broker-${b.key}"><b>${esc(b.name)}</b><span>Open an account →</span></a>`
+    : `<span class="vipb off"><b>${esc(b.name)}</b><span>coming soon</span></span>`).join('');
+}
+const BROKERS_LIVE = () => BROKERS().some(b => b.url); // false until GP_BROKER_LINKS is set: the partner-broker way shows "coming soon"
 function renderLandingC() {
   document.body.classList.add('lp2', 'lpb');
   if ($('#view').dataset.v === 'landingC') return;
   $('#view').dataset.v = 'landingC'; track('lp_view', { v: 'c' });
-  const td = A.plans?.trial_days || 7, pro = P('pro') || OFFLINE_PLANS.plans.pro, gz = P('goldzone') || OFFLINE_PLANS.plans.goldzone, F = FOUND(), G = GUAR(), lead = !!store.get('gpLead', '');
-  const price = F.open ? F.month : pro.month, S = C_STACK(), total = S.reduce((s, b) => s + b[3], 0);
-  const trial = (where, txt) => `<div class="lpc-cta"><a class="lp-btn gold lg" href="#signup" data-cta="c-${where}">${txt || `Start ${td} days free →`}</a><span>${A.plans?.trial_card ? 'Nothing charged during the trial' : 'No card'} · cancel in 2 clicks · ${G}-day guarantee</span></div>`;
-  const leadForm = (where, btn = 'Send me GoldZone + the Playbook →') => `<form class="lpc-form" data-lead="tv"><div class="lp-leadf"><input type="email" name="email" required placeholder="Your email" autocomplete="email"><button class="lp-btn gold" type="submit" data-cta="c-${where}">${btn}</button></div>
-    <small id="lpTvN">Free forever · opens instantly in a new tab · no card. Plus 5 short emails on trading it well, unsubscribe in one click.</small></form>`;
-  const bundle = `<div class="lpc-bundle"><img src="lp-playbook-cover.jpg" alt="The GoldZone Playbook, free PDF"><div><b>+ Free: The GoldZone Playbook</b><small>16-page PDF: spot the range, read CHOCH / BOS, draw the zone, place the stop, ride the runner.</small></div></div>`;
-  const ck = v => v ? '<i class="y">✓</i>' : '<i class="n">—</i>';
-  const lot = Math.floor(10000 * 0.005 / (4 * 100) * 100) / 100; // 0.5% of $10,000, a $4 stop on gold (1 lot = $100 per $1)
+  const td = A.plans?.trial_days || 7, pro = P('pro') || OFFLINE_PLANS.plans.pro, F = FOUND(), G = GUAR(), lead = !!store.get('gpLead', ''), dc = DISCORD();
+  const price = F.open ? F.month : pro.month, live = BROKERS_LIVE();
+  // the seat counter only shows once at least 10 seats are taken: "100 of 100 left" reads as "nobody joined"
+  const seatsLine = F.open && F.seats - F.left >= 10 ? ` · <b>${F.left} of ${F.seats}</b> founding seats left` : '';
+  const endsLine = F.open && F.ends ? ` · closes ${new Date(F.ends).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}` : '';
+  const leadForm = (where, btn = 'Send me the indicator + Playbook →') => `<form class="lpc-form" data-lead="tv"><div class="lp-leadf"><input type="email" name="email" required placeholder="Your email" autocomplete="email"><button class="lp-btn gold" type="submit" data-cta="c-${where}">${btn}</button></div>
+    <small id="lpTvN">Free forever · opens instantly in a new tab · no card. Plus a few short emails on trading it well, unsubscribe in one click.</small></form>`;
   $('#view').innerHTML = `<div class="lp lpb-page lpc">
   <div class="lp-prog" id="lpProg"></div>
-  ${F.open ? `<a class="lp-ann" href="#offer" data-cta="c-announce"><span class="lp-dot"></span><b>${F.left} of ${F.seats}</b> founding seats left: Goldmine Pro at ${money2(F.month)}/month for life + we set it up with you${F.ends ? ` · closes ${new Date(F.ends).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}` : ''}</a>` : ''}
 
-  <!-- 1 · THE LEAD MAGNET: one narrow problem (seeing the setups), solved free, right now -->
+  <!-- 1 · HERO: the free level, for an email -->
   <section class="lpc-hero" id="tv"><canvas class="lp-hcv" id="lpHcv" aria-hidden="true"></canvas><div class="wrap lpc-hg">
     <div>
-      <span class="lpc-pill"><i></i>GoldZone Lite · free for TradingView</span>
-      <h1>Every gold setup, marked on your chart. <span>Free.</span></h1>
-      <p class="lpc-sub"><b style="color:#f3f5f9">GoldZone Lite</b> boxes the range, marks the break, draws the zone, and pings you the moment price comes back for the entry. The same TR1 / TR2 rules that run inside Goldmine Pro. Paste it into TradingView: done in 2 minutes.</p>
+      <span class="lpc-pill"><i></i>Free · VRS Indicator Lite for TradingView</span>
+      <h1>Every zone, marked on your chart. <span>Free.</span></h1>
+      <p class="lpc-sub">VRS Indicator Lite boxes the range, marks the break and draws the zone we trade, and alerts you the moment a new zone appears. You also get the <b style="color:#f3f5f9">VRS Playbook</b> (16-page PDF)${dc ? ' and the free Discord' : ''}. Paste it into TradingView: done in 2 minutes.</p>
       ${leadForm('hero')}
-      ${bundle}
-      <ul class="lpc-ticks"><li>Range → break → zone → retest</li><li>Alert on the retest</li><li>Gold, forex, indices, crypto</li></ul>
-      <p class="lpc-alt">Want the trades taken for you, on MT5? <a href="#autotrade" data-cta="c-hero-auto">See how it works →</a></p>
+      <div class="lpc-bundle"><img src="lp-playbook-cover.jpg" alt="The VRS Playbook, free PDF"><div><b>+ The VRS Playbook${dc ? ' + the free Discord' : ''}</b><small>Spot the range, read the break, draw the zone, place the stop, ride the runner.</small></div></div>
+      <ul class="lpc-ticks"><li>Range → break → zone</li><li>Alert on every new zone</li><li>Gold, forex, indices, crypto</li></ul>
+      <p class="lpc-alt">Want the entry, the stop and the trade taken for you? <a href="#vip" data-cta="c-hero-vip">See VIP →</a></p>
     </div>
-    <div class="lpc-vis"><div class="bar"><i></i><i></i><i></i><span>GoldZone · XAUUSD M30</span><em>demo chart</em></div>
-      <img src="lp-sys-spot.jpg" alt="GoldZone on a gold chart: the range, the CHOCH break, the sell on the retest and its 1R and 2R levels" width="1232" height="942">
-      <div class="lpc-steps4"><div><b>① Range</b>price goes quiet</div><div><b>② Break</b>body close out</div><div><b>③ Zone</b>where to enter</div><div><b>④ Retest</b>alert + entry</div></div></div>
+    <div class="lpc-vis"><div class="bar"><i></i><i></i><i></i><span>VRS Indicator · XAUUSD M30</span><em>with VIP</em></div>
+      <img src="lp-sys-spot.jpg" alt="VRS Indicator on a gold chart: the range, the break, the zone and, with VIP, the entry and its 1R and 2R levels" width="1232" height="942">
+      <div class="lpc-steps4"><div><b>① Range</b>price goes quiet</div><div><b>② Break</b>body close out</div><div><b>③ Zone</b>free: drawn for you</div><div><b>④ Trade</b>VIP: entry + stop</div></div></div>
   </div></section>
 
-  <!-- 2 · THE FREE THING REVEALS THE NEXT THREE PROBLEMS, each solved by a paid step -->
-  <section class="lp-sec"><div class="wrap">
-    <div class="lp-head"><div class="lp-eye">Then the real work starts</div><h2>GoldZone shows you where. <span>It can't answer three questions.</span></h2><p>And those three decide whether your account grows or bleeds.</p></div>
-    <div class="lpc-q">${[
-      ['01', 'Which of these setups are worth it?', 'Not every break is equal. TR2 can pay on M15 and lose on M5. Without a grade and a test on your own chart, you are trading a hunch with a nice drawing on it.', 'GoldZone Pro: grades + backtest card'],
-      ['02', 'How big, and when do you stop?', 'Accounts rarely die on a bad setup. They die on one oversized lot, or on the revenge trade right after it. The setup was fine. The size wasn\'t.', 'Goldmine Pro: the risk manager'],
-      ['03', 'Who takes it while you\'re away?', 'Zones get retested while you sleep, work or second-guess yourself. A setup you skip is a setup you never get paid on.', 'Goldmine Pro: TradingView → MT5 autotrade']]
-      .map(([n, h, p, a]) => `<div class="lpc-qc"><span class="n">${n}</span><h3>${h}</h3><p>${p}</p><div class="ans">Answered by: <b>${a}</b></div></div>`).join('')}</div>
-    <p class="lpc-punch">Free shows you <b>where</b>. GoldZone Pro tells you <b>which</b>. Goldmine Pro <b>takes them</b>, safely.</p>
-  </div></section>
-
-  <!-- 2b · THE SECOND HALF OF THE LEAD MAGNET: the Playbook teaches what GoldZone draws -->
-  <section class="lp-sec lpc-book"><div class="wrap lpc-bk">
-    <div class="lpc-bkimg"><img src="lp-playbook-cover.jpg" alt="The GoldZone Playbook: the free 16-page guide" loading="lazy"><span>FREE · PDF · 16 pages</span></div>
-    <div><div class="lp-eye">Free with GoldZone Lite</div><h2 class="lpc-h2">The GoldZone Playbook. <span>Learn it in 20 minutes.</span></h2>
-      <p class="lpc-sub" style="margin-bottom:14px">The indicator draws the setups. The Playbook teaches you to read and trade them, with real charts and clear diagrams.</p>
-      <ul class="lpc-pl2">${['Spot a real range and skip the fake ones', 'Read the break: body close, CHOCH (TR1) or BOS (TR2)', 'Draw the zone and know when it turns into a buy or a sell', 'Place the stop and size every trade from your risk', 'Manage it: breakeven, partials, runners and trailing stops', 'A printable cheat sheet and pre-trade checklist'].map(x => `<li>${x}</li>`).join('')}</ul>
-      <a class="lp-btn gold lg" href="#tv" data-cta="c-book">Get GoldZone + the Playbook free →</a></div>
-  </div></section>
-
-  <!-- 3 · THE LADDER: attraction (Lite) → core (GoldZone Pro) → upsell (Goldmine Pro). Each step answers the next question. -->
-  <section class="lp-sec" id="ladder"><div class="wrap">
-    <div class="lp-head"><div class="lp-eye">Three steps</div><h2>Start free. <span>Upgrade when it pays.</span></h2><p>Each step does one more job for you. Goldmine Pro includes everything in GoldZone Pro.</p></div>
-    <div class="lpl"><table class="lpl-t"><thead><tr><th></th>
-        <th><small>Step 1 · see</small><b>GoldZone Lite</b><em>Free</em></th>
-        <th><small>Step 2 · choose</small><b>GoldZone Pro</b><em>${money2(gz.month)}<i>/mo</i></em></th>
-        <th class="hi"><small>Step 3 · automate</small><b>Goldmine Pro</b><em>${money2(price)}<i>/mo</i></em>${F.open ? '<span>founding price</span>' : ''}</th></tr></thead>
-      <tbody>${C_LADDER.map(([f, a, b, c]) => `<tr><td>${f}</td><td>${ck(a)}</td><td>${ck(b)}</td><td class="hi">${ck(c)}</td></tr>`).join('')}</tbody>
-      <tfoot><tr><td></td><td><a class="lp-btn ghost full" href="#tv" data-cta="c-ladder-lite">Get it free</a></td>
-        <td><button class="lp-btn ghost full" data-intent="goldzone:month" data-cta="c-ladder-gz">Get Pro</button></td>
-        <td class="hi"><a class="lp-btn gold full" href="#signup" data-cta="c-ladder-gm">Try free</a></td></tr></tfoot></table></div>
-    <p class="lpc-note">GoldZone Pro is an invite-only TradingView script: after you subscribe, type your TradingView username in your dashboard and you get access within 24 hours.</p>
-  </div></section>
-
-  <!-- 4 · THE BRIDGE FEATURE: why anyone bothers with MT5 -->
-  <section class="lp-sec lpa" id="autotrade"><div class="wrap">
-    <div class="lp-head"><div class="lp-eye">TradingView → MT5 autotrade</div><h2>TradingView shows you the trade. <span>Goldmine takes it for you, safely.</span></h2><p>One alert on GoldZone Pro, one link from your terminal. From then on every setup you allow lands on your MT5 account, sized and managed.</p></div>
-    <div class="lpa-flow">${[
-      ['①', 'GoldZone Pro fires', 'A setup on your TradingView chart: side, entry, stop and grade go out as an alert.', '<code>SELL TR1 [A] XAUUSD · entry 2418.40 · stop 2422.40</code>'],
-      ['②', 'Your rules check it', 'Grade good enough? Under your trades for today? Not past your daily loss? Otherwise it is skipped and logged.', '<code>grade A ≥ B ✓ · 1 / 3 today ✓ · −0.4% / −2% ✓</code>'],
-      ['③', 'The lot is sized', `From your risk, never a guess: 0.5% of $10,000 with a $4 stop on gold is ${lot.toFixed(2)} lot.`, `<code>$50 risk ÷ $400 per lot = ${lot.toFixed(2)} lot</code>`],
-      ['④', 'It is managed', 'Placed on MT5 with the stop. At 1R half is banked and the stop moves to break-even. The rest runs.', '<code>partial 50% at 1R · stop → entry</code>']]
-      .map(([n, h, p, c]) => `<div><span class="n">${n}</span><h3>${h}</h3><p>${p}</p>${c}</div>`).join('')}</div>
-    <div class="lpc-fs">${[['✋', 'Off until you switch it on', 'Nothing trades by itself. One switch in the terminal, with a confirmation.'], ['🧪', 'Paper first', 'Point it at a paper account on live prices and watch it for a week. Real money needs its own switch.'], ['🛡', 'Your limits, not ours', 'Minimum grade, risk %, trades a day and a daily loss lock. All yours to set.'], ['📜', 'Every alert logged', 'Taken, skipped or refused: each one with the reason, in the terminal.']]
-      .map(([i, t, d]) => `<div><i>${i}</i><b>${t}</b><p>${d}</p></div>`).join('')}</div>
-    <div class="lpa-guar"><div class="lpa-gi">🛠</div><div><h3>We set it up with you, or it's free</h3><p>A 20-minute call: we connect TradingView, your bridge and MT5 with you and trade one test alert on a paper account. If it isn't working at the end of the call, your first month is on us.</p></div></div>
-    <p class="lpc-note">Runs while your PC and MT5 are on. For 24/7: a small Windows VPS (about €10/month), with a step-by-step guide, or we set it up for you.</p>
-    ${trial('autotrade', `Try autotrade on paper · ${td} days free →`)}
-  </div></section>
-
-  <!-- 5 · THE SYSTEM INSIDE MT5 -->
-  ${sysHTML()}
-
-  <!-- 5b · EVERYTHING ELSE INSIDE THE TERMINAL (compact) -->
-  <section class="lp-sec" id="features"><div class="wrap">
-    <div class="lp-head"><div class="lp-eye">Inside the terminal</div><h2>And everything else <span>you trade with every day.</span></h2><p>Real screenshots. One terminal next to your MT5, on your PC, tablet and phone.</p></div>
-    <div class="lpc-in">${[['lp-drag.jpg', 'Drag your stop and target', 'Pull a stop or take profit straight out of the entry. The label shows the money at risk while you drag.'],
-      ['lp-basket.jpg', 'A whole basket to break-even', 'Scaled in? One click sets one exit price for every position: break-even, +$50 or any amount.'],
-      ['lp-tools.jpg', 'Drawings, alerts, watchlist', 'Trend lines, Fibonacci, long and short tools and price alerts, saved per symbol.'],
-      ['lp-rules.jpg', 'Your rules, set once', 'Risk per trade, a daily loss limit and a cap on open positions, applied to every order.'],
-      ['lp-paper.jpg', 'Paper accounts on live prices', 'Test an idea, the bot or autotrade in one second, on your broker\'s real prices, without risking a cent.'],
-      ['lp-journal.jpg', 'A journal that writes itself', 'Every trade from MT5: equity curve, R-multiples, best sessions and setups, a P/L calendar.']]
-      .map(([img, h, d]) => `<div><div class="im" data-zoom="${img}"><img src="${img}" alt="${esc(h)}: screenshot of the Goldmine Pro terminal" loading="lazy"></div><div class="tx"><b>${h}</b><p>${d}</p></div></div>`).join('')}</div>
-    <p class="lpc-note">Also inside: copy trading between your accounts, layered entries sized from one risk number, partial take profits and close & keep.</p>
-  </div></section>
-
-  <!-- 6 · PROOF BY DEMONSTRATION (no fake testimonials) -->
-  <section class="lp-sec"><div class="wrap">
-    <div class="lp-head"><div class="lp-eye">What you get after one run</div><h2>Your playbook, <span>written from your own data.</span></h2><p>The Autopilot doesn't sell you a strategy. It tests ours on your candles and tells you, in points, what held up and what didn't. Works on MT5 data or a CSV export, no bridge needed.</p></div>
-    <div class="lpc-proof"><div class="lpc-vis"><div class="bar"><i></i><i></i><i></i><span>Backtest Lab · Autopilot</span><em>example · demo data</em></div><img src="lp-playbook.jpg" alt="The Autopilot playbook: points to trade and points to skip" loading="lazy"></div>
-      <ol class="lpc-pl">
-        <li><div><b>Points per setup</b><span>0 to 99: how sure the data is. Confidence, the unseen 30%, every quarter of the test, and the size of the edge.</span></div></li>
-        <li><div><b>The exit that pays</b><span>Target, breakeven or partial, picked per setup, after real spread and commission.</span></div></li>
-        <li><div><b>What to skip</b><span>Groups that lost money, also on data the test never saw. Skipping them is half the edge.</span></div></li>
-        <li><div><b>Built around you</b><span>Your timeframes, your trading hours, your style: high win rate, balanced or big winners.</span></div></li></ol></div>
-    <div class="lpc-nums"><div><b>100+</b><small>settings tested</small></div><div><b>15</b><small>exits per setting</small></div><div><b>30%</b><small>of the data kept unseen</small></div><div><b>6 h</b><small>re-runs by itself</small></div></div>
-    <p class="lpc-note">Shown: an example run on demo data. Backtests describe the past; they are no promise.</p>
-  </div></section>
-
-  <!-- 7 · TIME DELAY + EFFORT down to (almost) nothing -->
-  <section class="lp-sec"><div class="wrap">
-    <div class="lp-head"><div class="lp-eye">From sign-up to your first managed trade</div><h2>Tonight you set it up. <span>Tomorrow it trades your plan.</span></h2></div>
-    <div class="lpc-tl">${[['Tonight · 5 min', 'Install it, set two numbers', 'One download, one double-click: it finds your MT5 account by itself. Then your risk per trade and your daily loss limit. Your password never leaves your PC.', 'lp-sys-limits.jpg'],
-      ['Tonight · 2 min', 'Connect TradingView', 'Copy the webhook link from the terminal into one GoldZone Pro alert. Point it at a paper account and press "Test".', 'lp-sys-run.jpg'],
-      ['Tomorrow', 'Trade only what passes', 'Only the grades and setups you allow are taken, sized from your risk and locked at your daily limit. Watch it on paper, then decide.', 'lp-sys-point.jpg']]
+  <!-- 2 · HOW IT WORKS: Free shows where, VIP decides which and takes them -->
+  <section class="lp-sec" id="how"><div class="wrap">
+    <div class="lp-head"><div class="lp-eye">How it works</div><h2>Free shows you the <b>zone</b>. <span>VIP shows you the trade, and takes it.</span></h2><p>Two levels, nothing else to choose.</p></div>
+    <div class="lpc-tl">${[['Free', 'See the zones', 'VRS Indicator Lite marks every range, break and zone on TradingView and alerts you when a new zone appears. The Playbook explains the method behind them.', 'lp-sys-spot.jpg'],
+      ['VIP', 'Know when and where to enter', 'VRS Indicator Pro adds the entry, the stop and the 1R / 2R / 3R levels, an A / B / C grade on every setup and a backtest card: how each grade did on that market, in R.', 'lp-sys-point.jpg'],
+      ['VIP', 'Let them be taken, safely', 'VRS Executor turns the alert into an MT5 order: the lot from your risk, your daily loss limit locked, the partial and break-even done for you.', 'lp-sys-trade.jpg']]
       .map(([t, h, p, img]) => `<div><div class="im"><img src="${img}" alt="${esc(h)}" loading="lazy"></div><small>${t}</small><h3>${h}</h3><p>${p}</p></div>`).join('')}</div>
-    ${trial('steps')}
-  </div></section>
-
-  <!-- 8 · THE GRAND SLAM OFFER -->
-  <section class="lp-sec lp-offer" id="offer"><div class="wrap">
-    <div class="lp-head"><div class="lp-eye">The offer</div><h2>The Gold Edge System. <span>Everything, one price.</span></h2><p>The grades, the tester, the risk manager and the autotrade, set up with you, for less than one oversized gold trade costs.</p></div>
-    <div class="lp-stack">
-      ${S.filter(x => !x[1].startsWith('Bonus')).map(([i, t, d, v], k) => `<div class="lp-si" style="--i:${k}"><span class="ic">${i}</span><div><h4>${t}</h4><p>${d}</p></div><b>${v ? `${money2(v)} value` : 'included'}</b></div>`).join('')}
-      <div class="lpc-bonh">+ Bonuses</div>
-      <div class="lpc-bon">${S.filter(x => x[1].startsWith('Bonus')).map(([i, t, d, v]) => `<div title="${esc(d)}"><i>${i}</i><span>${t.replace('Bonus · ', '')}</span><em>${v ? money2(v) : 'included'}</em></div>`).join('')}</div>
-      <div class="lpb-total"><span>Total value</span><s>${money2(total)}</s></div>
-      <div class="lp-stot"><div><span>Goldmine Pro${F.open ? ' · founding' : ''}</span><b>${money2(price)}<small>/month</small></b><em>${F.open ? `normally ${money2(pro.month)} · locked for as long as you stay` : 'cancel anytime in 2 clicks'} · first ${td} days free${F.open ? ` · ${F.left} seats left` : ''}</em></div><a class="lp-btn gold lg" href="#pricing" data-cta="c-offer">Choose my way in →</a></div>
-    </div>
-    <div class="lpc-guar"><div class="lpc-shield"><b>${G}</b><small>DAYS</small></div><div><h3>The pays-for-itself guarantee</h3><p>Use Goldmine on at least 20 trades in your first ${G} days. If it didn't save you at least its price in mistakes, missed setups or time, email us and get every cent back. You keep the Rulebook.</p></div></div>
-  </div></section>
-
-  <!-- 9 · MONEY MODEL: core (GoldZone Pro) · upsell (Goldmine Pro monthly / yearly + bonus) · anchor (Lifetime) · downsells -->
-  <section class="lp-sec lpb-way" id="pricing"><div class="wrap">
-    <div class="lp-head"><div class="lp-eye">Choose your way in</div><h2>Pick the step <span>that fits how you trade.</span></h2><p>Goldmine Pro starts with ${td} days free and the ${G}-day guarantee.</p></div>
-    <div class="lpb-ways">
-      <div class="lpb-wc"><span class="tag ghost">TradingView only</span><h4>GoldZone Pro</h4><div class="pr">${money2(gz.month)}<small>/mo</small></div>
-        <p>Grades, the backtest card, filters, exit plans and bot alerts on TradingView, plus the Backtest Lab. No MT5 needed.${gz.year ? ` Or ${money2(gz.year)} a year.` : ''}</p>
-        <button class="lp-btn ghost full" data-intent="goldzone:month" data-cta="c-way-gz">Get GoldZone Pro</button>
-        ${gz.year ? `<button class="lpb-link" data-intent="goldzone:year" data-cta="c-way-gz-year">or yearly · ${money2(gz.year)}</button>` : ''}</div>
-      <div class="lpb-wc best"><span class="tag">${F.open ? `Founding · ${F.left} left` : 'Most popular'}</span><h4>Goldmine Pro · monthly</h4><div class="pr">${money2(price)}<small>/mo</small></div>
-        <p>Everything in GoldZone Pro, plus <b>TradingView → MT5 autotrade</b>, the risk manager, the bot and the setup call.${F.open ? ` Founding price, locked for as long as you stay (normally ${money2(pro.month)}).` : ''}</p>
-        <button class="lp-btn gold full" data-intent="pro:month" data-cta="c-way-month">Start ${td} days free</button></div>
-      <div class="lpb-wc"><span class="tag ghost">Best value · bonus</span><h4>Goldmine Pro · yearly</h4><div class="pr">${money2(Math.round(planPrice('pro', 'year') / 12 * 100) / 100)}<small>/mo</small></div>
-        <p>${money2(planPrice('pro', 'year'))} billed yearly, save ${Math.round((1 - planPrice('pro', 'year') / (planPrice('pro', 'month') * 12)) * 100)}%.<br><b>Bonus:</b> the setup call, even after founding closes.</p>
-        <button class="lp-btn ghost full" data-intent="pro:year" data-cta="c-way-year">Start ${td} days free</button></div>
-    </div>
-    ${pro.lifetime && F.lifetime_left > 0 ? `<div class="lpa-life"><div><b>Pay once: Goldmine Pro Lifetime · ${money2(pro.lifetime)}</b><small>Every update, GoldZone Pro, the setup call and the Discord included. Only ${F.lifetime_left} of ${F.lifetime_seats} left.</small></div>
-      <button class="lp-btn ghost" data-intent="pro:lifetime" data-cta="c-way-lifetime">Get Lifetime</button>${pro.lifetime3 ? `<button class="lpb-link" data-intent="pro:lifetime3" data-cta="c-way-lifetime3">or 3 × ${money2(pro.lifetime3)}</button>` : ''}</div>` : ''}
-    <div class="lpb-alt">${P('elite') ? `<span>Managing many accounts? <button class="lpb-link" data-intent="elite:month" data-cta="c-way-elite">Elite · 25 accounts · ${money2(P('elite').month)}/mo</button></span>` : ''}</div>
-  </div></section>
-
-  ${A.plans?.challenge_on === false ? '' : `<section class="lp-sec" style="padding-top:8px;padding-bottom:8px"><div class="wrap"><div class="lpb-ch"><span style="font-size:38px">🏆</span>
-    <div><h3>Free monthly trading challenge</h3><p>Same $10,000 paper account and rules for everyone. Top 3 win Goldmine Pro for 12, 6 or 3 months. Included in your free trial.</p></div>
-    <a class="lp-btn ghost" href="#challenge" data-cta="c-challenge">See the leaderboard →</a></div></div></section>`}
-
-  <!-- 10 · WHO IT'S FOR + SAFETY -->
-  <section class="lp-sec"><div class="wrap">
-    <div class="lp-fit">
-      <div class="lp-fitc yes"><h3>Built for you if…</h3><ul>${['You trade gold (or forex, indices) and chart on TradingView', 'You want rules you\'ve tested, not rules you hope work', 'You\'ve lost a day to one oversized lot or one revenge trade', 'You can\'t watch the chart all day'].map(x => `<li>${x}</li>`).join('')}</ul></div>
-      <div class="lp-fitc no"><h3>Not for you if…</h3><ul>${['You want a bot that prints money without testing it', 'You want someone else\'s signals to copy blindly', 'You only use MetaTrader 4'].map(x => `<li>${x}</li>`).join('')}</ul></div></div>
-    <div class="lpc-fs">${[['🔒', 'Your password stays home', 'Goldmine runs next to MT5 on your PC or VPS. Your broker login never reaches us.'], ['✋', 'Nothing trades unless you say so', 'Manual by default. Autotrade and the bot are off until you switch them on.'], ['🧪', 'Demo first', 'Paper accounts on live prices. Real money needs its own switch.'], ['↩', 'Cancel in 2 clicks', 'No contract. Your MT5 account is never affected.']]
+    <div class="lpc-fs">${[['✋', 'Off until you switch it on', 'Nothing trades by itself. Autotrade and the bot need their own switch.'], ['🧪', 'Paper first', 'Point it at a paper account on live prices and watch it before real money.'], ['🛡', 'Your limits, not ours', 'Minimum grade, risk %, trades a day and a daily loss lock. All yours to set.'], ['🔒', 'Your password stays home', 'VRS Executor runs next to MT5 on your PC or VPS. Your broker login never reaches us.']]
       .map(([i, t, d]) => `<div><i>${i}</i><b>${t}</b><p>${d}</p></div>`).join('')}</div>
   </div></section>
 
-  <!-- 11 · OBJECTIONS -->
-  <section class="lp-sec" id="faq"><div class="wrap">
-    <div class="lp-head"><h2>Questions gold traders ask first</h2></div>
-    <div class="lp-faq">${C_FAQ.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div>
+  <!-- 3 · TWO WAYS INTO VIP -->
+  <section class="lp-sec lp-offer" id="vip"><div class="wrap">
+    <div class="lp-head"><div class="lp-eye">VRS VIP</div><h2>Everything, <span>two ways in.</span></h2><p>Same VIP either way.</p></div>
+    <div class="vipin">${C_VIP.map(([i, t, d]) => `<div><i>${i}</i><b>${t}</b><p>${d}</p></div>`).join('')}</div>
+    <div class="vipw">
+      ${live ? `<div class="vipc go"><small>Way 1 · free</small><h3>Open an account with a partner broker</h3>
+        <ol class="vipst"><li>Open a <b>new</b> MT5 account through one of these links.</li><li>Sign up here and type your MT5 account number in your dashboard.</li><li>We check it and switch VIP on, usually within 24 hours.</li></ol>
+        <div class="vipbs">${brokerBtns('c-vip')}</div>
+        <a class="lp-btn gold lg full" href="#signup" data-intent-broker="1" data-cta="c-vip-broker-done">I opened my account →</a>
+        <p class="vipn">VIP stays on while your account is active with that broker. We may earn a commission from partner brokers when you open an account. Check the broker's conditions and regulation first.</p></div>`
+      : `<div class="vipc soon"><small>Way 1 · free</small><span class="vipsoon">Coming soon</span><h3>Open an account with a partner broker</h3>
+        <p class="vipst" style="padding:0">We're finalising our broker partnerships. Soon you can get VIP for free by opening a new account with one of them.</p>
+        <div class="vipbs">${brokerBtns('c-vip')}</div>
+        <a class="lp-btn ghost lg full" href="#signup" data-cta="c-vip-soon">Start with Way 2 now, switch when it opens →</a>
+        <p class="vipn">When it opens, we may earn a commission from partner brokers. You will always be able to check the broker's conditions and regulation first.</p></div>`}
+      <div class="vipc ${live ? '' : 'go'}"><small>Way 2 · any broker${live ? '' : ' · available now'}</small><h3>Pay for VIP</h3>
+        <div class="vipp"><b>${money2(price)}</b><span>/month</span>${F.open ? '<em>FOUNDING PRICE</em>' : ''}</div>
+        ${F.open ? `<p class="vipf">🏷 Locked at ${money2(F.month)} for as long as you stay. <b>${money2(pro.month)}/month</b> after founding closes${endsLine}${seatsLine}.</p>` : ''}
+        <ul class="vipl"><li>Any broker with MetaTrader 5, or a prop-firm account</li><li>${td} days free · ${A.plans?.trial_card ? 'nothing charged during the trial' : 'no card'}</li><li>Cancel in 2 clicks · ${G}-day money-back guarantee</li></ul>
+        <a class="lp-btn ${live ? 'ghost' : 'gold'} lg full" href="#signup" data-cta="c-vip-pay">Start ${td} days free</a></div>
+    </div>
   </div></section>
 
-  <!-- 12 · THE CLOSE: start at step 1 or jump to step 3 -->
-  <section class="lp-sec"><div class="wrap"><div class="lp-final">
-    <h2>Start where you are.</h2>
-    <div class="lpc-two">
-      <div><small>Free forever</small><h3>GoldZone Lite + the Playbook</h3><p>The TradingView indicator that marks every TR1 / TR2 setup, and the 16-page guide to trading them.</p><a class="lp-btn ghost lg full" href="#tv" data-cta="c-final-lead">Get both free</a></div>
-      <div class="go"><small>${td} days free</small><h3>Goldmine Pro: the trades taken for you</h3><p>GoldZone Pro on TradingView, autotrade to MT5, the risk manager and the bot. Set up with you.</p><a class="lp-btn gold lg full" href="#signup" data-cta="c-final-trial">Start ${td} days free →</a></div></div>
-    <p style="margin-top:18px;color:#8a94a8;font-size:13.5px">Only the TradingView part? <button class="lpb-link" data-intent="goldzone:month" data-cta="c-final-gz">GoldZone Pro · ${money2(gz.month)}/mo</button> · ${G}-day guarantee${F.open ? ` · ${F.left} founding seats left` : ''}</p>
-  </div></div></section>
+  <!-- 4 · PROOF: real screenshots, honestly labelled -->
+  <section class="lp-sec" id="proof"><div class="wrap">
+    <div class="lp-head"><div class="lp-eye">Inside VIP</div><h2>Real screenshots, <span>not mock-ups.</span></h2><p>One terminal next to your MT5, on your PC, tablet and phone. Click any screenshot to see it full size.</p></div>
+    <div class="lpc-in">${[
+      // [image, tag, title, text, layout class, focus point of the crop]
+      ['lp-bot.jpg', '🤖 Autopilot', 'It trades your system while you are away', 'Pick your system and the timeframes. When a setup only waits for the retest, it puts the limit in the zone with your stop and your risk %, and removes it again if the setup dies. Max trades, max risk and your daily loss lock are always on.', 'w2', 'center 30%'],
+      ['lp-phone.jpg', '📱 On your phone', 'Your setups in your pocket', 'The same terminal on your phone and tablet: see the zone, the entry and its R levels, and place or close a trade from anywhere.', 'tall phone', 'center top'],
+      ['lp-risk.jpg', '🛡 Risk Lock', 'Type 1%. It works out the lots.', 'Set your stop and the ticket shows the lots and the money at risk before you click. A daily loss limit locks the buttons on a bad day.', '', 'right top'],
+      ['lp-julius.jpg', '✓ Live checklist', 'Know what the setup still needs', 'Higher-timeframe direction, the session, the range: each step turns ✓ on your chart, and it only trades when all of them are.', '', 'left top'],
+      ['lp-drag.jpg', '🎯 Drag & see', 'See what you lose before you click', 'Drag the stop and target on the chart. The label shows the money at risk and the reward while you drag.', '', 'left top'],
+      ['lp-basket.jpg', '🧺 Scale in', 'Scale in, exit as one', 'Layer orders over a zone, then one exit price or break-even for the whole basket in one click.', '', 'left top'],
+      ['lp-sys-spot.jpg', '📈 VRS Indicator', 'The range, the break, the zone, the entry', 'The VRS Indicator on your chart: the range, the break and the zone, with the 1R / 2R / 3R levels. VRS Indicator Pro draws the same on TradingView, and its alerts can be traded on MT5 automatically.', '', 'left top'],
+      ['lp-autopilot.jpg', '🧪 Backtest Lab', 'Find what works on your own candles', 'Every setting × exit tested after spread and costs, then checked on data it never saw. Green made money, gold passed every check: that is what you trade.', 'w2', 'left top'],
+      ['lp-journal.jpg', '📒 Journal', 'A journal that writes itself', 'Every trade from MT5: equity curve, R-multiples, your best sessions and setups.', '', 'left top']]
+      .map(([img, tag, h, d, cls, pos]) => `<div class="${cls}"><div class="im" data-zoom="${img}"><img src="${img}" alt="${esc(h)}: screenshot of VRS Executor" loading="lazy" style="object-position:${pos}"><span class="zm">⤢</span></div><div class="tx"><span class="tg">${tag}</span><b>${h}</b><p>${d}</p></div></div>`).join('')}</div>
+    <p class="lpc-note">Screenshots from a demo account: real software, simulated money. Backtests describe the past and are no promise. We only publish reviews from real members, with their permission.</p>
+  </div></section>
+
+  <!-- 5 · FAQ + the close -->
+  <section class="lp-sec" id="faq"><div class="wrap">
+    <div class="lp-head"><h2>Questions traders ask first</h2></div>
+    <div class="lp-faq">${C_FAQ.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div>
+    <div class="lp-final" style="margin-top:34px"><h2>Start where you are.</h2>
+      <div class="lpc-two"><div><small>Free forever</small><h3>VRS Indicator Lite + the Playbook</h3><p>Every zone on your TradingView chart, the guide to the method${dc ? ' and the free Discord' : ''}.</p><a class="lp-btn ghost lg full" href="#tv" data-cta="c-final-lead">Get it free</a></div>
+        <div class="go"><small>VIP</small><h3>The entry, the stop, the trade taken for you</h3><p>${money2(price)}/month${F.open ? ' (founding price, locked for as long as you stay)' : ''} with ${td} days free${live ? ', or free through a partner broker' : '. Free through a partner broker: coming soon'}.</p><a class="lp-btn gold lg full" href="#vip" data-cta="c-final-vip">See the two ways in</a></div></div>
+      ${dc ? `<p style="margin-top:18px;color:#8a94a8;font-size:13.5px">Just want to look around? <a href="${esc(dc)}" target="_blank" rel="noopener" style="color:#f5c25b;font-weight:800" data-cta="c-final-discord">Join the free Discord →</a></p>` : ''}
+    </div>
+  </div></section>
 
   <footer class="lp-foot"><div class="wrap">
-    <div class="row"><a class="brand" href="#home" style="font-size:14px">${LOGO}Goldmine<span>PRO</span></a><span class="grow"></span>
-      <a href="#pricing">Pricing</a><a href="#faq">FAQ</a><a href="#" data-act="legal" data-k="terms">Terms</a><a href="#" data-act="legal" data-k="privacy">Privacy</a><a href="#" data-act="legal" data-k="risk">Risk disclosure</a><a href="mailto:support@yourdomain.com">Support</a></div>
-    <p><b>Risk warning:</b> CFDs and forex are complex instruments and come with a high risk of losing money rapidly due to leverage. Goldmine Pro and GoldZone are software only and do not provide investment advice, signals or brokerage services. Backtests describe the past and are no promise. Bonus values are what each item would cost on its own. MetaTrader is a trademark of MetaQuotes Ltd and TradingView of TradingView, Inc.; Goldmine Pro is not affiliated with either, or with any prop firm.</p>
-    <p>© ${new Date().getFullYear()} Goldmine Pro</p>
+    <div class="row"><a class="brand" href="#home" style="font-size:14px">${LOGO}VRS<span>VALUE RESEARCH SYSTEMS</span></a><span class="grow"></span>
+      <a href="#vip">VIP</a><a href="#faq">FAQ</a>${dc ? `<a href="${esc(dc)}" target="_blank" rel="noopener">Discord</a>` : ''}<a href="#" data-act="legal" data-k="terms">Terms</a><a href="#" data-act="legal" data-k="privacy">Privacy</a><a href="#" data-act="legal" data-k="risk">Risk disclosure</a><a href="mailto:support@yourdomain.com">Support</a></div>
+    <p><b>Risk warning:</b> CFDs and forex are complex instruments and come with a high risk of losing money rapidly due to leverage. VRS Executor and VRS Indicator are software only and do not provide investment advice, signals or brokerage services. Backtests describe the past and are no promise.</p>
+    <p><b>Partner brokers:</b> we may receive a commission from partner brokers when you open an account through our links. That does not change our software or what you pay for it. We are not a broker, do not hold client money and do not recommend any broker for your situation: check each broker's regulation, conditions and fees yourself.</p>
+    <p>MetaTrader is a trademark of MetaQuotes Ltd and TradingView of TradingView, Inc.; VRS is not affiliated with either, or with any prop firm. © ${new Date().getFullYear()} VRS · Value Research Systems</p>
   </div></footer>
-  <div class="stickycta" id="stickyCta"><div><b>${lead ? `${td} days free` : 'GoldZone Lite · free'}</b><small>${lead ? `then ${money2(price)}/mo · ${G}-day guarantee` : 'TradingView indicator · 2 min'}</small></div><a class="btn acc md" href="${lead ? '#signup' : '#tv'}" data-cta="c-sticky">${lead ? 'Start free' : 'Get it free'}</a></div>
+  <div class="stickycta" id="stickyCta"><div><b>${lead ? 'VRS VIP' : 'VRS Indicator Lite · free'}</b><small>${lead ? (live ? `free via a partner broker, or ${money2(price)}/mo` : `${money2(price)}/mo · ${td} days free`) : 'TradingView zones · 2 min'}</small></div><a class="btn acc md" href="${lead ? '#vip' : '#tv'}" data-cta="c-sticky">${lead ? 'See VIP' : 'Get it free'}</a></div>
   </div>`;
-  lpReveal(); LPS.auto = true; sysPanel();
-  $$('.lp-stack').forEach(p => [...p.children].forEach((ch, i) => ch.style.setProperty('--i', i)));
-  lpFx();
+  lpReveal(); lpFx();
 }
+// "I opened my account" on the landing: sign up first (or go straight to the dashboard box when logged in)
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-intent-broker]'); if (!b) return;
+  track('intent', { plan: 'broker' });
+  if (A.me) { e.preventDefault(); location.hash = 'dashboard'; setTimeout(() => $('#brokerBox')?.scrollIntoView({ behavior: 'smooth' }), 200); return }
+  store.set('gpIntent', 'broker');
+});
 
 function afterLead(source) {
   if (LPV === 'a') return;
-  const F = FOUND(), pro = P('pro') || OFFLINE_PLANS.plans.pro, price = F.open ? F.month : pro.month, td = A.plans?.trial_days || 7;
-  const card = !!A.plans?.trial_card;
+  const pro = P('pro') || OFFLINE_PLANS.plans.pro, td = A.plans?.trial_days || 7, dc = DISCORD();
   const tv = source.startsWith('tv');
-  setTimeout(() => openModal(`<div class="offer lpb-ty"><span class="obadge">✓ ${tv ? 'GOLDZONE LITE + THE PLAYBOOK ARE' : 'YOUR RULEBOOK IS'} OPEN IN A NEW TAB</span>
-    <h3>${tv ? 'Now let the trades <span class="free">take themselves</span>' : `Now try Goldmine <span class="free">free for ${td} days</span>`}</h3>
-    <p>${tv ? `Lite shows you where. Goldmine Pro adds GoldZone Pro on TradingView (A / B / C grades and the backtest card) and sends the setups you allow to MT5: the lot sized from your risk, your daily limit enforced, the partial and break-even done. Free for ${td} days, on a paper account first.` :'Your Rulebook tells you the rules. Goldmine applies them on every order: it sizes the lot from your risk, shows the money at risk before you click, and locks new trades at your daily limit.'}</p>
-    <div class="ocmp"><div class="win"><small>Next ${td} days</small><b>FREE</b><span>${card ? 'nothing charged until day ' + (td + 1) : 'no card needed'}</span></div>
-      <div><small>After that, only if you stay</small><b>${money2(price)}<em>/mo</em></b><span>${F.open ? `founding price for life · <s>${money2(pro.month)}</s>` : 'cancel anytime'}</span></div></div>
-    <div class="oact"><a class="btn acc lg" href="#signup" data-cta="b-ty-offer" onclick="resolveModal(null)">Start my free ${td}-day trial →</a><button class="btn ghost md" data-offer="no">${tv ? 'Just GoldZone, thanks' : 'Just the Rulebook, thanks'}</button></div>
-    <small class="mut" style="display:block;margin-top:10px">${card ? 'Card needed, nothing charged during the trial' : 'No card · nothing to cancel if you don\'t continue'} · ${GUAR()}-day guarantee after you subscribe</small></div>`), 500);
+  setTimeout(() => openModal(`<div class="offer lpb-ty"><span class="obadge">✓ ${tv ? 'VRS INDICATOR LITE + THE PLAYBOOK ARE' : 'YOUR RULEBOOK IS'} OPEN IN A NEW TAB</span>
+    <h3>Next: <span class="free">VRS VIP</span></h3>
+    <p>Lite shows you the zones. VIP shows you the trade: VRS Indicator Pro adds the entry, the stop, R levels, A / B / C grades and the backtest card, and VRS Executor sends the setups you allow to MT5: the lot sized from your risk, your daily limit enforced, the partial and break-even done. Plus the VIP Discord.</p>
+    <div class="ocmp"><div class="${BROKERS_LIVE() ? 'win' : ''}"><small>Way 1${BROKERS_LIVE() ? '' : ' · coming soon'}</small><b>FREE</b><span>open an account with a partner broker</span></div>
+      <div><small>Way 2 · any broker</small><b>${money2(pro.month)}<em>/mo</em></b><span>${td} days free first</span></div></div>
+    <div class="oact"><a class="btn acc lg" href="#vip" data-cta="b-ty-offer" onclick="resolveModal(null)">See the two ways in →</a><button class="btn ghost md" data-offer="no">${tv ? 'Just the indicator, thanks' : 'Just the Rulebook, thanks'}</button></div>
+    ${dc ? `<small class="mut" style="display:block;margin-top:10px"><a href="${esc(dc)}" target="_blank" rel="noopener" style="color:var(--acc);font-weight:700">Join the free Discord</a> to ask questions first.</small>` : ''}</div>`), 500);
   track('ty_offer', { source });
 }
 
@@ -1785,8 +1715,8 @@ addEventListener('scroll', () => { // sticky trial button on phones: after the h
 function authBox(mode) {
   const su = mode === 'signup';
   openModal(`<form class="auth" id="authF" autocomplete="on">
-    <h3>${su ? 'Start Goldmine Pro free' : 'Welcome back'}</h3>
-    <p>${su ? (store.get('gpRef', '') ? '<b style="color:var(--acc)">🎁 Invited by a friend: ' + refDays() + ' days free instead of ' + (A.plans?.trial_days || 7) + '.</b><br>' : '') + (A.plans?.trial_card ? `${trialDays()} days of every Pro feature. Add a card next; nothing is charged before day ${trialDays() + 1}, cancel in 2 clicks.` : `${trialDays()} days of every Pro feature, free. No card, nothing to cancel.`) : 'Log in to your Goldmine Pro account.'}</p>
+    <h3>${su ? (store.get('gpIntent', '') === 'broker' ? 'Create your VRS account' : 'Start VRS VIP free') : 'Welcome back'}</h3>
+    <p>${su ? (store.get('gpRef', '') ? '<b style="color:var(--acc)">🎁 Invited by a friend: ' + refDays() + ' days free instead of ' + (A.plans?.trial_days || 7) + '.</b><br>' : '') + (A.plans?.trial_card ? `${trialDays()} days of VRS VIP. Add a card next; nothing is charged before day ${trialDays() + 1}, cancel in 2 clicks.` : `${trialDays()} days of VRS VIP, free. No card, nothing to cancel.${BROKERS_LIVE() ? ' Opened an account with a partner broker? Your dashboard asks for the account number next.' : ''}`) : 'Log in to your VRS account.'}</p>
     <label>Email<input class="in" name="email" type="email" autocomplete="email" required placeholder="you@example.com"></label>
     <label>Password<input class="in" name="password" type="password" autocomplete="${su ? 'new-password' : 'current-password'}" required minlength="8" placeholder="${su ? 'At least 8 characters' : ''}"></label>
     <div class="err" id="authErr"></div>
@@ -1802,14 +1732,18 @@ function authBox(mode) {
       const j = await srv('/api/auth/' + mode, { ...Object.fromEntries(f), ...(su ? { ref: store.get('gpRef', '') } : {}) });
       A.token = j.token; store.set('saasToken', j.token); setMe(j); resolveModal(null); track(su ? 'signup' : 'login');
       const want = su && store.get('gpIntent', ''); store.set('gpIntent', '');
+      if (want === 'broker') { // came from "I opened my account" (partner broker): the trial starts, the dashboard asks for the account number
+        toast('🎉 Welcome! Now type your MT5 account number so we can switch VIP on.', 'ok', 7000);
+        location.hash = 'dashboard'; route(); setTimeout(() => $('#brokerBox')?.scrollIntoView({ behavior: 'smooth' }), 300); return;
+      }
       if (want) { // picked a plan before signing up: Lifetime goes straight to checkout; monthly / yearly start the free trial and remember the choice
         const [pl, iv] = want.split(':');
-        if (pl === 'goldzone') return buy(pl, iv); // GoldZone Pro has no trial: straight to checkout
+        if (pl === 'goldzone') return buy(pl, iv); // VRS Indicator Pro has no trial: straight to checkout
         if (iv.startsWith('lifetime') || A.plans?.trial_card) return buy(pl, iv, !iv.startsWith('lifetime') && !!A.plans?.trial_card);
         A.interval = iv; store.set('saasIvl', iv); store.set('gpWant', want);
       }
       if (su && A.plans?.trial_card && SUB().status === 'none') return buy('pro', A.interval, true); // card trial: straight to checkout
-      toast(su ? `🎉 Welcome! Your ${SUB().days_left || A.plans?.trial_days || 7}-day Goldmine Pro trial has started.` : 'Logged in', 'ok');
+      toast(su ? `🎉 Welcome! Your ${SUB().days_left || A.plans?.trial_days || 7}-day VRS VIP trial has started.` : 'Logged in', 'ok');
       location.hash = su ? 'setup' : 'dashboard'; route();
     } catch (err) { $('#authErr').textContent = err.message; b.disabled = false; b.textContent = su ? 'Start my free trial →' : 'Log in' }
   });
@@ -1821,28 +1755,28 @@ function subSummary() {
   const s = SUB(), p = P(s.plan);
   const line = {
     trialing: `<b>${s.days_left} day${s.days_left === 1 ? '' : 's'}</b> left in your free ${esc(p?.name || '')} trial (until ${dt(s.period_end)}).`,
-    active: s.cancel_at_end ? `Cancelled. You keep access until <b>${dt(s.period_end)}</b>.` : `Renews on <b>${dt(s.period_end)}</b> · ${s.interval === 'year' ? eur(p.year) + ' / year' : eur(p.month) + ' / month'}.`,
+    active: s.interval === 'broker' ? 'VIP through your partner-broker account: nothing to pay, it stays on while that account is active.'
+      : s.interval === 'lifetime' ? 'Lifetime: nothing to renew.'
+      : s.cancel_at_end ? `Cancelled. You keep access until <b>${dt(s.period_end)}</b>.` : `Renews on <b>${dt(s.period_end)}</b> · ${s.interval === 'year' ? eur(p.year) + ' / year' : eur(p.month) + ' / month'}.`,
     past_due: 'Your last payment failed. Update your card to keep trading.',
     canceled: `Cancelled. Access until <b>${dt(s.period_end)}</b>.`,
     expired: 'Your access has ended. Choose a plan to continue trading.',
   }[s.status] || 'Choose a plan to start.';
   const trialPct = s.status === 'trialing' ? clamp(100 - s.days_left / (A.plans?.trial_days || 7) * 100, 4, 100) : 0;
-  const cta = s.status === 'trialing' || !s.valid ? `<a class="btn acc md" href="#billing">Choose a plan</a>` : s.status === 'past_due' ? `<button class="btn acc md" data-act="portal">Update card</button>` : `<a class="btn md" href="#billing">Manage plan</a>`;
+  const cta = s.interval === 'broker' && s.valid ? '' : s.status === 'trialing' || !s.valid ? `<a class="btn acc md" href="#billing">Keep VIP</a>` : s.status === 'past_due' ? `<button class="btn acc md" data-act="portal">Update card</button>` : `<a class="btn md" href="#billing">Manage plan</a>`;
   return `<div class="box"><div class="subhero"><div><div style="display:flex;gap:8px;align-items:center">${stPill(s)}<span class="mut" style="font-size:12px;font-weight:700">${esc(p?.name || 'No')} plan</span></div>
     <div class="big" style="margin-top:6px">${s.valid ? 'You are good to trade' : 'Trading is paused'}</div><p style="color:var(--mut);font-size:13.5px;margin-top:4px">${line}</p></div><span class="grow"></span>${cta}</div>
     ${trialPct ? `<div class="bar2"><i style="width:${trialPct}%"></i></div>` : ''}
     ${trialOffer()}</div>`;
 }
-// trial ending / expired: lock the founding price (main), Starter (downsell), Lifetime (upsell)
+// trial ending / expired: keep VIP, the two ways (partner broker = free, or pay; founding price while it is open)
 function trialOffer() {
   const s = SUB(); if (!(s.status === 'trialing' || s.status === 'expired' || (s.status === 'canceled' && !s.valid))) return '';
-  const pro = P('pro'), st = P('starter'); if (!pro) return '';
-  const urgent = s.status !== 'trialing' || s.days_left <= 3;
-  return `<div class="toffer ${urgent ? 'urgent' : ''}"><div><b>${s.status === 'trialing' ? (urgent ? `⏳ ${s.days_left} day${s.days_left === 1 ? '' : 's'} left: lock your founding price now` : '🏷️ Founding price is still open') : 'Pick up where you left off'}</b>
-      <small>Pro ${money2(planPrice('pro', 'month'))}/month${isFound('pro') ? ` instead of ${money2(pro.month)}, locked for as long as you stay` : ''}. Or yearly ${money2(planPrice('pro', 'year'))}.</small></div>
-    <div class="tbtns">${store.get('gpWant', '') && store.get('gpWant', '') !== 'pro:month' && P(store.get('gpWant').split(':')[0]) ? `<button class="btn acc md" data-buy="${store.get('gpWant').split(':')[0]}" data-bivl="${store.get('gpWant').split(':')[1]}" data-cta="trial-chosen">Continue with ${P(store.get('gpWant').split(':')[0]).name} ${store.get('gpWant').split(':')[1] === 'year' ? 'yearly' : 'monthly'}</button>` : ''}<button class="btn acc md" data-buy="pro" data-bivl="month" data-cta="trial-pro">Keep Pro · ${money2(planPrice('pro', 'month'))}/mo</button><button class="btn md" data-buy="pro" data-bivl="year" data-cta="trial-pro-year">Yearly · ${money2(planPrice('pro', 'year'))}</button>
-      ${pro.lifetime3 && FOUND().lifetime_left > 0 ? `<button class="btn md" data-buy="pro" data-bivl="lifetime3" data-cta="trial-lifetime3">Lifetime · 3 × ${money2(pro.lifetime3)}</button>` : ''}
-      ${st ? `<button class="btn ghost md" data-buy="starter" data-bivl="month" data-cta="trial-starter">Just the basics · Starter ${money2(st.month)}</button>` : ''}</div></div>`;
+  const pro = P('pro'); if (!pro) return '';
+  const urgent = s.status !== 'trialing' || s.days_left <= 3, pend = A.me?.broker?.status === 'pending';
+  return `<div class="toffer ${urgent ? 'urgent' : ''}"><div><b>${s.status === 'trialing' ? (urgent ? `⏳ ${s.days_left} day${s.days_left === 1 ? '' : 's'} left: keep VIP` : 'Keep VIP after your trial') : 'Get VIP back'}</b>
+      <small>${pend ? 'Your partner-broker account is being checked: once approved, VIP is free. ' : BROKERS_LIVE() ? 'Free with a new account at a partner broker, or ' : ''}${money2(planPrice('pro', 'month'))}/month${isFound('pro') ? ` (founding price instead of ${money2(pro.month)}, locked for as long as you stay)` : ''}.</small></div>
+    <div class="tbtns"><button class="btn acc md" data-buy="pro" data-bivl="month" data-cta="trial-pro">Keep VIP · ${money2(planPrice('pro', 'month'))}/mo</button>${pend || !BROKERS_LIVE() ? '' : `<button class="btn md" onclick="document.getElementById('brokerBox')?.scrollIntoView({behavior:'smooth'})" data-cta="trial-broker">Free via a partner broker</button>`}</div></div>`;
 }
 function renderDashboard() {
   $('#view').dataset.v = 'dash';
@@ -1852,11 +1786,11 @@ function renderDashboard() {
     [true, 'Account created', me.user.email],
     [s.valid, 'Plan active', s.valid ? (STATUS[s.status]?.[0] + ' · ' + (P(s.plan)?.name || '')) : 'Choose a plan', s.valid ? '' : `<a class="btn sm acc" href="#billing">Choose</a>`],
     ...(gzOnly ? [
-      [!!tvu.user, 'TradingView username sent', tvu.user || 'So we can add you to GoldZone Pro', `<button class="btn sm" onclick="document.getElementById('tvUser')?.focus()">Add</button>`],
-      [!!tvu.granted, 'GoldZone Pro on your chart', tvu.granted ? 'Indicators → Invite-only scripts → GoldZone Pro' : 'Access within 24 hours of your username', ''],
+      [!!tvu.user, 'TradingView username sent', tvu.user || 'So we can add you to VRS Indicator Pro', `<button class="btn sm" onclick="document.getElementById('tvUser')?.focus()">Add</button>`],
+      [!!tvu.granted, 'VRS Indicator Pro on your chart', tvu.granted ? 'Indicators → Invite-only scripts → VRS Indicator Pro' : 'Access within 24 hours of your username', ''],
     ] : [
       [!!store.get('dlBridge', 0) || nm > 0, 'Bridge downloaded', 'One zip with your license key inside', `<a class="btn sm" href="#setup">Setup</a>`],
-      [nm > 0 && !!conn, 'Bridge connected', nm ? `${nm} PC${nm > 1 ? 's' : ''} linked to your license` : 'Open MT5 and double-click START GOLDMINE', `<a class="btn sm" href="#setup">Connect</a>`],
+      [nm > 0 && !!conn, 'Bridge connected', nm ? `${nm} PC${nm > 1 ? 's' : ''} linked to your license` : 'Open MT5 and double-click START VRS', `<a class="btn sm" href="#setup">Connect</a>`],
     ]),
   ];
   const done = steps.filter(x => x[0]).length;
@@ -1868,27 +1802,54 @@ function renderDashboard() {
       <div class="box"><h3>Getting started <span class="grow"></span><span class="mut" style="font-size:12px">${done}/4</span></h3>
         <div class="check">${steps.map(([ok, t, d, b]) => `<div class="ck ${ok ? 'done' : ''}"><i>${ok ? '✓' : ''}</i><div><b>${t}</b><small>${esc(d)}</small></div>${ok ? '' : (b || '')}</div>`).join('')}</div></div>
       <div class="box"><h3>Your plan</h3>
-        <div class="lim"><span>MT5 accounts</span><b>${s.limits?.accounts ?? 0}</b><span>Bridge PCs</span><b>${nm} / ${s.limits?.machines ?? 0}</b><span>Billing</span><b>${s.interval === 'year' ? 'Yearly' : 'Monthly'}</b></div>
+        <div class="lim"><span>MT5 accounts</span><b>${s.limits?.accounts ?? 0}</b><span>Bridge PCs</span><b>${nm} / ${s.limits?.machines ?? 0}</b><span>Billing</span><b>${({ year: 'Yearly', broker: 'Partner broker', lifetime: 'Lifetime' })[s.interval] || 'Monthly'}</b></div>
         <div class="flist">${ALLF.map(f => `<span class="${s.features?.includes(f) ? 'on' : ''}">${s.features?.includes(f) ? '✓' : '–'} ${FEAT[f]}</span>`).join('')}</div>
-        ${s.plan === 'starter' && s.valid && P('pro') ? `<div class="toffer" style="margin-top:14px"><div><b>Unlock Layers, Basket BE & the Trade manager</b><small>Pro is only ${money2(Math.round((P('pro').month - P('starter').month) * 100) / 100)} more per month, plus 5 accounts and paper trading.</small></div><div class="tbtns"><button class="btn acc md" data-buy="pro" data-bivl="${s.interval === 'year' ? 'year' : 'month'}" data-cta="upsell-starter-pro">Upgrade to Pro</button></div></div>` : ''}
-        ${s.plan !== 'elite' ? `<a class="btn md" style="margin-top:14px;width:100%" href="#billing">Compare plans</a>` : ''}</div>
+        ${s.interval === 'broker' ? '' : `<a class="btn md" style="margin-top:14px;width:100%" href="#billing">Plan & billing</a>`}</div>
     </div>
+    ${discordBox()}
+    ${brokerBox()}
     ${tvBox()}
     ${callBox() || refBox() ? `<div class="g g2">${callBox()}${refBox()}</div>` : ''}
-    ${SUB().valid && SUB().status !== 'trialing' ? addonMenu() : ''}
     ${s.plan === 'goldzone' && s.valid ? '' : accountsBox() + licenseBox()}
     </div></div></div>`;
   startBridgeWatch(); loadAccts();
 }
-/* ---------------------------------------------------------------- GoldZone Pro on TradingView: the customer's username (access is given by hand) */
+/* ---------------------------------------------------------------- Discord: the VIP invite (only for active VIP) or the free one */
+function discordBox() {
+  const vip = A.me?.discord_vip, pub = DISCORD(); if (!vip && !pub) return '';
+  return `<div class="box"><h3>💬 ${vip ? 'The VIP Discord' : 'The free Discord'}</h3>
+    <p class="mut" style="font-size:12.5px;margin:-4px 0 12px">${vip ? 'Members-only channels: setup reviews, install help and the monthly challenge. Use the same name as here so we can give you the VIP role.' : 'Ask questions and see the setups the community talks about. The VIP channels open when your VIP is active.'}</p>
+    <a class="btn acc md" href="${esc(vip || pub)}" target="_blank" rel="noopener" data-cta="dash-discord-${vip ? 'vip' : 'free'}">Join ${vip ? 'the VIP Discord' : 'the free Discord'} →</a></div>`;
+}
+/* ---------------------------------------------------------------- VIP through a partner broker: the customer types the broker + MT5 account number, you approve in Admin */
+function brokerBox() {
+  const b = A.me?.broker || {}, s = SUB(), list = BROKERS();
+  if (s.valid && s.status === 'active' && s.interval !== 'broker' && b.status !== 'pending') return ''; // already paying: nothing to ask
+  const nm = k => list.find(x => x.key === k)?.name || k;
+  if (!BROKERS_LIVE() && !b.status) // no partner links yet: a short "coming soon" note, no form
+    return `<div class="box" id="brokerBox"><h3>🤝 VIP free through a partner broker <span class="grow"></span><span class="st mute">coming soon</span></h3>
+      <p class="mut" style="font-size:12.5px;margin:-4px 0 0">We're finalising our broker partnerships. Soon you can get VIP for free by opening a new account with one of them. We'll let you know here and by email.</p></div>`;
+  const state = b.status === 'approved' ? `<span class="st ok">VIP active · ${esc(nm(b.broker))} #${esc(b.login)}</span>`
+    : b.status === 'pending' ? `<span class="st mute">being checked · ${esc(nm(b.broker))} #${esc(b.login)}</span>`
+    : b.status === 'rejected' ? `<span class="st warn">not found · check the number</span>` : '';
+  return `<div class="box" id="brokerBox"><h3>🤝 VIP free through a partner broker <span class="grow"></span>${state}</h3>
+    <p class="mut" style="font-size:12.5px;margin:-4px 0 12px">${b.status === 'approved' ? 'Your VIP comes with your partner-broker account. It stays on while that account is active.'
+      : b.status === 'rejected' ? 'We could not find this account under our partnership. It has to be a new account opened through our link. Check the number (MT5: File → Login to Trade Account) and send it again, or write to support.'
+      : 'Open a new MT5 account through one of our links, then type the broker and the account number here. We check it in the broker\'s partner portal and switch VIP on, usually within 24 hours.'}</p>
+    ${b.status === 'approved' ? '' : `<div class="vipbs" style="margin-bottom:12px">${brokerBtns('dash')}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><select class="in" id="brkSel" style="flex:0 0 170px">${list.map(x => `<option value="${x.key}" ${x.key === b.broker ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</select>
+      <input class="in" id="brkLogin" inputmode="numeric" maxlength="20" placeholder="MT5 account number" value="${esc(b.login || '')}" style="flex:1;min-width:160px"><button class="btn acc md" data-act="brkSend">${b.status === 'pending' ? 'Update' : 'Send'}</button></div>
+    <p class="mut" style="font-size:11.5px;margin-top:10px">We may earn a commission from partner brokers. Check the broker's conditions and regulation before you open an account.</p>`}</div>`;
+}
+/* ---------------------------------------------------------------- VRS Indicator Pro on TradingView: the customer's username (access is given by hand) */
 function tvBox() {
   const s = SUB(), tv = A.me.tradingview || {}, has = s.valid && (s.features || []).includes('goldzone_pro');
   if (!has) return '';
   const pro = P('pro') || OFFLINE_PLANS.plans.pro, F = FOUND();
-  return `<div class="box" id="tvBox"><h3>📈 GoldZone Pro on TradingView <span class="grow"></span>${tv.granted ? '<span class="st ok">access given</span>' : tv.user ? '<span class="st mute">waiting for access</span>' : ''}</h3>
-    <p class="mut" style="font-size:12.5px;margin:-4px 0 12px">GoldZone Pro is an invite-only script. Type your TradingView username (top right on tradingview.com → your profile), and we add you within 24 hours. Then: Indicators → <b>Invite-only scripts</b> → GoldZone Pro.</p>
+  return `<div class="box" id="tvBox"><h3>📈 VRS Indicator Pro on TradingView <span class="grow"></span>${tv.granted ? '<span class="st ok">access given</span>' : tv.user ? '<span class="st mute">waiting for access</span>' : ''}</h3>
+    <p class="mut" style="font-size:12.5px;margin:-4px 0 12px">VRS Indicator Pro is an invite-only script. Type your TradingView username (top right on tradingview.com → your profile), and we add you within 24 hours. Then: Indicators → <b>Invite-only scripts</b> → VRS Indicator Pro.</p>
     <div style="display:flex;gap:8px;flex-wrap:wrap"><input class="in" id="tvUser" maxlength="40" placeholder="Your TradingView username" value="${esc(tv.user || '')}" style="flex:1;min-width:200px"><button class="btn acc md" data-act="tvUser">Save</button></div>
-    ${s.plan === 'goldzone' ? `<div class="toffer" style="margin-top:14px"><div><b>Let the trades take themselves</b><small>Goldmine Pro sends every GoldZone Pro alert to MT5: the lot sized from your risk, your daily limit enforced, the partial and break-even done for you. ${F.open ? `Founding price €${F.month}/month.` : `€${pro.month}/month.`}</small></div><div class="tbtns"><button class="btn acc md" data-buy="pro" data-bivl="${s.interval === 'year' ? 'year' : 'month'}" data-cta="upsell-goldzone-pro">Upgrade to Goldmine Pro</button></div></div>` : ''}
+    ${s.plan === 'goldzone' ? `<div class="toffer" style="margin-top:14px"><div><b>Let the trades take themselves</b><small>VRS VIP adds VRS Executor, which sends every VRS Indicator Pro alert to MT5: the lot sized from your risk, your daily limit enforced, the partial and break-even done for you. ${F.open ? `Founding price €${F.month}/month.` : `€${pro.month}/month.`}</small></div><div class="tbtns"><button class="btn acc md" data-buy="pro" data-bivl="${s.interval === 'year' ? 'year' : 'month'}" data-cta="upsell-goldzone-pro">Upgrade to VRS VIP</button></div></div>` : ''}
   </div>`;
 }
 /* ---------------------------------------------------------------- API key + MT5 accounts on the customer's own bridge */
@@ -1904,18 +1865,18 @@ function accountsBox() {
         <label>Server<input class="in" id="naServer" autocomplete="off" placeholder="exact name, e.g. VantageMarkets-Live 10"></label>
         <label>Name in the terminal (optional)<input class="in" id="naLabel" autocomplete="off" placeholder="e.g. Prop account 100K"></label>
       </div>
-      <p class="mut" style="font-size:12px;margin-top:8px">🔒 Your password goes straight from this browser to Goldmine on your own PC and is stored only there. It is never sent to our servers. Use the <b>trading</b> password, not the investor (read-only) password. The server name must match MT5 exactly (MT5: File → Login to Trade Account).</p>
+      <p class="mut" style="font-size:12px;margin-top:8px">🔒 Your password goes straight from this browser to VRS Executor on your own PC and is stored only there. It is never sent to our servers. Use the <b>trading</b> password, not the investor (read-only) password. The server name must match MT5 exactly (MT5: File → Login to Trade Account).</p>
       <div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button class="btn acc md" data-act="acctAdd">Test login & add</button><span class="mut" style="font-size:12px" id="acctMsg"></span></div>
     </details>
     <h3 style="margin-top:20px">🔐 Your bridge API key</h3>
     <div class="key"><code id="bkey" data-k="${esc(k)}">${k ? esc(k.slice(0, 6)) + '••••••••••••••••••••' : 'Download the bridge first (Setup, step 1)'}</code>${k ? '<button class="btn md" data-act="revealBk">Show</button><button class="btn md acc" data-act="copyBk">Copy</button>' : ''}</div>
-    <p class="mut" style="font-size:12px;margin-top:8px">This website uses it automatically to talk to Goldmine on your PC; it is also in <b>config.json</b> as <code>api_key</code>. You only need it for <i>Trade from anywhere</i> (phone / other PC). Keep it private.</p>
+    <p class="mut" style="font-size:12px;margin-top:8px">This website uses it automatically to talk to VRS Executor on your PC; it is also in <b>config.json</b> as <code>api_key</code>. You only need it for <i>Trade from anywhere</i> (phone / other PC). Keep it private.</p>
   </div>`;
 }
 async function loadAccts() {
   const el = $('#acctList'); if (!el) return;
   if (!['ok', 'live', 'nomt5'].includes(BR.state)) { await checkBridge().catch(() => {}) }
-  if (!['ok', 'live', 'nomt5'].includes(BR.state)) { el.innerHTML = `<div class="empty">Start Goldmine on your PC (double-click START GOLDMINE) to see and add your accounts. <a href="#setup" style="color:var(--acc);font-weight:700">Setup →</a></div>`; return }
+  if (!['ok', 'live', 'nomt5'].includes(BR.state)) { el.innerHTML = `<div class="empty">Start VRS Executor on your PC (double-click START VRS) to see and add your accounts. <a href="#setup" style="color:var(--acc);font-weight:700">Setup →</a></div>`; return }
   try {
     const list = (await bridge('/api/accounts')).accounts || [], real = list.filter(a => !a.paper), lim = SUB().limits?.accounts || 0;
     if ($('#acctCount')) $('#acctCount').textContent = `${real.length}${lim ? ' of ' + lim : ''} used`;
@@ -1958,7 +1919,7 @@ function renderSetup() {
   const step = (n, isDone, title, body, open = true) => `<div class="wstep ${isDone ? 'done' : ''}"><div class="n">${isDone ? '✓' : n}</div><div><h4>${title}</h4>${open ? body : ''}</div></div>`;
   const sub = items => `<ol class="sub">${items.map(x => `<li>${x}</li>`).join('')}</ol>`;
   $('#view').innerHTML = `<div class="page"><div class="wrap" style="max-width:880px">
-    <div class="ph"><div><h1>Set up Goldmine Pro</h1><p>About 5 minutes, only once. This page follows along and shows what to do next.</p></div><span class="grow"></span><span class="st ${done === 4 ? 'ok' : 'mute'}">${done}/4 done</span></div>
+    <div class="ph"><div><h1>Set up VRS Executor</h1><p>About 5 minutes, only once. This page follows along and shows what to do next.</p></div><span class="grow"></span><span class="st ${done === 4 ? 'ok' : 'mute'}">${done}/4 done</span></div>
     <div class="bar2" style="margin:-8px 0 18px"><i style="width:${done * 25}%"></i></div>
 
     <div class="box pre"><h3>Before you start</h3>
@@ -1967,31 +1928,32 @@ function renderSetup() {
       <div><b>🔑 Your MT5 login details</b><small>Account number, password and server name. Your broker sent them by email when you opened the account.</small></div></div></div>
 
     <div class="wz">
-    ${step(1, dl, 'Download Goldmine for Windows', `
+    ${step(1, dl, 'Download VRS Executor for Windows', `
       <p>One zip file with everything already filled in: your license and a private security key. You never have to type them.</p>
-      <div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn acc lg" data-act="download">⬇ Download GoldmineBridge.zip</button><small class="mut">Saved in your <b>Downloads</b> folder · about 140 KB</small></div>`)}
+      <div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn acc lg" data-act="download">⬇ Download VRS ExecutorBridge.zip</button><small class="mut">Saved in your <b>Downloads</b> folder · about 140 KB</small></div>`)}
 
-    ${step(2, bridgeUp, 'Unzip it and start Goldmine', `
-      ${sub(['Open your <b>Downloads</b> folder. Right-click <b>GoldmineBridge.zip</b> → <b>Properties</b>, tick <b>Unblock</b> at the bottom (if you see it) → <b>OK</b>. This tells Windows you trust the download, so it won\'t warn about the files inside.',
-        'Right-click <b>GoldmineBridge.zip</b> → <b>Extract All…</b> → <b>Extract</b>.<br><small>Tip: move the extracted folder to your <b>Desktop</b> or <b>Documents</b>, so you find it again tomorrow.</small>',
-        'Open the <b>GoldmineBridge</b> folder and double-click <b>START GOLDMINE</b>.',
-        'Still a warning such as <b>“Windows protected your PC”</b>? Click <b>More info</b> → <b>Run anyway</b>. Goldmine is new and not yet known to Windows; this only happens once.',
+    ${step(2, bridgeUp, 'Unzip it and start VRS Executor', `
+      <div class="livechip bad" style="margin:0 0 12px">⚠ <span><b>First open MetaTrader 5 and log in to your account</b> (step 3 shows how). If MT5 is open but <b>not logged in</b>, it stops answering and this page keeps waiting. Logged in = a speed like <b>42.3 ms</b> in the bottom-right corner of MT5.</span></div>
+      ${sub(['Open your <b>Downloads</b> folder. Right-click <b>VRS ExecutorBridge.zip</b> → <b>Properties</b>, tick <b>Unblock</b> at the bottom (if you see it) → <b>OK</b>. This tells Windows you trust the download, so it won\'t warn about the files inside.',
+        'Right-click <b>VRS ExecutorBridge.zip</b> → <b>Extract All…</b> → <b>Extract</b>.<br><small>Tip: move the extracted folder to your <b>Desktop</b> or <b>Documents</b>, so you find it again tomorrow.</small>',
+        'Open the <b>VRS ExecutorBridge</b> folder and double-click <b>START VRS</b>.',
+        'Still a warning such as <b>“Windows protected your PC”</b>? Click <b>More info</b> → <b>Run anyway</b>. VRS Executor is new and not yet known to Windows; this only happens once.',
         'A window opens. The first start installs what it needs (Python included), which takes 1–3 minutes. It is ready when you see <b>Application startup complete</b>.',
-        '<b>Leave that window open</b> (you may minimise it). Closing it stops Goldmine.'])}
-      <div class="term"><i></i><i></i><i></i><pre>Starting the Goldmine bridge on http://127.0.0.1:8765  (keep this window open)
+        '<b>Leave that window open</b> (you may minimise it). Closing it stops VRS Executor.'])}
+      <div class="term"><i></i><i></i><i></i><pre>Starting the VRS Executor on http://127.0.0.1:8765  (keep this window open)
 Make sure MetaTrader 5 is open and logged in to your account.
 [setup] Using the MT5 account that is logged in: 12345678 on YourBroker-Live
 [license] licensed mode - server ${esc(A.me.server)}
 INFO:     Application startup complete.   <b>← ready</b></pre></div>
-      <div class="livechip ${bridgeUp ? 'ok' : ''}">${bridgeUp ? '✓ Goldmine is running on this PC' : '<span class="spin"></span> Waiting for Goldmine to start on this PC…'}</div>`)}
+      <div class="livechip ${bridgeUp ? 'ok' : ''}">${bridgeUp ? '✓ VRS Executor is running on this PC' : '<span class="spin"></span> Waiting for VRS Executor to start on this PC…'}</div>`)}
 
     ${step(3, mt5Up && algo !== false, 'Log in to MetaTrader 5 and allow trading', `
       ${sub(['Open <b>MetaTrader 5</b>.',
         'Click <b>File</b> → <b>Login to Trade Account</b>.',
         'Fill in your <b>Login</b> (account number) and <b>Password</b>, and pick the exact <b>Server</b> from your broker email (for example <i>VantageMarkets-Live 10</i> or <i>ICMarketsSC-Demo</i>). Tick <b>Save password</b> → <b>OK</b>.',
         'Check the bottom-right corner of MT5: it shows a speed like <b>42.3 ms</b>. If it says <i>Invalid account</i> or <i>No connection</i>, the login, password or server is wrong.',
-        'Click <b>Algo Trading</b> in the MT5 toolbar so the icon turns <b style="color:var(--up)">green ▶</b>. Without it, MT5 refuses every order from Goldmine.'])}
-      <div class="livechip ${mt5Up ? 'ok' : ''}">${mt5Up ? `✓ MetaTrader 5 is logged in: account ${esc(BR.h?.mt5?.login || BR.acc?.login || '')}${(BR.h?.mt5?.server || BR.acc?.server) ? ' on ' + esc(BR.h?.mt5?.server || BR.acc?.server) : ''}` : bridgeUp ? '<span class="spin"></span> Waiting for you to log in to MetaTrader 5…' : 'Start Goldmine first (step 2)'}</div>
+        'Click <b>Algo Trading</b> in the MT5 toolbar so the icon turns <b style="color:var(--up)">green ▶</b>. Without it, MT5 refuses every order from VRS Executor.'])}
+      <div class="livechip ${mt5Up ? 'ok' : ''}">${mt5Up ? `✓ MetaTrader 5 is logged in: account ${esc(BR.h?.mt5?.login || BR.acc?.login || '')}${(BR.h?.mt5?.server || BR.acc?.server) ? ' on ' + esc(BR.h?.mt5?.server || BR.acc?.server) : ''}` : bridgeUp ? '<span class="spin"></span> Waiting for you to log in to MetaTrader 5…' : 'Start VRS Executor first (step 2)'}</div>
       ${mt5Up && algo === false ? '<div class="livechip bad">✗ Algo Trading is OFF in MetaTrader 5: click the <b>Algo Trading</b> button so it turns green.</div>' : mt5Up && algo ? '<div class="livechip ok">✓ Algo Trading is on</div>' : ''}`)}
 
     ${s === 'live' ? liveCard() : ''}
@@ -2006,21 +1968,22 @@ INFO:     Application startup complete.   <b>← ready</b></pre></div>
 
     <h2 style="font-size:19px;margin:30px 0 12px">Questions & fixes</h2>
     <div class="faq" style="max-width:none">
-      ${[['I only see demo data (“Demo mode”) instead of my own account', 'Your own account appears automatically once Goldmine is connected. <b>You do not add anything to config.json</b>: Goldmine uses the account that is logged in to MetaTrader 5.<br>Check the 4 steps above: they must all be green. Then open the terminal from this site; the bar at the top says <b>● REAL account 12345678</b> (or DEMO account) instead of <i>Showing DEMO data</i>.<br>Still demo? MetaTrader 5 is probably logged in to a <b>real-money</b> account that is not allowed yet: click <b>Allow real-money trading</b> in the orange card above.'],
-         ['Where do I see which MT5 account is used?', 'In the terminal: the bar at the very top, and the account box in the top-right corner (click it to see balance, equity and margin). It is always the account that MetaTrader 5 is logged in to. To use another one, log in to it in MT5 and restart START GOLDMINE.'],
-         ['It keeps saying “Waiting for Goldmine to start”', 'Is the START GOLDMINE window open, and does it say <b>Application startup complete</b>? This page must be opened <b>on the same PC</b> as Goldmine (for another PC, phone or VPS see <i>Trade from anywhere</i> below). Some antivirus programs block it the first time: allow <b>python.exe</b> and start again.'],
-         ['How do I use my real-money (live) account?', 'Log in to it in MetaTrader 5 (step 3). Goldmine starts in <b>demo-only</b> mode for safety, so this page then shows a button <b>Allow real-money trading</b>. Click it and confirm. No files to edit and no restart needed. You can switch back to demo-only at any time.'],
+      ${[['I only see demo data (“Demo mode”) instead of my own account', 'Your own account appears automatically once VRS Executor is connected. <b>You do not add anything to config.json</b>: VRS Executor uses the account that is logged in to MetaTrader 5.<br>Check the 4 steps above: they must all be green. Then open the terminal from this site; the bar at the top says <b>● REAL account 12345678</b> (or DEMO account) instead of <i>Showing DEMO data</i>.<br>Still demo? MetaTrader 5 is probably logged in to a <b>real-money</b> account that is not allowed yet: click <b>Allow real-money trading</b> in the orange card above.'],
+         ['Where do I see which MT5 account is used?', 'In the terminal: the bar at the very top, and the account box in the top-right corner (click it to see balance, equity and margin). It is always the account that MetaTrader 5 is logged in to. To use another one, log in to it in MT5 and restart START VRS.'],
+         ['It keeps saying “Waiting…” or “MetaTrader 5 is not answering”', 'Most often MetaTrader 5 is open but <b>not logged in</b> to an account. In MT5 click <b>File → Login to Trade Account</b>, log in (tick <b>Save password</b>) and check the bottom-right corner shows a speed like <b>42.3 ms</b>. Still stuck? Close MT5 completely (if it hangs: end <b>terminal64.exe</b> in Task Manager; your open trades stay at your broker), start it again, log in, then close and restart START VRS.'],
+         ['It keeps saying “Waiting for VRS Executor to start”', 'Is the START VRS window open, and does it say <b>Application startup complete</b>? This page must be opened <b>on the same PC</b> as VRS Executor (for another PC, phone or VPS see <i>Trade from anywhere</i> below). Some antivirus programs block it the first time: allow <b>python.exe</b> and start again.'],
+         ['How do I use my real-money (live) account?', 'Log in to it in MetaTrader 5 (step 3). VRS Executor starts in <b>demo-only</b> mode for safety, so this page then shows a button <b>Allow real-money trading</b>. Click it and confirm. No files to edit and no restart needed. You can switch back to demo-only at any time.'],
          ['Orders are rejected: “AutoTrading disabled” / “Algo trading is disabled”', 'Click the <b>Algo Trading</b> button in the MetaTrader 5 toolbar so it turns green. If it still fails: in MT5 open <b>Tools → Options → Expert Advisors</b>, tick <b>Allow algorithmic trading</b> → OK.'],
-         ['How do I switch to another MT5 account?', 'Log in to the other account in MetaTrader 5 (<b>File → Login to Trade Account</b>), then close the START GOLDMINE window and double-click it again. Goldmine always uses the account that is logged in.'],
-         ['The window closes immediately, or says Python could not be installed', 'Install Python from <a href="https://www.python.org/downloads/" target="_blank" rel="noopener">python.org</a> and tick <b>“Add python.exe to PATH”</b> on the first screen of the installer. Then double-click START GOLDMINE again.'],
-         ['Start Goldmine automatically with Windows', 'Press <b>Win + R</b>, type <b>shell:startup</b>, Enter. Right-click START GOLDMINE → <b>Create shortcut</b> and move the shortcut into that folder. Also let MetaTrader 5 start with Windows and stay logged in.'],
-         ['Can I use a VPS?', 'Yes, that is the best way to keep it running 24/7. Install MetaTrader 5 and Goldmine on the Windows VPS exactly as above, then use <i>Trade from anywhere</i> to open the terminal from your own computer or phone.']]
+         ['How do I switch to another MT5 account?', 'Log in to the other account in MetaTrader 5 (<b>File → Login to Trade Account</b>), then close the START VRS window and double-click it again. VRS Executor always uses the account that is logged in.'],
+         ['The window closes immediately, or says Python could not be installed', 'Install Python from <a href="https://www.python.org/downloads/" target="_blank" rel="noopener">python.org</a> and tick <b>“Add python.exe to PATH”</b> on the first screen of the installer. Then double-click START VRS again.'],
+         ['Start VRS Executor automatically with Windows', 'Press <b>Win + R</b>, type <b>shell:startup</b>, Enter. Right-click START VRS → <b>Create shortcut</b> and move the shortcut into that folder. Also let MetaTrader 5 start with Windows and stay logged in.'],
+         ['Can I use a VPS?', 'Yes, that is the best way to keep it running 24/7. Install MetaTrader 5 and VRS Executor on the Windows VPS exactly as above, then use <i>Trade from anywhere</i> to open the terminal from your own computer or phone.']]
         .map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('')}
       <details ${manual ? 'open' : ''}><summary>📱 Trade from anywhere (phone, other PC, VPS)</summary>
-        <p>${sub(['On the PC where Goldmine runs, press <b>Win + R</b>, type <b>powershell</b>, Enter.',
+        <p>${sub(['On the PC where VRS Executor runs, press <b>Win + R</b>, type <b>powershell</b>, Enter.',
           'Install the free secure tunnel once: <code>winget install Cloudflare.cloudflared</code>',
           'Start it: <code>cloudflared tunnel --url http://localhost:8765</code> and keep that window open. It prints an address like <b>https://word-word-word.trycloudflare.com</b>.',
-          'Paste that address below, with the <b>api_key</b> from <b>config.json</b> in the GoldmineBridge folder (open it with Notepad).'])}</p>
+          'Paste that address below, with the <b>api_key</b> from <b>config.json</b> in the VRS ExecutorBridge folder (open it with Notepad).'])}</p>
         <div class="frm"><label>Bridge address<input class="in" id="bBase" value="${esc(CFG.base || 'http://127.0.0.1:8765')}" placeholder="https://xxxx.trycloudflare.com"></label>
           <label>Bridge key (api_key)<input class="in" id="bKey" type="password" value="${esc(CFG.key || '')}"></label></div>
         <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn acc md" data-act="saveManual">Connect</button><button class="btn md" data-act="resetManual">Back to automatic (this PC)</button></div>
@@ -2032,22 +1995,23 @@ INFO:     Application startup complete.   <b>← ready</b></pre></div>
 function liveCard() {
   const m = BR.h?.mt5 || {};
   return `<div class="box livecard"><h3>💰 Real-money account found <span class="st warn">demo-only mode</span></h3>
-    <p>MetaTrader 5 is logged in to <b>${esc(m.login || BR.acc?.login || '')}</b> on <b>${esc(m.server || '')}</b>, a <b>real-money</b> account. For your safety Goldmine starts in demo-only mode, so it does not trade this account yet.</p>
+    <p>MetaTrader 5 is logged in to <b>${esc(m.login || BR.acc?.login || '')}</b> on <b>${esc(m.server || '')}</b>, a <b>real-money</b> account. For your safety VRS Executor starts in demo-only mode, so it does not trade this account yet.</p>
     <div class="cols">
       <div><b>Trade this real account</b><small>Orders from the terminal go to your broker with real money.</small>
         ${BR.h?.simple_config === false ? '<small class="mut">This bridge uses a hand-written config.json: set <code>"live_trading": true</code> there.</small>' : '<button class="btn acc md" data-act="liveOn">Allow real-money trading</button>'}</div>
-      <div><b>Or practise first</b><small>Log in to a <b>demo</b> account in MetaTrader 5 (File → Login to Trade Account), then restart START GOLDMINE. Works right away.</small></div>
+      <div><b>Or practise first</b><small>Log in to a <b>demo</b> account in MetaTrader 5 (File → Login to Trade Account), then restart START VRS. Works right away.</small></div>
     </div></div>`;
 }
 function bridgeLive() {
   const s = BR.state, m = esc(BR.msg);
   if (s === 'lic') return `<div class="res on bad">${m}</div>`;
   if (s === 'live') return `<div class="res on warn">See “Real-money account found” above.</div>`;
-  if (s === 'nomt5') return `<div class="res on warn">Goldmine is running ✓ · ${m || 'now log in to MetaTrader 5 (step 3).'}</div>`;
-  return `<div class="res on warn"><span class="spin"></span> Waiting for Goldmine… ${m ? '<br><small>' + m + '</small>' : 'follow steps 1–3 above'}</div>`;
+  if (s === 'nomt5') return `<div class="res on warn">VRS Executor is running ✓ · ${m || 'now log in to MetaTrader 5 (step 3).'}</div>`;
+  if (/refuses|key is wrong/.test(BR.msg || '')) return `<div class="res on bad">🔑 ${m}</div>`; // running, but the key is not accepted: never "waiting"
+  return `<div class="res on warn"><span class="spin"></span> Waiting for VRS Executor… ${m ? '<br><small>' + m + '</small>' : 'follow steps 1–3 above'}</div>`;
 }
 async function setLive(on) {
-  if (on && !(await confirmBox('Allow real-money trading?', `<p>Orders you place in Goldmine will be sent to <b>${esc(BR.h?.mt5?.server || 'your broker')}</b> with <b>real money</b>.</p><p style="margin-top:8px">Trading leveraged products carries a high risk of losing money. You can switch back to demo-only at any time.</p>`, 'Yes, allow real money', 'danger'))) return;
+  if (on && !(await confirmBox('Allow real-money trading?', `<p>Orders you place in VRS Executor will be sent to <b>${esc(BR.h?.mt5?.server || 'your broker')}</b> with <b>real money</b>.</p><p style="margin-top:8px">Trading leveraged products carries a high risk of losing money. You can switch back to demo-only at any time.</p>`, 'Yes, allow real money', 'danger'))) return;
   try { await bridge('/api/settings/live', { enable: on }); toast(on ? 'Real-money trading allowed' : 'Back to demo-only', 'ok'); BR.state = ''; await checkBridge(); renderSetup() }
   catch (e) {
     if (/not found|404|older version/i.test(e.message)) toast('This bridge is an older version: download it again (step 1), or set "live_trading": true in its config.json and restart it.', 'err', 9000);
@@ -2055,14 +2019,14 @@ async function setLive(on) {
   }
 }
 async function findBridge() { // look for THIS customer's bridge on 8765-8769 (another bridge on the PC answers 401 and is skipped)
-  if (store.get('manualBridge', 0) || BRIDGE_ORIGIN || !A.me?.bridge_key) return;
+  if (BRIDGE_ORIGIN || !A.me?.bridge_key) return;
+  const ok = async (b, k) => { try { const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 1500); const r = await fetch(b.replace(/\/+$/, '') + '/api/health', { headers: { 'X-Gomez-Key': k || '' }, signal: ctl.signal }); clearTimeout(t); return r.ok } catch { return false } };
+  // the address + key saved in this browser first (e.g. typed by hand for a VPS): if it works, keep it
+  if (CFG.key && CFG.base && await ok(CFG.base, CFG.key)) { if (CFG.demo) { CFG.demo = false; saveCfg() } return }
+  // otherwise: the key of the logged-in account on this PC. A stale saved key (an old account, an old manual entry) no longer blocks it.
   const key = A.me.bridge_key, ports = [8765, 8766, 8767, 8768, 8769].map(p => 'http://127.0.0.1:' + p);
   for (const b of [...new Set([CFG.base, ...ports].filter(Boolean))]) {
-    try {
-      const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 1500);
-      const r = await fetch(b.replace(/\/+$/, '') + '/api/health', { headers: { 'X-Gomez-Key': key }, signal: ctl.signal }); clearTimeout(t);
-      if (r.ok) { if (CFG.base !== b || CFG.key !== key || CFG.demo) { CFG.base = b; CFG.key = key; CFG.demo = false; saveCfg() } return }
-    } catch {}
+    if (await ok(b, key)) { CFG.base = b; CFG.key = key; CFG.demo = false; saveCfg(); store.set('manualBridge', 0); return }
   }
 }
 async function checkBridge() {
@@ -2080,6 +2044,7 @@ async function checkBridge() {
       BR.refreshed = Date.now(); L = await bridge('/api/license/refresh', {}).catch(() => L);
     }
     if (L.enabled && !L.ok) { BR.state = /already used|ended|failed|cancel|Unknown|subscription/i.test(L.reason || '') ? 'lic' : 'nomt5'; BR.msg = L.reason || 'checking your license…' }
+    else if (h.mt5?.error) { BR.state = 'nomt5'; BR.msg = h.mt5.error } // MT5 is open but stuck: say so instead of "waiting"
     else {
       const a = await bridge('/api/accounts');
       const real = (a.accounts || []).filter(x => !x.paper);
@@ -2093,12 +2058,13 @@ async function checkBridge() {
     }
   } catch (e) {
     BR.state = 'wait'; BR.h = null; store.set('bridgeOk', 0);
-    BR.msg = /key is wrong/.test(e.message) && store.get('manualBridge', 0) ? 'The bridge key is wrong: use the api_key from config.json on that PC.' : '';
+    BR.msg = /key is wrong/.test(e.message) ? (store.get('manualBridge', 0) ? 'The bridge key is wrong: use the api_key from config.json on that PC.'
+      : 'VRS Executor is running, but it refuses the key of this account. On your own PC: log in with your owner (admin) account, or use “connect manually” below with the api_key from config.json. A customer: download the bridge again from step 1 (it has your key inside).') : '';
   } finally { BR.busy = false }
   if (JSON.stringify([BR.state, BR.msg, BR.h?.mt5]) !== prev) {
     if (location.hash.startsWith('#setup')) renderSetup();
     else if (location.hash.startsWith('#dashboard')) renderDashboard();
-    if (BR.state === 'ok' && !prev.startsWith('["ok"')) { toast('✓ Goldmine is connected', 'ok'); srv('/api/me').then(setMe).catch(() => {}) }
+    if (BR.state === 'ok' && !prev.startsWith('["ok"')) { toast('✓ VRS Executor is connected', 'ok'); srv('/api/me').then(setMe).catch(() => {}) }
   }
 }
 function startBridgeWatch() {
@@ -2118,8 +2084,8 @@ async function downloadBridge() {
     const r = await fetch(SRV + '/api/download/bridge?site=' + encodeURIComponent(SITE), { headers: { Authorization: 'Bearer ' + A.token } });
     if (!r.ok) { let d = ''; try { d = (await r.json()).detail } catch {} throw new Error(d || 'Download failed (' + r.status + ')') }
     const url = URL.createObjectURL(await r.blob()), a = document.createElement('a');
-    a.href = url; a.download = 'GoldmineBridge.zip'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 5000);
-    store.set('dlBridge', Date.now()); toast('Downloading · next: open MT5 and double-click START GOLDMINE', 'ok');
+    a.href = url; a.download = 'VRS ExecutorBridge.zip'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 5000);
+    store.set('dlBridge', Date.now()); toast('Downloading · next: open MT5 and double-click START VRS', 'ok');
     if (A.token) srv('/api/me').then(setMe).catch(() => {}); // the bridge key now exists
     if (location.hash.startsWith('#setup')) renderSetup();
   } catch (e) { toast(e.message, 'err') }
@@ -2173,14 +2139,14 @@ async function renderChallenge() {
   const bOk = () => ['ok', 'live', 'nomt5'].includes(BR.state);
   if (me && !CFG.demo && CFG.key) {
     if (bOk()) { try { local = ((await bridge('/api/challenge/stats?entry=' + me.id)).stats || [])[0] || null } catch {} }
-    else if (!A.chRetry) { A.chRetry = 1; checkBridge().catch(() => {}).then(() => { A.chRetry = 0; if (bOk() && $('#view').dataset.v === 'challenge') renderChallenge() }) } // show the page now, fill in this PC's part when Goldmine answers
+    else if (!A.chRetry) { A.chRetry = 1; checkBridge().catch(() => {}).then(() => { A.chRetry = 0; if (bOk() && $('#view').dataset.v === 'challenge') renderChallenge() }) } // show the page now, fill in this PC's part when VRS Executor answers
   }
   const meBox = !A.me
     ? `<div class="chme"><div><b>Join for free</b><small>Every member can play, also during the free trial.</small></div><a class="btn acc md" href="#signup" data-cta="ch-signup">Start free trial & join</a></div>`
     : !me ? `<div class="chme"><div><b>Pick your leaderboard name</b><small>Only this name is shown publicly, never your email.</small></div>
         <div class="reflink" style="flex:1;min-width:240px;max-width:420px"><input class="in" id="chNick" maxlength="20" placeholder="Nickname, e.g. GoldHunter" value="${esc((A.me.user.name || A.me.user.email.split('@')[0]).replace(/[^\w .-]/g, '').slice(0, 20))}"><button class="btn acc md" data-act="chJoin">Join the challenge</button></div></div>`
-    : !local ? `<div class="chme"><div><b>You're in as ${esc(me.nickname)}.</b><small>Last step: make your challenge account on your trading PC (Goldmine must be running there).</small></div>
-        ${['ok', 'live', 'nomt5'].includes(BR.state) ? '<button class="btn acc md" data-act="chStart">Create my challenge account</button>' : '<a class="btn md" href="#setup">Start Goldmine first →</a>'}</div>`
+    : !local ? `<div class="chme"><div><b>You're in as ${esc(me.nickname)}.</b><small>Last step: make your challenge account on your trading PC (VRS Executor must be running there).</small></div>
+        ${['ok', 'live', 'nomt5'].includes(BR.state) ? '<button class="btn acc md" data-act="chStart">Create my challenge account</button>' : '<a class="btn md" href="#setup">Start VRS Executor first →</a>'}</div>`
     : `<div class="chme"><div><b>${esc(me.nickname)} · ${(CHST[local.status] || CHST.active)[0]}</b><small>${local.status === 'failed' ? esc(local.fail) : me.rank ? `Rank #${me.rank} of ${j.board.filter(b => b.rank).length}` : `${Math.max(0, ch.min_trades - local.trades)} more closed trades to be ranked`}</small></div>
         <div class="chnums"><span>Return<b class="${local.return_pct >= 0 ? 'up' : 'dn'}">${pct(local.return_pct)}</b></span><span>Equity<b>${money(local.equity)}</b></span><span>Trades<b>${local.trades}</b></span><span>Max DD<b>${Number(local.max_dd_pct).toFixed(1)}%</b></span></div>
         <a class="btn acc md" href="#terminal">Trade it →</a></div>`;
@@ -2222,7 +2188,7 @@ async function chStart(entry, quiet) {
     const r = await bridge('/api/challenge/start', { entry });
     toast(`✓ Challenge account ready (#${r.account.login}). Open the terminal to trade it.`, 'ok', 6000); await chSync(true);
     if (!quiet) renderChallenge();
-  } catch (e) { toast(/404/.test(e.message) || /Not Found/i.test(e.message) ? 'Your Goldmine on this PC is too old for the challenge. Download it again in Setup.' : e.message, 'err', 7000) }
+  } catch (e) { toast(/404/.test(e.message) || /Not Found/i.test(e.message) ? 'Your VRS Executor on this PC is too old for the challenge. Download it again in Setup.' : e.message, 'err', 7000) }
 }
 
 /* ---------------------------------------------------------------- billing */
@@ -2230,10 +2196,10 @@ function renderBilling() {
   $('#view').dataset.v = 'billing';
   const s = SUB(), pays = A.me.payments || [];
   $('#view').innerHTML = `<div class="page"><div class="wrap">
-    <div class="ph"><div><h1>Plan & billing</h1><p>Change plan, switch to yearly billing, update your card or cancel.</p></div><span class="grow"></span>
-      ${A.me.test_mode ? (s.status === 'active' ? (s.cancel_at_end ? '<button class="btn md" data-act="resume">Resume subscription</button>' : '<button class="btn md" data-act="cancelSub">Cancel subscription</button>') : '') : '<button class="btn md" data-act="portal">Manage billing & invoices</button>' + (s.status === 'active' && s.interval !== 'lifetime' && !s.cancel_at_end ? '<button class="btn ghost md" data-act="cancelSub">Cancel</button>' : '')}</div>
+    <div class="ph"><div><h1>Plan & billing</h1><p>Keep VIP, switch to yearly billing, update your card or cancel. Or get VIP free through a partner broker.</p></div><span class="grow"></span>
+      ${A.me.test_mode ? (s.status === 'active' && s.interval !== 'broker' ? (s.cancel_at_end ? '<button class="btn md" data-act="resume">Resume subscription</button>' : '<button class="btn md" data-act="cancelSub">Cancel subscription</button>') : '') : '<button class="btn md" data-act="portal">Manage billing & invoices</button>' + (s.status === 'active' && !['lifetime', 'broker'].includes(s.interval) && !s.cancel_at_end ? '<button class="btn ghost md" data-act="cancelSub">Cancel</button>' : '')}</div>
     <div class="g">${subSummary()}
-      ${ivlSeg()}<div class="plans" id="plans">${['goldzone', 'starter', 'pro', 'elite'].filter(k => P(k) && (!P(k).hidden || s.plan === k)).map(k => priceCard(k)).join('')}</div>${lifetimeCard()}
+      ${ivlSeg()}<div class="plans" id="plans">${billPlans()}</div>${brokerBox()}
       <div class="box"><h3>Payment history</h3>${pays.length ? `<div class="tscroll"><table class="tbl2"><thead><tr><th>Date</th><th>Description</th><th style="text-align:right">Amount</th></tr></thead><tbody>
         ${pays.map(p => `<tr><td>${dt(p.ts)}</td><td>${esc(p.descr)}</td><td style="text-align:right;font-weight:800">${eur(p.amount)}</td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">No payments yet.</div>'}</div>
     </div></div></div>`;
@@ -2267,7 +2233,7 @@ function refBox() {
 }
 function callBox() {
   const u = A.me?.booking_url; if (!u) return '';
-  return `<div class="box callbox"><h3>📞 Your founding setup call</h3><p class="mut" style="font-size:13px;margin:-2px 0 12px">20 minutes, one-on-one. We install Goldmine with you and set your risk per trade, daily limit and layer plan.</p>
+  return `<div class="box callbox"><h3>📞 Your founding setup call</h3><p class="mut" style="font-size:13px;margin:-2px 0 12px">20 minutes, one-on-one. We install VRS Executor with you and set your risk per trade, daily limit and layer plan.</p>
     <a class="btn acc md" href="${esc(u)}" target="_blank" rel="noopener" data-cta="book-call">Book my call →</a></div>`;
 }
 // classic upsells after the purchase: one-time add-ons (from the server's ADDONS)
@@ -2296,21 +2262,19 @@ document.addEventListener('click', e => {
 function renderWelcome() {
   $('#view').dataset.v = 'welcome';
   const s = SUB(), me = A.me, F = FOUND(), pro = P('pro'), lt = s.interval === 'lifetime';
-  const up = !lt && pro?.lifetime && F.lifetime_left > 0
-    ? `<div class="toffer"><div><b>One-time offer: Pro Lifetime for ${money2(pro.lifetime)}</b><small>Pay once and never pay again. Only ${F.lifetime_left} of ${F.lifetime_seats} left.</small></div><div class="tbtns"><button class="btn acc md" data-buy="pro" data-bivl="lifetime" data-cta="welcome-lifetime">Get Lifetime</button>${pro.lifetime3 ? `<button class="btn md" data-buy="pro" data-bivl="lifetime3" data-cta="welcome-lifetime3">3 × ${money2(pro.lifetime3)}</button>` : ''}</div></div>`
-    : s.interval === 'month' && P(s.plan)?.year ? `<div class="toffer"><div><b>Switch to yearly and save ${Math.round((1 - planPrice(s.plan, 'year') / (planPrice(s.plan, 'month') * 12)) * 100)}%</b><small>${money2(planPrice(s.plan, 'year'))} a year instead of ${money2(planPrice(s.plan, 'month') * 12)}.</small></div><div class="tbtns"><button class="btn acc md" data-buy="${s.plan}" data-bivl="year" data-cta="welcome-yearly">Switch to yearly</button></div></div>` : '';
+  const up = s.interval === 'month' && P(s.plan)?.year ? `<div class="toffer"><div><b>Switch to yearly and save ${Math.round((1 - planPrice(s.plan, 'year') / (planPrice(s.plan, 'month') * 12)) * 100)}%</b><small>${money2(planPrice(s.plan, 'year'))} a year instead of ${money2(planPrice(s.plan, 'month') * 12)}.</small></div><div class="tbtns"><button class="btn acc md" data-buy="${s.plan}" data-bivl="year" data-cta="welcome-yearly">Switch to yearly</button></div></div>` : '';
   $('#view').innerHTML = `<div class="page"><div class="wrap welcome">
     <div class="wel-hero"><div class="wel-badge">${me.founding ? '🏷️ FOUNDING MEMBER' : lt ? '♾ LIFETIME MEMBER' : '✓ YOU\'RE IN'}</div>
-      <h1>Welcome to Goldmine Pro, ${esc(me.user.name || me.user.email.split('@')[0])} 🎉</h1>
+      <h1>Welcome to VRS, ${esc(me.user.name || me.user.email.split('@')[0])} 🎉</h1>
       <p>${esc(P(s.plan)?.name || 'Pro')}${lt ? ' Lifetime' : ''} is active${me.founding ? `, at ${money2(planPrice('pro', s.interval === 'year' ? 'year' : 'month'))}${s.interval === 'year' ? '/year' : '/month'} for as long as you stay` : ''}. Three steps and you're trading with your rules locked in.</p></div>
     <div class="wel-steps">
       ${[[me.booking_url ? 'Book your setup call' : 'Read your Risk Rulebook', me.booking_url ? '20 minutes: we set your risk, daily limit and layers with you.' : 'Your 5 rules on one page.', me.booking_url ? `<a class="btn acc md" href="${esc(me.booking_url)}" target="_blank" rel="noopener" data-cta="welcome-call">Book my call</a>` : `<a class="btn acc md" href="rulebook.html" target="_blank">Open my Rulebook</a>`],
-         s.plan === 'goldzone' ? ['Get GoldZone Pro on your chart', 'Type your TradingView username in your dashboard. We add you within 24 hours.', '<a class="btn md" href="#dashboard">Add my username</a>']
-           : ['Install Goldmine next to MT5', 'One download, one double-click. It finds your account by itself.', '<a class="btn md" href="#setup">Start setup</a>'],
-         ['Invite a friend', `They get ${refDays()} days free. You get a free month when they subscribe.`, '<button class="btn md" data-act="copyRef">Copy my link</button>']]
+         s.plan === 'goldzone' ? ['Get VRS Indicator Pro on your chart', 'Type your TradingView username in your dashboard. We add you within 24 hours.', '<a class="btn md" href="#dashboard">Add my username</a>']
+           : ['Install VRS Executor next to MT5', 'One download, one double-click. It finds your account by itself.', '<a class="btn md" href="#setup">Start setup</a>'],
+         ['Get VRS Indicator Pro on TradingView', 'Type your TradingView username in your dashboard. We add you to the invite-only script within 24 hours.', '<a class="btn md" href="#dashboard">Add my username</a>']]
         .map(([t, d, b], i) => `<div class="box wel-step"><span class="n">${i + 1}</span><h3>${t}</h3><p class="mut">${d}</p>${b}</div>`).join('')}
     </div>
-    ${addonMenu()}
+    ${discordBox()}
     ${up ? `<div class="box">${up}</div>` : ''}
     <p class="mut" style="text-align:center;font-size:12.5px;margin-top:6px">🛡 ${GUAR()}-day guarantee: use it on 20 trades; if it didn't pay for itself, email us for a full refund.</p>
   </div></div>`;
@@ -2331,7 +2295,6 @@ function upsellYearly() {
 function downsellCancel() {
   const s = SUB(), p = P(s.plan), st = P('starter'), opts = [];
   if (!A.me?.paused_until || A.me.paused_until < Date.now() / 1000) opts.push(['pause', 'Pause for 1 month · €0', 'Take a break: nothing is charged for 30 days and you keep your price and your setup.']);
-  if (s.plan !== 'starter' && st) opts.push(['starter', `Switch to Starter · ${money2(st.month)}/month`, 'Keep the terminal and your journal for less.']);
   if (s.interval === 'month' && p?.year) opts.push(['yearly', `Switch to yearly · ${money2(Math.round(planPrice(s.plan, 'year') / 12 * 100) / 100)}/month`, `Same ${esc(p.name)}, cheaper per month.`]);
   openModal(`<div class="offer"><span class="obadge warn">BEFORE YOU GO</span><h3>Keep your founding price for less?</h3>
     <p>${A.me?.founding ? `If you cancel, your founding price is gone: coming back later means the normal price (${money2(p?.month)}/month for ${esc(p?.name || '')}).` : 'Before you go, two cheaper ways to keep your rules locked in:'}</p>
@@ -2358,8 +2321,8 @@ document.addEventListener('mouseout', e => {
   if (e.relatedTarget || e.clientY > 8 || A.me || modalOpen() || !['landing', 'landingB', 'landingC'].includes($('#view').dataset.v) || innerWidth < 900 || sessionStorage.getItem('gpExit')) return;
   if (store.get('gpLead', '')) return; // already a lead: don't ask again
   sessionStorage.setItem('gpExit', 1); track('exit_intent');
-  if (LPV === 'c') return openModal(`<div class="offer"><span class="obadge">BEFORE YOU GO · FREE</span><h3>Take GoldZone + the Playbook with you</h3>
-    <p>The free TradingView indicator that boxes every gold range, marks the break and pings you when price comes back to the zone, plus the 16-page GoldZone Playbook on how to trade it. Free forever.</p>
+  if (LPV === 'c') return openModal(`<div class="offer"><span class="obadge">BEFORE YOU GO · FREE</span><h3>Take the VRS Indicator + Playbook with you</h3>
+    <p>The free TradingView indicator that boxes every gold range, marks the break and pings you when price comes back to the zone, plus the 16-page VRS Playbook on how to trade it and the free Discord. Free forever.</p>
     <form class="exitlead" data-lead="tv-exit"><input class="in" type="email" name="email" required placeholder="you@email.com" autocomplete="email"><button class="btn acc lg" type="submit">Send me both</button></form>
     <small class="mut" style="display:block;margin-top:12px">Or <a href="#" data-offer="demo" style="color:var(--acc);font-weight:700">open the live demo</a> first. No spam, unsubscribe in one click.</small></div>`);
   openModal(`<div class="offer"><span class="obadge">BEFORE YOU GO · FREE</span><h3>Take your Risk Rulebook with you</h3>
@@ -2372,16 +2335,16 @@ async function sendLead(form, source) {
   const email = form.querySelector('[name=email]').value.trim(), btn = form.querySelector('button[type=submit]');
   const nv = id => (document.getElementById(id)?.value || '').replace(',', '.');
   const d = { bal: LPC.bal, dl: nv('cDL') || 5, risk: nv('cRisk') || 1, stop: nv('cStop') || 4, n: LPC.n, mkt: LPC.mkt };
-  const site = location.pathname.split('/').pop() || 'index.html', tv = source.startsWith('tv'); // tv = the free GoldZone indicator for TradingView, else the Risk Rulebook
-  const url = tv ? 'goldzone.html?' + new URLSearchParams({ site }) : 'rulebook.html?' + new URLSearchParams({ ...d, site });
+  const site = location.pathname.split('/').pop() || 'index.html', tv = source.startsWith('tv'); // tv = the free VRS Indicator for TradingView, else the Risk Rulebook
+  const url = tv ? 'indicator.html?' + new URLSearchParams({ site }) : 'rulebook.html?' + new URLSearchParams({ ...d, site });
   const win = window.open('about:blank', '_blank'); // open now so the popup isn't blocked
   btn.disabled = true; btn.textContent = 'One moment…';
-  try { if (!A.plans?.offline) await srv('/api/leads', { email, source: source + (LPV === 'a' ? '' : '-' + LPV), data: tv ? { magnet: 'goldzone+playbook' } : d }) } catch (e) { if (/valid email/i.test(e.message)) { btn.disabled = false; btn.textContent = tv ? 'Send me GoldZone →' : 'Send me my Rulebook'; win?.close(); return toast(e.message, 'err') } }
+  try { if (!A.plans?.offline) await srv('/api/leads', { email, source: source + (LPV === 'a' ? '' : '-' + LPV), data: tv ? { magnet: 'goldzone+playbook' } : d }) } catch (e) { if (/valid email/i.test(e.message)) { btn.disabled = false; btn.textContent = tv ? 'Send me VRS Indicator →' : 'Send me my Rulebook'; win?.close(); return toast(e.message, 'err') } }
   store.set('gpLead', email); track('lead', { source }); afterLead(source);
   if (win) win.location = url; else location.href = url;
   btn.textContent = '✓ Sent · opened in a new tab';
-  const n = $('#lpLeadN'); if (n && source === 'calculator') n.innerHTML = `✓ Your Rulebook is open in a new tab. Ready to have Goldmine enforce it? <a href="#signup" style="color:#f5b73b;font-weight:800">Get the Risk Lock →</a>`;
-  if (tv) { const n = $('#lpTvN'); if (n) n.innerHTML = `✓ The indicator is open in a new tab. Want the setups sized, tested and traded for you? <a href="#system" style="color:#f5b73b;font-weight:800">See the full system →</a>` }
+  const n = $('#lpLeadN'); if (n && source === 'calculator') n.innerHTML = `✓ Your Rulebook is open in a new tab. Ready to have VRS Executor enforce it? <a href="#signup" style="color:#f5b73b;font-weight:800">Get the Risk Lock →</a>`;
+  if (tv) { const n = $('#lpTvN'); if (n) n.innerHTML = `✓ The indicator is open in a new tab. Want them graded and taken for you? <a href="#vip" style="color:#f5b73b;font-weight:800">See VIP →</a>` }
   if (source.endsWith('exit')) setTimeout(() => resolveModal(null), 900);
 }
 document.addEventListener('submit', e => {
@@ -2455,7 +2418,7 @@ const admApi = async (path, body) => {
   const r = await fetch(SRV + path, body ? { method: 'POST', headers: admHeaders(), body: JSON.stringify(body) } : { headers: admHeaders() });
   const j = await r.json().catch(() => ({})); if (!r.ok) throw Object.assign(new Error(j.detail || 'Request failed'), { code: r.status }); return j;
 };
-const ivlName = i => ({ month: 'monthly', year: 'yearly', lifetime: 'lifetime', lifetime3: 'lifetime · 3 payments' })[i] || '';
+const ivlName = i => ({ month: 'monthly', year: 'yearly', lifetime: 'lifetime', lifetime3: 'lifetime · 3 payments', broker: 'via partner broker' })[i] || '';
 function admTable() {
   const j = A.adm; if (!j) return; A.admF = A.admF || 'all';
   const term = (A.admQ || '').toLowerCase(), fn = (ADMF.find(x => x[0] === A.admF) || ADMF[0])[2];
@@ -2607,6 +2570,7 @@ async function admTab(t) {
   if (t === 'customers') return;
   const el = $(`.admpane[data-pane="${t}"]`); el.innerHTML = '<div class="empty">Loading…</div>';
   if (t === 'challenge') return admChallenge(el);
+  if (t === 'brk') { try { admBrkPaint(await admApi('/api/admin/brokers')) } catch (e) { el.innerHTML = `<div class="res on bad">${esc(e.message)}</div>` } return }
   if (t === 'tv') { try { admTvPaint(await admApi('/api/admin/tradingview')) } catch (e) { el.innerHTML = `<div class="res on bad">${esc(e.message)}</div>` } return }
   let j; try { j = await admApi('/api/admin/activity') } catch (e) { el.innerHTML = `<div class="res on bad">${esc(e.message)}</div>`; return }
   if (t === 'payments') {
@@ -2620,10 +2584,21 @@ async function admTab(t) {
     el.innerHTML = `<div class="adlog big">${j.log.map(l => `<div><small>${dt(l.ts)} ${new Date(l.ts * 1000).toTimeString().slice(0, 5)}</small> <b>${esc(l.action)}</b> <a href="#" data-admu="${esc(l.target)}">${esc(l.target)}</a> ${esc(l.detail || '')} <span class="mut">by ${esc(l.admin)}</span></div>`).join('') || '<div class="mut">Nothing yet. Every admin action is written here.</div>'}</div>`;
   }
 }
+function admBrkPaint(j) { // VIP through a partner broker: check the account number in the broker's partner (IB) portal, then approve or reject
+  const el = $('.admpane[data-pane="brk"]'); if (!el) return;
+  const pend = j.users.filter(u => u.status === 'pending').length, nolink = (j.brokers || []).filter(b => !b.url).map(b => b.name);
+  el.innerHTML = `<div class="mut" style="font-size:12.5px;margin-bottom:10px;line-height:1.55">Customers who say they opened an account through your partner link. Look up the account number in that broker's partner portal: is it under you and funded? Then <b>Approve</b> (VIP free, no end date) or <b>Reject</b>. If someone leaves the broker later, press Reject (or End access on the customer).
+      <b>${pend}</b> waiting.${nolink.length ? ` <span class="st warn">No partner link set for ${esc(nolink.join(', '))}: GP_BROKER_LINKS on the server.</span>` : ''}</div>
+    <table class="tbl2"><thead><tr><th>Broker</th><th>MT5 account</th><th>Customer</th><th>Sent</th><th>Status</th><th></th></tr></thead><tbody>
+    ${j.users.map(u => `<tr><td><b>${esc(u.broker_name || u.broker)}</b></td><td><code>${esc(u.login)}</code></td><td><a href="#" data-admu="${esc(u.email)}">${esc(u.email)}</a></td><td>${dt(u.ts)}</td>
+      <td>${u.status === 'pending' ? '<span class="st mute">to check</span>' : u.status === 'approved' ? '<span class="st ok">VIP on</span>' : '<span class="st bad">rejected</span>'}</td>
+      <td style="text-align:right;white-space:nowrap">${u.status !== 'approved' ? `<button class="btn sm acc" data-act="admBrkSet" data-id="${u.id}" data-g="1">Approve</button>` : ''}${u.status !== 'rejected' ? ` <button class="btn sm" data-act="admBrkSet" data-id="${u.id}" data-g="0">Reject</button>` : ''}</td></tr>`).join('')
+      || '<tr><td colspan="6" class="empty">Nobody yet. Customers send their broker account in the dashboard.</td></tr>'}</tbody></table>`;
+}
 function admTvPaint(j) {
   const el = $('.admpane[data-pane="tv"]'); if (!el) return;
   const todo = j.users.filter(u => u.todo);
-  el.innerHTML = `<div class="mut" style="font-size:12.5px;margin-bottom:10px;line-height:1.55">GoldZone Pro is invite-only: on TradingView open the script → <b>Manage access</b> → add or remove the username, then mark it here.
+  el.innerHTML = `<div class="mut" style="font-size:12.5px;margin-bottom:10px;line-height:1.55">VRS Indicator Pro is invite-only: on TradingView open the script → <b>Manage access</b> → add or remove the username, then mark it here.
       <b>${todo.filter(u => u.todo === 'add').length}</b> to add · <b>${todo.filter(u => u.todo === 'remove').length}</b> to remove.</div>
     <table class="tbl2"><thead><tr><th>TradingView user</th><th>Customer</th><th>Plan</th><th>Status</th><th>To do</th><th></th></tr></thead><tbody>
     ${j.users.map(u => `<tr><td><b>${esc(u.tv_user)}</b></td><td>${esc(u.email)}</td><td>${esc(P(u.plan)?.name || u.plan || '—')}</td><td>${esc(u.status)}</td>
@@ -2654,14 +2629,14 @@ async function admLoad(quiet) {
           ['Founding seats left', j.founding ? `${j.founding.left} / ${j.founding.seats}` : '—'], ['Lifetime left', j.founding ? `${j.founding.lifetime_left} / ${j.founding.lifetime_seats}` : '—'], ['Founding closes', j.founding?.ends || 'no date set']]
           .map(([k, v]) => `<div class="kp"><small>${k}</small><b>${v}</b></div>`).join('')}</div></div>
       <div class="box">
-        <div class="admtop"><div class="seg admtabs">${[['customers', '👥 Customers'], ['leads', '📄 Leads'], ['tv', '📈 TradingView invites'], ['payments', '💶 Payments'], ['challenge', '🏆 Challenge'], ['log', '🕑 Admin log']].map(([k, t]) => `<button data-admtab="${k}" class="${(A.admTab || 'customers') === k ? 'on' : ''}">${t}</button>`).join('')}</div><span class="grow"></span>
+        <div class="admtop"><div class="seg admtabs">${[['customers', '👥 Customers'], ['leads', '📄 Leads'], ['brk', '🤝 Broker VIP'], ['tv', '📈 TradingView invites'], ['payments', '💶 Payments'], ['challenge', '🏆 Challenge'], ['log', '🕑 Admin log']].map(([k, t]) => `<button data-admtab="${k}" class="${(A.admTab || 'customers') === k ? 'on' : ''}">${t}</button>`).join('')}</div><span class="grow"></span>
           <button class="btn sm acc" data-act="admAdd">＋ Add customer</button><button class="btn sm" data-act="admCsv">⤓ Customers CSV</button></div>
         <div class="admpane" data-pane="customers">
           <div class="admbar"><input class="in" id="admQ" placeholder="Search email or name…" value="${esc(A.admQ || '')}"><span class="mut" style="font-size:12px" id="admN"></span></div>
           <div class="seg" id="admF" style="margin-bottom:12px;flex-wrap:wrap;width:max-content;max-width:100%">${ADMF.map(([k, t, fn]) => `<button data-admf="${k}" class="${A.admF === k ? 'on' : ''}">${t} <span class="mut">${j.customers.filter(fn).length}</span></button>`).join('')}</div>
           <p class="mut" style="font-size:12px;margin:-4px 0 8px">Click a customer to upgrade, extend, block, reset, record payments, add notes or delete.</p>
           <div class="tscroll" id="admT"></div></div>
-        <div class="admpane" data-pane="leads" style="display:none"></div><div class="admpane" data-pane="tv" style="display:none"></div><div class="admpane" data-pane="payments" style="display:none"></div><div class="admpane" data-pane="challenge" style="display:none"></div><div class="admpane" data-pane="log" style="display:none"></div>
+        <div class="admpane" data-pane="leads" style="display:none"></div><div class="admpane" data-pane="brk" style="display:none"></div><div class="admpane" data-pane="tv" style="display:none"></div><div class="admpane" data-pane="payments" style="display:none"></div><div class="admpane" data-pane="challenge" style="display:none"></div><div class="admpane" data-pane="log" style="display:none"></div>
       </div></div>`;
     admTable(); renderNav('admin'); if (A.admTab && A.admTab !== 'customers') admTab(A.admTab);
   } catch (e) { $('#adm').innerHTML = `<div class="res on bad">${esc(e.message)}</div>` }
@@ -2677,10 +2652,11 @@ document.addEventListener('click', e => {
 });
 
 /* ---------------------------------------------------------------- legal placeholders */
+// short versions for the pop-up; the full texts are in legal.html (edit them there)
 const LEGAL = {
-  terms: ['Terms of service', 'Replace this with your own terms (use a lawyer or a generator such as Termly / iubenda). Cover: subscription & renewal, refunds, acceptable use, license limits (number of PCs), no investment advice, limitation of liability, governing law.'],
-  privacy: ['Privacy policy', 'Replace with your GDPR privacy policy. You store: email, name, hashed password, subscription status and bridge PC identifiers. Payments are processed by Stripe. Customers\' MT5 passwords are never sent to you.'],
-  risk: ['Risk disclosure', 'Trading forex, CFDs and other leveraged products carries a high risk of losing money. Goldmine Pro is software only. It does not give advice, manage money or execute trades on its own initiative. Past performance shown in the journal is not indicative of future results.'],
+  terms: ['Terms of service', 'VRS sells trading software and education, not advice. Subscriptions renew until you cancel (2 clicks, access until the end of the paid period). EU consumers have a 14-day right of withdrawal, plus our money-back guarantee. Belgian law applies. <a href="legal.html#terms" target="_blank" style="color:var(--acc);font-weight:700">Read the full terms →</a>'],
+  privacy: ['Privacy policy', 'We keep only what we need to run your account (email, subscription, license, linked PCs). Payments go through Stripe. Your MT5 password and trades stay on your own computer. No advertising cookies. <a href="legal.html#privacy" target="_blank" style="color:var(--acc);font-weight:700">Read the full privacy policy →</a>'],
+  risk: ['Risk disclosure', 'Trading forex, CFDs and other leveraged products carries a high risk of losing money rapidly. VRS is software only: no advice, no money management. Backtests and past results do not predict future results. We may earn a commission from partner brokers. <a href="legal.html#risk" target="_blank" style="color:var(--acc);font-weight:700">Read the full risk disclosure →</a>'],
 };
 
 /* ---------------------------------------------------------------- events */
@@ -2696,7 +2672,7 @@ document.addEventListener('click', async e => {
   if (t.dataset.buy) return buy(t.dataset.buy, t.dataset.bivl);
   if (t.dataset.acctrm) { if (!(await confirmBox('Remove this account?', '<p>It disappears from the terminal. You can add it again any time.</p>', 'Remove', 'danger'))) return; try { await bridge('/api/accounts/remove', { login: +t.dataset.acctrm }); toast('Account removed', 'ok'); loadAccts() } catch (err) { toast(err.message, 'err') } return }
   if (t.dataset.tstate) { try { setMe(await srv('/api/test/state', { state: t.dataset.tstate })); toast('Account is now: ' + t.textContent, 'ok'); $('#view').dataset.v = ''; route() } catch (err) { toast(err.message, 'err') } return }
-  if (t.dataset.ivl) { A.interval = t.dataset.ivl; store.set('saasIvl', A.interval); $$('[data-ivl]').forEach(b => b.classList.toggle('on', b.dataset.ivl === A.interval)); const pl = $('#plans'); if (pl) pl.innerHTML = ['goldzone', 'starter', 'pro', 'elite'].filter(k => P(k) && (!P(k).hidden || SUB().plan === k)).map(k => priceCard(k)).join(''); return }
+  if (t.dataset.ivl) { A.interval = t.dataset.ivl; store.set('saasIvl', A.interval); $$('[data-ivl]').forEach(b => b.classList.toggle('on', b.dataset.ivl === A.interval)); const pl = $('#plans'); if (pl) pl.innerHTML = billPlans(); return }
   if (t.dataset.sw) { resolveModal(null); location.hash = t.dataset.sw; return }
   if (t.dataset.themeSet) { CFG.theme = t.dataset.themeSet; saveCfg(); applyTheme(); $('#view').dataset.v = ''; return route() }
   if (t.dataset.copy) { navigator.clipboard?.writeText($('#cfgEx').textContent); return toast('Copied', 'ok') }
@@ -2711,7 +2687,9 @@ document.addEventListener('click', async e => {
   if (a === 'copyKey') { navigator.clipboard?.writeText(A.me.license); return toast('License key copied', 'ok') }
   if (a === 'rotate') { if (!(await confirmBox('Generate a new license key?', 'The old key stops working right away and every linked PC is removed. Download the bridge again or activate it with the new key.', 'Generate new key', 'danger'))) return; try { setMe(await srv('/api/license/rotate', {})); store.set('bridgeOk', 0); renderDashboard(); toast('New key generated', 'ok') } catch (err) { toast(err.message, 'err') } return }
   if (a === 'download') return downloadBridge();
-  if (a === 'tvUser') { const v = $('#tvUser').value.trim().replace(/^@/, ''); if (v && !/^[A-Za-z0-9_.-]{2,40}$/.test(v)) return toast('A TradingView username has only letters, numbers, _ . and -', 'err'); try { setMe(await srv('/api/me/tradingview', { username: v })); renderDashboard(); toast(v ? 'Saved: we add you to GoldZone Pro within 24 hours' : 'Username removed', 'ok') } catch (err) { toast(err.message, 'err') } return }
+  if (a === 'tvUser') { const v = $('#tvUser').value.trim().replace(/^@/, ''); if (v && !/^[A-Za-z0-9_.-]{2,40}$/.test(v)) return toast('A TradingView username has only letters, numbers, _ . and -', 'err'); try { setMe(await srv('/api/me/tradingview', { username: v })); renderDashboard(); toast(v ? 'Saved: we add you to VRS Indicator Pro within 24 hours' : 'Username removed', 'ok') } catch (err) { toast(err.message, 'err') } return }
+  if (a === 'brkSend') { const login = $('#brkLogin').value.trim(); if (!/^\d{3,20}$/.test(login)) return toast('Type the MT5 account number (digits only).', 'err'); try { setMe(await srv('/api/me/broker', { broker: $('#brkSel').value, login })); renderDashboard(); toast('Sent: we check it and switch VIP on, usually within 24 hours', 'ok', 7000); track('broker_request') } catch (err) { toast(err.message, 'err') } return }
+  if (a === 'admBrkSet') { try { const j = await admApi('/api/admin/brokers', { id: +t.dataset.id, approve: t.dataset.g === '1' }); admBrkPaint(j); toast(t.dataset.g === '1' ? 'Approved: VIP is on' : 'Rejected', 'ok') } catch (err) { toast(err.message, 'err') } return }
   if (a === 'admTvSet') { try { const j = await admApi('/api/admin/tradingview', { id: +t.dataset.id, granted: t.dataset.g === '1' }); admTvPaint(j); toast('Saved', 'ok') } catch (err) { toast(err.message, 'err') } return }
   if (a === 'acctAdd') return acctAdd();
   if (a === 'revealBk') { const c = $('#bkey'), on = c.textContent.includes('•'); c.textContent = on ? c.dataset.k : c.dataset.k.slice(0, 6) + '••••••••••••••••••••'; t.textContent = on ? 'Hide' : 'Show'; return }
@@ -2731,17 +2709,19 @@ document.addEventListener('click', async e => {
   if (a === 'chSync') { const s = await chSync(); if (s) { toast('✓ Result updated', 'ok'); renderChallenge() } else toast('No challenge account on this PC yet.', 'warn'); return }
   if (a === 'admLoad') return admLoad();
   if (a === 'admAdd') return admAdd();
-  if (a === 'admCsv') return admDownload('/api/admin/customers.csv', 'goldmine-customers.csv');
-  if (a === 'admLeads') { try { const r = await fetch(SRV + '/api/admin/leads', { headers: admHeaders() }); if (!r.ok) throw new Error('Could not load leads'); const u = URL.createObjectURL(await r.blob()), l = document.createElement('a'); l.href = u; l.download = 'goldmine-leads.csv'; l.click(); setTimeout(() => URL.revokeObjectURL(u), 2000) } catch (err) { toast(err.message, 'err') } return }
+  if (a === 'admCsv') return admDownload('/api/admin/customers.csv', 'vrs-customers.csv');
+  if (a === 'admLeads') { try { const r = await fetch(SRV + '/api/admin/leads', { headers: admHeaders() }); if (!r.ok) throw new Error('Could not load leads'); const u = URL.createObjectURL(await r.blob()), l = document.createElement('a'); l.href = u; l.download = 'vrs-leads.csv'; l.click(); setTimeout(() => URL.revokeObjectURL(u), 2000) } catch (err) { toast(err.message, 'err') } return }
 });
 
 // Same as PLANS in saas/license_server.py: used only when the server can't be reached, so visitors still see the full page.
+// The website only offers "pro" (= VRS VIP); the other plans stay hidden for existing customers.
 const OFFLINE_PLANS = { offline: true, trial_days: 7, trial_plan: 'pro', test_mode: false, currency: 'EUR', guarantee_days: 30, trial_card: false,
-  founding: { plan: 'pro', month: 19, year: 147, seats: 100, left: 100, open: true, ends: '', lifetime_left: 50, lifetime_seats: 50 }, plans: {
-  goldzone: { name: 'GoldZone Pro', month: 14, year: 119, accounts: 0, machines: 0, features: ['goldzone_pro', 'lab'], blurb: 'The full GoldZone on TradingView: A/B/C grades, the backtest card, filters, exit plans, bot alerts.' },
+  founding: { plan: 'pro', month: 19, year: 147, seats: 100, left: 100, open: true, ends: '', lifetime_left: 0, lifetime_seats: 0 },
+  brokers: [{ key: 'vantage', name: 'Vantage', url: '' }, { key: 'vtmarkets', name: 'VT Markets', url: '' }, { key: 'raisefx', name: 'RaiseFX', url: '' }], discord_public: '', plans: {
+  goldzone: { name: 'VRS Indicator Pro', month: 14, year: 119, hidden: true, accounts: 0, machines: 0, features: ['goldzone_pro', 'lab'], blurb: 'The full VRS Indicator on TradingView: A/B/C grades, the backtest card, filters, exit plans, bot alerts.' },
   starter: { name: 'Starter', month: 9, year: 90, hidden: true, accounts: 1, machines: 1, features: ['terminal', 'journal', 'alerts', 'drawings'], blurb: 'One MT5 account, the full terminal and the journal.' },
-  pro: { name: 'Goldmine Pro', month: 29, year: 197, lifetime: 497, accounts: 5, machines: 2, features: ['terminal', 'journal', 'alerts', 'drawings', 'layers', 'basket', 'manage', 'paper', 'copy', 'goldzone_pro', 'lab', 'autotrade'], blurb: 'GoldZone Pro + the MT5 terminal, risk manager, bot and TradingView → MT5 autotrade. Five MT5 accounts.' },
-  elite: { name: 'Elite', month: 59, year: 590, accounts: 25, machines: 3, features: ['terminal', 'journal', 'alerts', 'drawings', 'layers', 'basket', 'manage', 'paper', 'copy', 'goldzone_pro', 'lab', 'autotrade', 'priority'], blurb: 'For many accounts and small teams: 25 accounts, 3 PCs, priority support.' } } };
+  pro: { name: 'VRS VIP', month: 29, year: 197, accounts: 5, machines: 2, features: ['terminal', 'journal', 'alerts', 'drawings', 'layers', 'basket', 'manage', 'paper', 'copy', 'goldzone_pro', 'lab', 'autotrade'], blurb: 'VRS Indicator Pro on TradingView + VRS Executor on MT5 (risk manager, bot, TradingView → MT5 autotrade) + the VIP Discord.' },
+  elite: { name: 'VRS Executor Elite', month: 59, year: 590, hidden: true, accounts: 25, machines: 3, features: ['terminal', 'journal', 'alerts', 'drawings', 'layers', 'basket', 'manage', 'paper', 'copy', 'goldzone_pro', 'lab', 'autotrade', 'priority'], blurb: 'For many accounts and small teams: 25 accounts, 3 PCs, priority support.' } } };
 function noServer() { // nothing answered: say exactly what to start, instead of a vague error
   const mine = /^(127\.0\.0\.1|localhost)$/.test(location.hostname) || location.protocol === 'file:';
   if (!mine) return; // public visitors just see the page; sign-up explains itself

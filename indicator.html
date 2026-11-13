@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%230d1528%22%2F%3E%3Crect%20x%3D%223.9%22%20y%3D%2220%22%20width%3D%2224.2%22%20height%3D%223.9%22%20fill%3D%22%23f5b73b%22%20fill-opacity%3D%22.28%22%2F%3E%3Cpath%20d%3D%22M8%209.75%2014.5%2021.4%2024.5%208.25%22%20fill%3D%22none%22%20stroke%3D%22%23f7bd45%22%20stroke-width%3D%223.6%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2214.5%22%20cy%3D%2221.4%22%20r%3D%221.6%22%20fill%3D%22%23fff%22%20stroke%3D%22%230a1020%22%20stroke-width%3D%22.5%22%2F%3E%3C%2Fsvg%3E"><link rel="apple-touch-icon" href="vrs-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VRS Indicator Lite is ready · VRS</title>
+<!-- Lite = zones only (ranges, breaks, zones, new-zone alert). Entry, stop, R levels and grades are VRS VIP. -->
+<!-- The "coming soon" next to the partner-broker way: remove it once GP_BROKER_LINKS is set on the server. -->
+
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0a0d13">
+<style>
+:root{--bg:#0a0d13;--panel:#10141c;--panel2:#151a24;--line:#1e2531;--line2:#2b3445;--text:#e8ecf3;--mut:#8a94a8;--gold:#f5b73b;--up:#16c784;--font:Inter,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+*{box-sizing:border-box;margin:0}
+html,body{background:var(--bg);color:var(--text);font:15px/1.6 var(--font)}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(760px 440px at 85% -10%,rgba(245,183,59,.14),transparent 70%),radial-gradient(560px 400px at -5% 0%,rgba(22,199,132,.06),transparent 70%)}
+a{color:inherit}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px;position:relative}
+header{display:flex;align-items:center;gap:10px;height:64px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:850;letter-spacing:-.02em;text-decoration:none}
+.brand svg{width:26px;height:26px}.brand span{font-size:9.5px;font-weight:900;color:#1a1203;background:linear-gradient(135deg,#f9c95a,#e0960c);padding:2px 6px;border-radius:5px;letter-spacing:.08em}
+header .grow{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 20px;border-radius:12px;font-weight:800;font-size:14.5px;text-decoration:none;border:1px solid transparent;cursor:pointer;font-family:inherit}
+.gold{background:linear-gradient(135deg,#f9c95a,#e0960c);color:#1a1203;box-shadow:0 14px 40px -14px rgba(245,183,59,.65)}.gold:hover{filter:brightness(1.07)}
+.ghost{background:rgba(255,255,255,.04);border-color:var(--line2);color:var(--text)}.ghost:hover{background:rgba(255,255,255,.08)}
+.hero{padding:36px 0 20px}
+.eye{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+h1{font-size:clamp(30px,5vw,48px);line-height:1.05;font-weight:900;letter-spacing:-.04em;margin:10px 0 12px}
+h1 span{background:linear-gradient(90deg,#ffd982,#f5b73b 45%,#e0960c);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--mut);font-size:16.5px;max-width:700px}
+h2{font-size:clamp(22px,3vw,30px);font-weight:850;letter-spacing:-.03em;margin-bottom:14px}
+section{padding:26px 0}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.step{padding:16px;border-radius:16px;border:1px solid var(--line);background:linear-gradient(180deg,#0f131b,#0c1017)}
+.step b{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#f9c95a,#e0960c);color:#1a1203;font-weight:900;font-size:13px;margin-bottom:10px}
+.step h3{font-size:15px;font-weight:850;margin-bottom:4px}.step p{font-size:13px;color:var(--mut)}.step code{color:var(--gold);font-size:12.5px}
+.code{border-radius:18px;overflow:hidden;border:1px solid var(--line2);background:#0d1118}
+.code .bar{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#121722;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.code .bar i{width:10px;height:10px;border-radius:50%;background:var(--line2)}.code .bar span{font-size:12.5px;color:var(--mut);font-weight:700;margin-left:6px}.code .bar .grow{flex:1}
+.code pre{margin:0;padding:16px 18px;max-height:420px;overflow:auto;font:500 12.5px/1.65 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#c9d1dd;white-space:pre}
+.code .btn{min-height:36px;padding:7px 14px;font-size:13px}
+.ok{color:var(--up)!important}
+.shows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 24px;list-style:none;padding:0}
+.shows li{display:flex;gap:10px;color:#d5dbe5}.shows li::before{content:'✓';color:var(--up);font-weight:900}
+.next{padding:26px;border-radius:24px;border:1px solid rgba(245,183,59,.45);background:radial-gradient(700px 260px at 0% 0%,rgba(245,183,59,.15),transparent 60%),linear-gradient(180deg,#10141c,#0c1017)}
+.next .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0 20px}
+.next .cards div{padding:14px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid var(--line)}
+.next .cards b{display:block;font-size:14.5px;margin-bottom:4px}.next .cards p{font-size:13px;color:var(--mut)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.note{font-size:12.5px;color:var(--mut)}
+footer{padding:30px 0 40px;color:var(--mut);font-size:12px;line-height:1.6}
+@media (max-width:820px){.steps,.next .cards{grid-template-columns:1fr 1fr}.shows{grid-template-columns:1fr}}
+@media (max-width:520px){.steps,.next .cards{grid-template-columns:1fr}}
+.ty{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start;padding:24px 0 30px}
+.tyl h1{margin:8px 0 6px}.lead{color:var(--mut);font-size:16.5px;margin-bottom:18px}
+.btn.big{min-height:54px;padding:12px 26px;font-size:16px;border-radius:14px}.btn.full{width:100%}
+.mini{margin:20px 0 0;padding:0;list-style:none;counter-reset:s;display:grid;gap:10px}
+.mini li{counter-increment:s;display:flex;gap:10px;color:#c9d0dc;font-size:14px;align-items:flex-start;line-height:1.5}
+.mini li::before{content:counter(s);flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#f9c95a,#e0960c);color:#1a1203;font-weight:900;font-size:12px}
+.mini code,.qa code{color:var(--gold);font-size:12.5px}
+.book{display:flex;gap:14px;align-items:center;margin-top:18px;padding:12px 14px;border-radius:14px;border:1px solid rgba(245,183,59,.45);background:linear-gradient(135deg,rgba(245,183,59,.1),rgba(245,183,59,.02));text-decoration:none}.book:hover{border-color:#f5b73b}.book img{width:52px;border-radius:3px;transform:rotate(-4deg);box-shadow:0 8px 20px -8px rgba(0,0,0,.7)}.book b{display:block;color:#f5c25b;font-size:15px}.book small{color:#aab3c3;font-size:12.5px;line-height:1.45}
+.peek{margin-top:14px;border:1px solid var(--line);border-radius:14px;background:#0d1118}
+.peek summary{cursor:pointer;padding:10px 14px;font-size:13px;font-weight:700;color:var(--mut)}
+.peek pre{margin:0;padding:12px 14px;max-height:240px;overflow:auto;border-top:1px solid var(--line);font:500 11.5px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#c9d1dd}
+.next h2{font-size:clamp(21px,2.6vw,27px);margin:6px 0 10px}
+.qa{list-style:none;padding:0;margin:0 0 18px;display:grid;gap:10px}.qa li{font-size:13.5px;color:#aab3c3;line-height:1.5}.qa b{display:block;color:#f3f5f9;font-size:14.5px}
+.ways{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 16px}.ways div{padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.03)}.ways b{display:block;font-size:20px;color:var(--gold)}.ways small{font-size:12px;color:var(--mut)}.ways span{font-size:12.5px;color:#aab3c3}
+[hidden]{display:none!important}
+.demo{display:block;text-align:center;margin-top:8px;font-size:13px;color:var(--mut);text-decoration:none}.demo:hover{color:var(--text)}
+@media (max-width:860px){.ty{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><a class="brand" id="home" href="index.html"><svg viewBox="0 0 32 32" class="vrs-logo"><defs><linearGradient id="vrsBg50" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#16213b"/><stop offset="1" stop-color="#060a14"/></linearGradient><radialGradient id="vrsGl50" cx=".78" cy=".18" r=".7"><stop offset="0" stop-color="#f5b73b" stop-opacity=".3"/><stop offset="1" stop-color="#f5b73b" stop-opacity="0"/></radialGradient><linearGradient id="vrsAu50" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe7a3"/><stop offset=".45" stop-color="#f7bd45"/><stop offset="1" stop-color="#d4850a"/></linearGradient><linearGradient id="vrsZn50" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f5b73b" stop-opacity="0"/><stop offset=".25" stop-color="#f5b73b" stop-opacity=".32"/><stop offset=".75" stop-color="#f5b73b" stop-opacity=".32"/><stop offset="1" stop-color="#f5b73b" stop-opacity="0"/></linearGradient></defs><rect width="32" height="32" rx="7" fill="url(#vrsBg50)"/><rect width="32" height="32" rx="7" fill="url(#vrsGl50)"/><rect x="3.9" y="20" width="24.2" height="3.9" fill="url(#vrsZn50)"/><path d="M8 9.75 14.5 21.4 24.5 8.25" fill="none" stroke="url(#vrsAu50)" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14.5" cy="21.4" r="1.45" fill="#fff" stroke="#0a1020" stroke-width=".5"/></svg>VRS<span>INDICATOR</span></a><span class="grow"></span><a class="btn ghost" id="demoTop" href="index.html#demo">Live demo</a></header>
+
+  <div class="ty">
+    <div class="tyl">
+      <div class="eye">✓ It's yours · free forever</div><h1>VRS Indicator Lite <span>is ready.</span></h1>
+      <!-- A · published on TradingView (TV_LITE_URL set below): a link, never the source code -->
+      <div id="tvMode" hidden>
+        <p class="lead">It marks every range, every break and the zone we trade, and alerts you when a new zone appears. Add it to your TradingView chart in 1 minute.</p>
+        <div class="row"><a class="btn gold big" id="tvLink" href="#" target="_blank" rel="noopener">Open VRS Indicator Lite on TradingView →</a></div>
+        <ol class="mini">
+          <li><span>Click the button above and log in to TradingView (a free account works).</span></li>
+          <li><span>On the script page click <code>Add to favorites</code> (the star).</span></li>
+          <li><span>Open a gold chart → <code>Indicators</code> (top) → <code>Favorites</code> → <b>VRS Indicator Lite</b>.</span></li>
+          <li><span>Alert: Create alert → “VRS Indicator Lite” → <code>Any alert() function call</code>: you get a ping on every new zone.</span></li></ol>
+      </div>
+      <!-- B · fallback until it is published: paste the code (Lite holds no entry / stop / grade code, see build-lite.cjs) -->
+      <div id="pasteMode" hidden>
+        <p class="lead">It marks every range, every break and the zone we trade, and alerts you when a new zone appears. Copy it, paste it into TradingView, done in 2 minutes.</p>
+        <div class="row"><button class="btn gold big" id="copy">⧉ Copy VRS Indicator Lite</button><a class="btn ghost" id="dl" download="VRS-Indicator-Lite.pine">Download .pine</a></div>
+        <ol class="mini">
+          <li><span><b>Copy</b> the code with the button above.</span></li>
+          <li><span>On tradingview.com open a gold chart → <code>Pine Editor</code> (bottom).</span></li>
+          <li><span>Select all, paste, <code>Save</code> as “VRS Indicator Lite”.</span></li>
+          <li><span><code>Add to chart</code>. Alert: Create alert → “VRS Indicator Lite” → <code>Any alert() function call</code>: you get a ping on every new zone.</span></li></ol>
+      </div>
+      <a class="book" href="ebook/VRS-Playbook.pdf" download><img src="lp-playbook-cover.jpg" alt="The VRS Playbook"><span><b>⇩ Download your VRS Playbook</b><small>16-page PDF: the method behind every zone VRS Indicator draws, from range to runner.</small></span></a>
+      <details class="peek" id="peek" hidden><summary>Show the code</summary><pre id="src">Loading VRS Indicator…</pre></details>
+    </div>
+    <div class="next" id="offer"><div class="eye">Your next step · VRS VIP</div><h2>Lite shows you the zone. <span style="color:#f5b73b">VIP shows you the trade, and takes it.</span></h2>
+      <p class="note" style="font-size:14.5px;color:#aab3c3;margin-bottom:12px">A zone is where price may come back. VIP answers the questions Lite can't:</p>
+      <ul class="qa"><li><b>🎯 When and where do I enter?</b>VRS Indicator Pro marks the entry, the stop and the 1R / 2R / 3R levels on your chart, and alerts you when the trade is on.</li>
+        <li><b>🅰 Which ones are worth it?</b>Every setup graded A / B / C, with a backtest card on your chart: how each grade did, in R.</li>
+        <li><b>🛡 How big?</b>VRS Executor sizes every lot from your risk and locks the day at your loss limit.</li>
+        <li><b>🔗 Who takes them?</b>TradingView → MT5 autotrade: the setups you allow, placed and managed on your MT5 account. Paper first.</li></ul>
+      <div class="ways"><div><b>Free <small>· coming soon</small></b><span>with a new account at a partner broker</span></div><div><b>€19<small>/mo</small></b><span>founding price, locked while you stay (€29 after) · any broker or prop account · 7 days free</span></div></div>
+      <a class="btn gold big full" id="trial" href="index.html#vip">See the two ways into VIP →</a>
+      <p class="note" style="margin-top:10px;text-align:center">7 days free · no card · cancel in 2 clicks</p>
+      <a class="demo" id="discord" href="#" target="_blank" rel="noopener" hidden>💬 Join the free Discord: ask anything about the zones →</a>
+      <a class="demo" id="demo" href="index.html#demo">or try the live demo first, no sign-up →</a></div>
+  </div>
+  <footer><b>Risk warning:</b> CFDs and forex are complex instruments with a high risk of losing money rapidly due to leverage. VRS Indicator and VRS Executor are software only: no investment advice or signals service. Past results, in a backtest or on a chart, are no promise. We may receive a commission from partner brokers when you open an account through our links. TradingView is a trademark of TradingView, Inc.; VRS is not affiliated with TradingView or MetaQuotes.<br>© <span id="yr"></span> VRS · Value Research Systems</footer>
+</div>
+<script>
+'use strict';
+// back to the site this page was opened from (the landing page passes ?site=)
+const site = (new URLSearchParams(location.search).get('site') || 'index.html').replace(/[^\w.\-]/g, '') || 'index.html';
+for (const [id, h] of [['home', ''], ['trial', '#vip']]) document.getElementById(id).href = site + h;
+// the free Discord link comes from the license server (GP_DISCORD_PUBLIC); hidden when it isn't set or the server can't be reached
+fetch('api/plans').then(r => r.ok ? r.json() : null).then(j => { const u = j && j.discord_public, a = document.getElementById('discord'); if (u && /^https:\/\//.test(u)) { a.href = u; a.hidden = false } }).catch(() => {});
+for (const id of ['demo', 'demoTop']) { const a = document.getElementById(id); a.href = 'terminal.html?demo=1'; a.target = '_blank' } // the live demo, no sign-up
+document.getElementById('yr').textContent = new Date().getFullYear();
+// ▼▼ After you publish VRS Indicator Lite on TradingView (public + PROTECTED), paste its script page link here, e.g.
+//    'https://www.tradingview.com/script/AbCdEf12-VRS-Indicator-Lite/'. From then on this page only links to it:
+//    the source code is never shown or downloaded. Empty = the copy-paste fallback below.
+const TV_LITE_URL = '';
+const $id = id => document.getElementById(id);
+if (/^https:\/\/(www\.)?tradingview\.com\/script\//.test(TV_LITE_URL)) { $id('tvLink').href = TV_LITE_URL; $id('tvMode').hidden = false }
+else {
+$id('pasteMode').hidden = false; $id('peek').hidden = false;
+const pre = $id('src'), cp = $id('copy'), dl = $id('dl'); let code = '';
+fetch('tradingview/VRS-Indicator-Lite.pine', { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error(r.status); return r.text() }).then(t => {
+  code = t; pre.textContent = t; dl.href = URL.createObjectURL(new Blob([t], { type: 'text/plain' }));
+}).catch(() => { pre.textContent = 'VRS Indicator could not be loaded right now. Refresh this page, or reply to the email we just sent you and we send the file.'; cp.disabled = true });
+cp.addEventListener('click', async () => {
+  if (!code) return;
+  try { await navigator.clipboard.writeText(code) } catch { const r = document.createRange(); r.selectNodeContents(pre); const s = getSelection(); s.removeAllRanges(); s.addRange(r); document.execCommand('copy') }
+  cp.textContent = '✓ Copied: now paste it in the Pine Editor'; cp.classList.add('ok'); setTimeout(() => { cp.textContent = '⧉ Copy VRS Indicator Lite'; cp.classList.remove('ok') }, 4000);
+});
+}
+</script>
+</body>
+</html>
